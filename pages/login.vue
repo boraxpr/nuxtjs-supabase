@@ -3,6 +3,9 @@ const supabase = useSupabaseClient();
 const email = ref("");
 const password = ref(""); // Add a separate variable for the password
 const loading = ref(false);
+useHead({
+  title: "Login",
+});
 const signInWithPassword = async () => {
   loading.value = true;
   const { data, error } = await supabase.auth.signInWithPassword({
