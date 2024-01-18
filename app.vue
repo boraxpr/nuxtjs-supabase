@@ -5,7 +5,7 @@ import "primeicons/primeicons.css";
 
 const signOut = async () => {
   try {
-    await useSupabaseClient.auth.signOut();
+    await useSupabaseClient().auth.signOut();
     navigateTo("/login");
   } catch (error) {
     console.error("Error signing out:", error.message);
@@ -25,17 +25,19 @@ const signOut = async () => {
         </div>
       </div>
       <div class="h-5/6 flex flex-col justify-start space-y-5 mt-8">
-        <Button class="justify-center"> Dashboard </Button>
         <Button class="justify-center">
-          <NuxtLink to="/"> Quotations </NuxtLink>
+          <NuxtLink to="/"> Dashboard </NuxtLink>
+        </Button>
+        <Button class="justify-center">
+          <NuxtLink to="/quotation"> Quotations </NuxtLink>
         </Button>
       </div>
-      <div class="justify-end mb-10">
+      <div v-if="!useSupabaseUser().value" class="justify-end mb-10">
         <Button class="justify-center">
           <NuxtLink to="/login">Login</NuxtLink>
         </Button>
       </div>
-      <div class="justify-end mb-10">
+      <div v-else class="justify-end mb-10">
         <Button class="justify-center" @click="signOut"> Signout </Button>
       </div>
     </div>
