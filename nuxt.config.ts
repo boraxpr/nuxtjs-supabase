@@ -1,8 +1,26 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  modules: ["nuxt-primevue", "@nuxtjs/supabase", "@nuxtjs/tailwindcss"],
+  supabase: {
+    redirectOptions: {
+      login: "/login",
+      callback: "/confirm",
+      exclude: [],
+    },
+  },
+  devtools: {
+    enabled: true,
+    timeline: {
+      enabled: true,
+    },
+  },
   routeRules: {
-    // prerender index route by default
-    '/': { prerender: true },
+    "/": { prerender: true },
+  },
+  runtimeConfig: {
+    public: {
+      api_key: process.env.SUPABASE_KEY,
+      url: process.env.SUPABASE_URL,
+    },
   },
 });
