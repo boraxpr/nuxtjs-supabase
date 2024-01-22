@@ -36,7 +36,7 @@ const signInWithPassword = async () => {
       </div>
     </div>
     <div class="flex flex-col gap-2 items-center">
-      <label for="password">Password</label>
+      <label for="password">Passwords</label>
       <InputText
         id="password"
         v-model="password"
