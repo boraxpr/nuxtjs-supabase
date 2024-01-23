@@ -19,7 +19,7 @@
         <DataTable :value="products" tableStyle="min-width: 50rem">
           <Column field="product_name" header="Product Name">
             <template #body="product">
-              <Nuxt-link :to="`/products/${product.data.product_number}`">{{
+              <Nuxt-link :to="`/products/${product.data.product_number}`" class="underline">{{
                 product.data.product_name
               }}</Nuxt-link>
             </template>
@@ -44,6 +44,7 @@
           <Column field="selling_price" header="Selling Price">
             <template #body="product">
                 <div class="text-center">
+                    <!-- {{ currencyFormat(product.data.selling_price,"") }} -->
                     {{ formatCurrency(product.data.selling_price) }}
                     <!-- {{ product.data.selling_price }} -->
                 </div>
@@ -76,7 +77,7 @@ async function fetchData() {
   products.value = data || [];
 }
 const formatCurrency = (value) => {
-    return value.toLocaleString();
+    return value.toLocaleString(undefined, { minimumFractionDigits: 2 });
 };
 onMounted(() => {
   fetchData();

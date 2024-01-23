@@ -112,7 +112,7 @@
                     <label for="">Product Img</label>
                   </div>
                   <div class="Container mt-2">
-                    <input type="file">
+                    <input type="file" @change="onChangeFile">
                   </div>
                 </div>
               </div>
@@ -160,13 +160,14 @@ const insertData = async () => {
         product_description: product_desc.value,
         income_account: income_account.value,
         unit: unit.value,
-        // product_img: product_img.value
+        // product_img: 
     }
     const { data, error } = await client.from('product').insert([
         Input,
     ])
     .select()
     if(error === null){
+        uploadImg(data[0].product_number);
         alert("successfully");
         navigateTo('/products');
     }else{
@@ -175,6 +176,36 @@ const insertData = async () => {
     }
 }
 
+const onChangeFile = (event) => {
+  product_img.value = event.target.files[0] 
+}
+
+const uploadImg = async (id) => {
+  
+  const { data, error } = await client.storage
+    .from('product')
+    .upload(id+"/"+product_img.value.name, product_img.value)
+
+    if(error){
+      console.log(error)
+    }else{
+      const { data, error } = await client
+        .from('product')
+        .update({ product_img: id+"/"+product_img.value.name })
+        .eq('product_number', id)
+        .select()
+    }
+}
+
+const getLinkImg = async () => {
+  const { data, error } = await client
+  .storage
+  .from('product')
+  .createSignedUrl('test.jpg', 60)
+  linkImg.value = data.signedUrl
+  console.log(data)
+  console.log(error)
+}
           
 
 </script>

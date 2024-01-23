@@ -113,10 +113,19 @@
           <div>
             <div>
               <label for="">Product Img</label>
+              <button @click="getLinkImg" class="ml-2" v-if="product_img">
+                <span v-if="showImg" class="underline">hide</span> 
+                <span v-else class="underline">show</span>
+              </button>
             </div>
             <div class="Container mt-2">
-              <input v-model="product_img" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="product_img" type="text" :disabled="true" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg">
             </div>
+          </div>
+        </div>
+        <div v-if="showImg" class="flex justify-center">
+          <div class="w-48 h-48 ">
+            <img :src="linkImg" alt="">
           </div>
         </div>
       </div>
@@ -153,6 +162,9 @@ const unit = ref("");
 const product_img = ref("");
 const product = ref();
 const titleName = ref("");
+
+const linkImg = ref("");
+const showImg = ref(false);
 
 async function fetchData() {
   const { data } = await client.from("product").select("*").eq('product_number', route.id);
@@ -202,6 +214,27 @@ const updateData = async () => {
       alert("error to update the product to supabase");
       console.log("error ",error)
     }
+}
+
+const getLinkImg = async () => {
+  console.log("linkImg.value===null",linkImg.value===null);
+  console.log("linkImg.value===''",linkImg.value==="");
+  if(linkImg.value===""){
+    const { data, error } = await client
+    .storage
+    .from('product')
+    .createSignedUrl(product_img.value, 60)
+    linkImg.value = data.signedUrl
+    showImg.value = true
+  }else{
+    if(showImg.value === true){
+      showImg.value = false
+    }else{
+      showImg.value = true
+    }
+  }
+  
+  
 }
 
 onMounted(() => {
