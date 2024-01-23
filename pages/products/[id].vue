@@ -37,7 +37,7 @@
               <label for="">Product Code</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="product_code" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="product_code" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
             </div>
           </div>
         </div>
@@ -55,7 +55,7 @@
               <label for="">Main Unit</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="main_unit" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="main_unit" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
             </div>
           </div>
           <div>
@@ -73,7 +73,7 @@
               <label for="">Selling Price</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="selling_price" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="selling_price" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
             </div>
           </div>
           <div>
@@ -81,7 +81,7 @@
               <label for="">Vat</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="vat" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="vat" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
             </div>
           </div>
           <div>
