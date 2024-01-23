@@ -1,4 +1,5 @@
 <template>
+  HI, THERE!
   <div class="card">
     <Chart type="bar" :data="chartData" :options="chartOptions" />
   </div>
