@@ -31,6 +31,9 @@ const signOut = async () => {
         <Button class="justify-center">
           <NuxtLink to="/quotation"> Quotations </NuxtLink>
         </Button>
+        <Button class="justify-center">
+          <NuxtLink to="/products"> products </NuxtLink>
+        </Button>
       </div>
       <div v-if="!useSupabaseUser().value" class="justify-end mb-10">
         <Button class="justify-center">
