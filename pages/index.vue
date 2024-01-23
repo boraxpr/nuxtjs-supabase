@@ -1,5 +1,4 @@
 <template>
-  HI, THERE!
   <div class="card">
     <Chart type="bar" :data="chartData" :options="chartOptions" />
   </div>
@@ -17,7 +16,7 @@ const chartOptions = ref();
 
 const setChartData = () => {
   return {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri"],
     datasets: [
       {
         label: "Vendor Activity",
