@@ -1,6 +1,6 @@
 <script setup>
 import Button from "primevue/button";
-import "primevue/resources/themes/nano/theme.css";
+
 import "primeicons/primeicons.css";
 
 const signOut = async () => {
@@ -86,3 +86,4 @@ const signOut = async () => {
     </div>
   </div>
 </template>
+<style></style>
