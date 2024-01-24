@@ -68,7 +68,6 @@
 <script setup>
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-import { useHead } from 'vue/head';
 
 const client = useSupabaseClient();
 const products = ref([]);
