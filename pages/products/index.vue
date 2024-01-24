@@ -78,6 +78,10 @@ async function fetchData() {
 const formatCurrency = (value) => {
     return value.toLocaleString();
 };
+useHead({
+  title: "Dashboard",
+})
+
 onMounted(() => {
   fetchData();
 });
