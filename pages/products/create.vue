@@ -148,32 +148,34 @@ const unit = ref("");
 const product_img = ref(File | null);
 
 const insertData = async () => {
-    const Input = {
-        product_name: product_name.value,
-        product_type: product_type.value,
-        product_code: product_code.value,
-        category: category.value,
-        main_unit: main_unit.value,
-        barcode: barcode.value,
-        selling_price: selling_price.value,
-        vat: vat.value,
-        product_description: product_desc.value,
-        income_account: income_account.value,
-        unit: unit.value,
-        // product_img: 
+  const Input = {
+      product_name: product_name.value,
+      product_type: product_type.value,
+      product_code: product_code.value,
+      category: category.value,
+      main_unit: main_unit.value,
+      barcode: barcode.value,
+      selling_price: selling_price.value,
+      vat: vat.value,
+      product_description: product_desc.value,
+      income_account: income_account.value,
+      unit: unit.value,
+      product_img: ""
+  }
+  const { data, error } = await client.from('product').insert([
+      Input,
+  ])
+  .select()
+  if(error === null){
+    if(product_img.value !== 0){
+      uploadImg(data[0].product_number);
     }
-    const { data, error } = await client.from('product').insert([
-        Input,
-    ])
-    .select()
-    if(error === null){
-        uploadImg(data[0].product_number);
-        alert("successfully");
-        navigateTo('/products');
-    }else{
-        alert("error to insert the product to supabase");
-        console.log("error ",error)
-    }
+      alert("successfully");
+      navigateTo('/products');
+  }else{
+      alert("error to insert the product to supabase");
+      console.log("error ",error)
+  }
 }
 
 const onChangeFile = (event) => {
@@ -195,16 +197,6 @@ const uploadImg = async (id) => {
         .eq('product_number', id)
         .select()
     }
-}
-
-const getLinkImg = async () => {
-  const { data, error } = await client
-  .storage
-  .from('product')
-  .createSignedUrl('test.jpg', 60)
-  linkImg.value = data.signedUrl
-  console.log(data)
-  console.log(error)
 }
           
 
