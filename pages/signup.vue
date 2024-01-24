@@ -22,10 +22,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useSupabase } from '@supabase/vue';
-
-const { signUp } = useSupabase();
+const signUp = useSupabaseClient()
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
@@ -37,8 +34,10 @@ const handleSignup = async () => {
     }
 
     // Sign up the user using Supabase authentication
-    const { user, error } = await signUp(email.value, password.value);
-
+    const { user, error } = await signUp.auth.signUp({
+      email: email.value,
+      password: password.value,
+    })
     if (error) {
       throw error;
     }
