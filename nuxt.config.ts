@@ -1,3 +1,4 @@
+import component from "./.nuxt/types/vue-shim";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ["nuxt-primevue", "@nuxtjs/supabase", "@nuxtjs/tailwindcss"],
@@ -15,6 +16,9 @@ export default defineNuxtConfig({
       unstyled: false,
       ripple: true,
       inputStyle: "filled",
+    },
+    components: {
+      include: "*",
     },
     // importPT: { as: "Lara", from: "/assets/presets/lara" },
   },

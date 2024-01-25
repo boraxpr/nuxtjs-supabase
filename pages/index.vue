@@ -16,7 +16,7 @@ const chartOptions = ref();
 
 const setChartData = () => {
   return {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     datasets: [
       {
         label: "Vendor Activity",

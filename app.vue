@@ -15,6 +15,9 @@ const signOut = async () => {
 <template>
   <div class="w-screen h-screen flex justify-evenly">
     <div class="w-1/6 border-r border-black flex flex-col items-center">
+      <button class="btn">
+        <a href=""> </a>
+      </button>
       <div class="h-1/6 flex flex-col justify-center mt-9">
         <img src="~assets/Whitecopy.svg" width="100vw" />
         <div>
@@ -25,20 +28,19 @@ const signOut = async () => {
         </div>
       </div>
       <div class="h-5/6 flex flex-col justify-start space-y-5 mt-8">
-        <Button class="justify-center">
-          <NuxtLink to="/"> Dashboard </NuxtLink>
-        </Button>
-        <Button class="justify-center">
-          <NuxtLink to="/quotation"> Quotations </NuxtLink>
-        </Button>
-        <Button class="justify-center">
-          <NuxtLink to="/products"> products </NuxtLink>
-        </Button>
+        <NuxtLink to="/">
+          <Button class="justify-center"> Dashboard </Button></NuxtLink
+        >
+        <NuxtLink to="/quotation">
+          <Button class="justify-center"> Quotations </Button></NuxtLink
+        ><NuxtLink to="/products">
+          <Button class="justify-center"> products </Button></NuxtLink
+        >
       </div>
       <div v-if="!useSupabaseUser().value" class="justify-end mb-10">
-        <Button class="justify-center">
-          <NuxtLink to="/login">Login</NuxtLink>
-        </Button>
+        <NuxtLink to="/login">
+          <Button class="justify-center"> Login </Button></NuxtLink
+        >
       </div>
       <div v-else class="justify-end mb-10">
         <Button class="justify-center" @click="signOut"> Signout </Button>
