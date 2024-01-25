@@ -6,5 +6,21 @@ useHead({
 </script>
 
 <template>
-  <QuotationList :quotations="data" />
+  <header>
+    <div class="Container grid grid-cols-2 gap-4 mb-4 h-40">
+      <div class="Container flex items-center">
+        <div class="text-5xl">Quotations</div>
+      </div>
+      <div class="Container flex justify-end items-end">
+        <Nuxt-link to="/quotation/create"
+          ><Button label="Create" rounded outlined class="ml-auto"></Button
+        ></Nuxt-link>
+      </div>
+    </div>
+  </header>
+  <div class="space-y-5 flex flex-col">
+    <div>
+      <QuotationList :quotations="data" />
+    </div>
+  </div>
 </template>

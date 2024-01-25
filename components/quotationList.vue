@@ -1,6 +1,11 @@
 <template>
-  <div>
-    <DataTable :value="quotations" tableStyle="min-width: 50rem">
+  <div class="card">
+    <DataTable
+      :value="quotations"
+      showGridlines
+      stripedRows
+      selectionMode="single"
+    >
       <Column field="doc_num" header="Doc Num"></Column>
       <Column field="created_date" header="Created Date"></Column>
       <Column field="customers.name" header="Customer Name"></Column>
@@ -18,5 +23,8 @@
 </template>
 
 <script setup>
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+
 const { quotations } = defineProps(["quotations"]);
 </script>
