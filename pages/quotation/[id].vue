@@ -2,12 +2,10 @@
   <div></div>
 </template>
 
-<script>
-export default {
-  setup() {
-    return {};
-  },
-};
+<script setup>
+useHead({
+  title: `Quotation - ${useRoute().params.id}`,
+});
 </script>
 
-<style lang="scss" scoped></style>
+<style></style>
