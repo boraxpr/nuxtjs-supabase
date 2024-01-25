@@ -1,13 +1,16 @@
 <template>
+
   <div class="signup-container">
+    
     <div class="signup-form">
-      <h2>Sign Up</h2>
       <form @submit.prevent="handleSignup">
         <div class="input-group">
+          
           <label for="email">Email:</label>
           <input type="email" v-model="email" required />
         </div>
         <div class="input-group">
+          
           <label for="password">Password:</label>
           <input type="password" v-model="password" required />
         </div>
@@ -15,7 +18,25 @@
           <label for="confirmPassword">Confirm Password:</label>
           <input type="password" v-model="confirmPassword" required />
         </div>
+        
         <button type="submit">Sign Up</button>
+        <Message
+    v-if="emailWarning"
+    severity="warn"
+    @close="() => (emailWarning = false)"
+    >{{ emailWarningMsg }}</Message
+  >
+  <Message
+    v-if="passwordWarning"
+    severity="warn"
+    @close="() => (passwordWarning = false)"
+    >{{ passwordWarningMsg }}</Message
+  >
+  <Message
+    v-if="passwordMismatch"
+    severity="warn"
+    @close="() => (passwordMismatch = false)"
+  >Passwords do not match.</Message>
       </form>
     </div>
   </div>
@@ -26,13 +47,33 @@ const signUp = useSupabaseClient()
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
+const passwordMismatch = ref(false);
+const loading = ref(false);
+const emailWarning = ref(false);
+const emailWarningMsg = ref(
+  "The email address you entered is not in a valid format. Please check and try again."
+);
+const passwordWarning = ref(false);
+const passwordWarningMsg = ref(
+  "The password you entered is not in a valid format. Please check and try again."
+);
 
 const handleSignup = async () => {
   try {
     if (password.value !== confirmPassword.value) {
+      passwordMismatch.value = true;
       throw new Error('Passwords do not match');
     }
-
+    if (!isEmailValid(email.value)) {
+    emailWarning.value = true;
+    loading.value = false;
+    throw new Error('Email is not valid');
+    }
+    if (!isPasswordComplexityValid(password.value)) {
+    passwordWarning.value = true;
+    loading.value = false;
+    throw new Error('Password is not valid');
+    }
     // Sign up the user using Supabase authentication
     const { user, error } = await signUp.auth.signUp({
       email: email.value,
@@ -52,15 +93,13 @@ const handleSignup = async () => {
 </script>
 
 <style scoped>
-.signup-container {
+
+
+.signup-form {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(to bottom, #2e2e2e, #1c1c1c);
-}
-
-.signup-form {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
