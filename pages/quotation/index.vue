@@ -1,8 +1,8 @@
 <script setup>
 const { data } = await useFetch("/api/get/quotations");
 useHead({
-  title: "Dashboard",
-})
+  title: "Quotation - List",
+});
 </script>
 
 <template>

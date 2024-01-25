@@ -1,7 +1,7 @@
 <template>
   <div>
-    <DataTable :value="quotations" :show-gridlines="true">
-      <Column field="doc_num" header="#"></Column>
+    <DataTable :value="quotations" tableStyle="min-width: 50rem">
+      <Column field="doc_num" header="Doc Num"></Column>
       <Column field="created_date" header="Created Date"></Column>
       <Column field="customers.name" header="Customer Name"></Column>
       <Column field="status" header="Status"></Column>

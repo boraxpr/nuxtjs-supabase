@@ -12,17 +12,23 @@
           <div>
             <!-- ฺButtons -->
             <div class="grid grid-cols-3 gap-2 print:hidden">
-              <Button>TEST</Button>
-              <Button />
+              <Button label="Success" severity="success" raised />
             </div>
           </div>
         </div>
         <div
-          class="w-9/12 print:w-11/12 mx-auto p-4 m-2 bg-white shadow-md rounded-md border"
+          class="w-9/12 print:w-11/12 mx-auto p-4 m-2 shadow-md rounded-md border"
         >
           <div class="m-5 mt-0 flex flex-row justify-between space-x-5">
             <div class="w-1/2">
-              <div class="mb-4 w-1/2 space-y-2"></div>
+              <div class="mb-4 w-1/2 space-y-2">
+                <InputGroup>
+                  <InputGroupAddon>
+                    <i class="pi pi-user"></i>
+                  </InputGroupAddon>
+                  <InputText placeholder="Username" />
+                </InputGroup>
+              </div>
             </div>
             <div class="w-[40%]">
               <div class="mb-4 space-y-2">
@@ -80,4 +86,8 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+useHead({
+  title: "Quotation - Create",
+});
+</script>

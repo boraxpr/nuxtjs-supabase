@@ -1,10 +1,22 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ["nuxt-primevue", "@nuxtjs/supabase", "@nuxtjs/tailwindcss"],
-  css: ["/assets/css/main.css"],
+  css: [
+    "@/assets/css/tailwind.css",
+    "@/assets/css/main.css",
+    "primeicons/primeicons.css",
+    "primevue/resources/themes/aura-light-green/theme.css",
+  ],
+  // https://primevue.org/theming/
   primevue: {
-    unstyled: true,
-    importPT: { as: "Lara", from: "/assets/presets/lara" },
+    usePrimevue: true,
+    cssLayerOrder: "tailwind-base, tailwind-utilities, primevue",
+    options: {
+      unstyled: false,
+      ripple: true,
+      inputStyle: "filled",
+    },
+    // importPT: { as: "Lara", from: "/assets/presets/lara" },
   },
   supabase: {
     redirectOptions: {

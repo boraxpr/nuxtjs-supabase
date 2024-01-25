@@ -1,48 +1,19 @@
-# Nuxt Example
+# Prerequisites
 
-Deploy your [Nuxt](https://nuxt.com) project to Vercel with zero configuration.
+1. .env file with SUPABASE_URL and SUPABASE_KEY
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/vercel/tree/main/examples/nuxtjs&template=nuxtjs)
+2. NPM package manager and NodeJS (Please refer to <https://docs.npmjs.com/downloading-and-installing-node-js-and-npm>)
 
-_Live Example: https://nuxtjs-template.vercel.app_
-
-Look at the [Nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
-
-## Setup
-
-Make sure to install the dependencies:
+3. Install the dependencies
 
 ```bash
-# yarn
-yarn
-
-# npm
 npm install
-
-# pnpm
-pnpm install --shamefully-hoist
 ```
 
-## Development Server
-
-Start the development server on http://localhost:3000
+4. Get Database Schemas from Supabase
 
 ```bash
-npm run dev
+npm run update-types
 ```
 
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Checkout the [deployment documentation](https://nuxt.com/docs/getting-started/deployment#presets) for more information.
+5t

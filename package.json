@@ -28,6 +28,6 @@
     "chart.js": "^4.4.1",
     "nuxt-primevue": "^0.2.2",
     "primeicons": "^6.0.1",
-    "primevue": "^3.46.0"
+    "primevue": "^3.47.0"
   }
 }

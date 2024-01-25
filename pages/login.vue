@@ -69,11 +69,11 @@ const handleMessageClose = () => {
       />
     </div>
 
-    <button @click="signInWithPassword" :disabled="loading.value">
+    <Button @click="signInWithPassword" :disabled="loading.value">
       <div v-if="loading">
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
       </div>
       <div v-else>SIGN IN</div>
-    </button>
+    </Button>
   </div>
 </template>

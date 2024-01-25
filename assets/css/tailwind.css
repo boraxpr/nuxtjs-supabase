@@ -1,0 +1,12 @@
+/* @layer tailwind-base, primevue, tailwind-utilities; */
+/* https://primevue.org/guides/csslayer/ */
+/* Wrap the base and utilities in separate layers */
+/* In nuxt.config.ts > primevue > cssLayerOrder: "tailwind-base, primevue, tailwind-utilities" Make sure primevue is after base to overwrite base*/
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
