@@ -12,9 +12,10 @@ useHead({
         <div class="text-5xl">Quotations</div>
       </div>
       <div class="Container flex justify-end items-end">
-        <Nuxt-link to="/quotation/create"
-          ><Button label="Create" rounded outlined class="ml-auto"></Button
-        ></Nuxt-link>
+        
+          >
+          <Button label="Create" rounded outlined class="ml-auto"></Button
+        >
       </div>
     </div>
   </header>

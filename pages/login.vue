@@ -68,12 +68,16 @@ const handleMessageClose = () => {
         required
       />
     </div>
-
-    <Button @click="signInWithPassword" :disabled="loading.value">
-      <div v-if="loading">
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-      </div>
-      <div v-else>SIGN IN</div>
-    </Button>
+    <div class="flex flex-row gap-2 justify-center">
+      <Button @click="signInWithPassword" :disabled="loading">
+        <div v-if="loading">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        </div>
+        <div v-else>SIGN IN</div>
+      </Button>
+      <Button @click="() => navigateTo('/signup')">
+        <div>REGISTER</div>
+      </Button>
+    </div>
   </div>
 </template>
