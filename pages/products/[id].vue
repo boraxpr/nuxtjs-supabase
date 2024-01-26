@@ -94,7 +94,7 @@
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-3 gap-4 mb-4">
+        <div class="grid grid-cols-3 gap-4 mb-4" v-if="product_img !== '' && isEditFile === false">
           <div>
             <div>
               <label for="">Income Account</label>
@@ -120,19 +120,81 @@
               </button>
             </div>
             <div class="Container mt-2">
-              <div v-if="product_img !== '' && isEditFile === false">
+              <div>
                 <input v-model="product_img" type="text" :disabled="true" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg">
               </div>
-              <div v-else>
-                <input type="file" @change="onChangeFile">
-              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <div>
+              <label for="">Income Account</label>
+            </div>
+            <div class="Container mt-2">
+              <input v-model="income_account" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+            </div>
+          </div>
+          <div>
+            <div>
+              <label for="">Unit</label>
+            </div>
+            <div class="Container mt-2">
+              <input v-model="unit" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+            </div>
+          </div>
+        </div>
+        <div>
+            <div>
+              <label for="">Product Img</label>
+              <button @click="getLinkImg" class="ml-2" v-if="product_img !== '' && isEditFile === false">
+                <span v-if="showImg" class="underline">hide</span> 
+                <span v-else class="underline">show</span>
+              </button>
+            </div>
+            <div class="Container mt-2">
+                <div class="card">
+                  <Toast />
+                  <FileUpload :multiple="false" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
+                      <template #header="{ chooseCallback }">
+                          <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
+                              <div class="flex gap-2">
+                                  <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined></Button>
+                              </div>
+                          </div>
+                      </template>
+                      <template #content="{ files, removeFileCallback }">
+                          <div>
+                              <div class="flex flex-wrap">
+                                  <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="card m-0 px-6 flex flex-column border-1 surface-border align-items-center gap-3">
+                                      <div>
+                                          <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                                      </div>
+                                      <span class="font-semibold">{{ file.name }}</span>
+                                      <div>{{ formatSize(file.size) }}</div>
+                                      <Button icon="pi pi-times" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" outlined rounded  severity="danger" />
+                                  </div>
+                              </div>
+                          </div>
+                      </template>
+                      <template #empty>
+                          <div class="flex justify-center w-full">
+                              <div class="text-center">
+                                <i class="pi pi-cloud-upload border-2 rounded-full p-5 text-8xl text-400 border-400" />
+                                <p class="mt-4 mb-0">Drag and drop files to here to upload.</p>
+                              </div>
+                          </div>
+                      </template>
+                  </FileUpload>
+                </div>
             </div>
           </div>
         </div>
         <div v-if="product_img !== '' && isEditFile === false">
           <div v-if="showImg" class="flex justify-center">
-            <div class="w-48 h-48 flex items-start gap-2">
-              <img :src="linkImg" alt="">
+            <div class="flex items-start gap-2">
+              <img :src="linkImg" alt="" class="h-48">
               <button @click="deleteFileBtn" class="text-red-400">x</button>
             </div>
           </div>
@@ -169,10 +231,16 @@ const product_desc = ref("");
 const income_account = ref("");
 const unit = ref("");
 const product_img = ref("");
-const product_img_old = ref("");
+const product_img_old = ref('');
 const product = ref();
 const titleName = ref("");
-const file = ref(File | null);
+// const file = ref(File | null);
+
+const primevue = usePrimeVue();
+
+const totalSize = ref(0);
+const totalSizePercent = ref(0);
+const files = ref([]);
 
 const linkImg = ref("");
 const showImg = ref(false);
@@ -198,17 +266,12 @@ async function fetchData() {
   product_img.value = product.value.product_img;
 }
 
-const onChangeFile = (event) => {
-  file.value = event.target.files[0];
-  isEditFile.value = true;
-}
-
 const save = async () => {
   if(product_img_old.value !== ""){
     deleteFile();
   }
-  if(file.value !== 0){
-    product_img.value = id.value+"/"+file.value.name;
+  if(files.value.length !== 0){
+    product_img.value = id.value+"/"+files.value[0].name;
     uploadFile();
   }
   update();
@@ -246,21 +309,22 @@ const update = async () => {
 const uploadFile = async () => {
   const { data, error } = await client.storage
     .from('product')
-    .upload(id.value+"/"+file.value.name, file.value)
+    .upload(id.value+"/"+files.value[0].name, files.value[0])
 }
 
 const deleteFile = async () => {
   const { data, error } = await client
     .storage
     .from('product')
-    .remove(['11/CartrackLogo.png'])
+    .remove([product_img_old.value])
 
-    console.log("data ",data);
-    console.log("error ",error);
+    if(error != null){
+      console.log("error ",error)
+    }
 }
 
 const deleteFileBtn = () => {
-  product_img_old.value = "'"+product_img.value+"'";
+  product_img_old.value = product_img.value;
   product_img.value = "";
   isEditFile.value = true;
 }
@@ -281,6 +345,37 @@ const getLinkImg = async () => {
     }
   }
 }
+
+const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
+    removeFileCallback(index);
+    totalSize.value -= parseInt(formatSize(file.size));
+    totalSizePercent.value = totalSize.value / 10;
+    // files.value === null
+    files.value === 0
+};
+
+const onSelectedFiles = (event) => {
+    files.value = event.files;
+    files.value.forEach((file) => {
+    totalSize.value += parseInt(formatSize(file.size));
+    isEditFile.value = true;
+    });
+};
+
+const formatSize = (bytes) => {
+    const k = 1024;
+    const dm = 3;
+    const sizes = primevue.config.locale.fileSizeTypes;
+
+    if (bytes === 0) {
+        return `0 ${sizes[0]}`;
+    }
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+
+    return `${formattedSize} ${sizes[i]}`;
+};
 
 onMounted(() => {
   fetchData();

@@ -82,7 +82,7 @@ const signOut = async () => {
           </div>
         </div>
       </div>
-      <div class="mt-10">
+      <div>
         <NuxtPage />
       </div>
     </div>

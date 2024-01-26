@@ -90,7 +90,7 @@
                   </div>
                 </div>
               </div>
-              <div class="grid grid-cols-3 gap-4 mb-4">
+              <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <div>
                     <label for="">Income Account</label>
@@ -107,15 +107,49 @@
                     <input v-model="unit" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
                   </div>
                 </div>
-                <div>
+              </div>
+              <div>
                   <div>
                     <label for="">Product Img</label>
                   </div>
                   <div class="Container mt-2">
-                    <input type="file" @change="onChangeFile">
+                    <!-- <input type="file" @change="onChangeFile"> -->
+                    <div class="card">
+                      <Toast />
+                      <FileUpload :multiple="false" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
+                          <template #header="{ chooseCallback }">
+                              <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
+                                  <div class="flex gap-2">
+                                      <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined></Button>
+                                  </div>
+                              </div>
+                          </template>
+                          <template #content="{ files, removeFileCallback }">
+                              <div>
+                                  <div class="flex flex-wrap">
+                                      <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="card m-0 px-6 flex flex-column border-1 surface-border align-items-center gap-3">
+                                          <div>
+                                              <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                                          </div>
+                                          <span class="font-semibold">{{ file.name }}</span>
+                                          <div>{{ formatSize(file.size) }}</div>
+                                          <Button icon="pi pi-times" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" outlined rounded  severity="danger" />
+                                      </div>
+                                  </div>
+                              </div>
+                          </template>
+                          <template #empty>
+                              <div class="flex justify-center w-full">
+                                  <div class="text-center">
+                                    <i class="pi pi-cloud-upload border-2 rounded-full p-5 text-8xl text-400 border-400" />
+                                    <p class="mt-4 mb-0">Drag and drop files to here to upload.</p>
+                                  </div>
+                              </div>
+                          </template>
+                      </FileUpload>
+                    </div>
                   </div>
                 </div>
-              </div>
             </div>
             <div class="flex justify-end mt-7 gap-3">
               <div>
@@ -145,9 +179,16 @@ const vat = ref("");
 const product_desc = ref("");
 const income_account = ref("");
 const unit = ref("");
-const product_img = ref(File | null);
+// const product_img = ref(File | null);
+
+const primevue = usePrimeVue();
+
+const totalSize = ref(0);
+const totalSizePercent = ref(0);
+const files = ref([]);
 
 const insertData = async () => {
+  console.log("files: ",files.value[0]);
   const Input = {
       product_name: product_name.value,
       product_type: product_type.value,
@@ -167,7 +208,7 @@ const insertData = async () => {
   ])
   .select()
   if(error === null){
-    if(product_img.value !== 0){
+    if(files.value[0] !== 0){
       uploadImg(data[0].product_number);
     }
       alert("successfully");
@@ -178,27 +219,55 @@ const insertData = async () => {
   }
 }
 
-const onChangeFile = (event) => {
-  product_img.value = event.target.files[0] 
-}
+// const onChangeFile = (event) => {
+//   product_img.value = event.target.files[0] 
+// }
 
 const uploadImg = async (id) => {
-  
   const { data, error } = await client.storage
     .from('product')
-    .upload(id+"/"+product_img.value.name, product_img.value)
+    .upload(id+"/"+files.value[0].name, files.value[0])
 
     if(error){
       console.log(error)
     }else{
       const { data, error } = await client
         .from('product')
-        .update({ product_img: id+"/"+product_img.value.name })
+        .update({ product_img: id+"/"+files.value[0].name })
         .eq('product_number', id)
         .select()
     }
 }
-          
+
+const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
+    console.log("onRemoveTemplatingFile");
+    removeFileCallback(index);
+    totalSize.value -= parseInt(formatSize(file.size));
+    totalSizePercent.value = totalSize.value / 10;
+    files.value === 0
+};
+
+const onSelectedFiles = (event) => {
+    files.value = event.files;
+    files.value.forEach((file) => {
+    totalSize.value += parseInt(formatSize(file.size));
+    });
+};
+
+const formatSize = (bytes) => {
+    const k = 1024;
+    const dm = 3;
+    const sizes = primevue.config.locale.fileSizeTypes;
+
+    if (bytes === 0) {
+        return `0 ${sizes[0]}`;
+    }
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+
+    return `${formattedSize} ${sizes[i]}`;
+};
 
 </script>
 
