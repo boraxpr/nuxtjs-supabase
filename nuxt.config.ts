@@ -1,4 +1,3 @@
-import component from "./.nuxt/types/vue-shim";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ["nuxt-primevue", "@nuxtjs/supabase", "@nuxtjs/tailwindcss", "@nuxt/image"],
