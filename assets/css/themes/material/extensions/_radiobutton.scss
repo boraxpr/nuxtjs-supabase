@@ -1,0 +1,48 @@
+.p-radiobutton {
+    border-radius: 50%;
+    transition: box-shadow $transitionDuration;
+
+    &:not(.p-disabled) {
+        &:has(.p-radiobutton-input:hover) {
+            box-shadow: 0 0 1px 10px rgba($overlayColor, .04);
+
+            .p-radiobutton-box {
+                border: $radiobuttonBorder;
+            }
+
+            &.p-highlight {
+                box-shadow: 0 0 1px 10px rgba($radiobuttonActiveBorderColor, .04);
+            }
+        }
+
+        &:has(.p-radiobutton-input:focus-visible) {
+            box-shadow: 0 0 1px 10px rgba($overlayColor, .12);
+
+            .p-radiobutton-box {
+                border: $radiobuttonBorder;
+            }
+
+            &.p-highlight {
+                box-shadow: 0 0 1px 10px rgba($radiobuttonActiveBorderColor, .12);
+
+                .p-radiobutton-box {
+                    border-color: $radiobuttonActiveBorderColor;
+                }
+            }
+        }
+    }
+}
+
+.p-input-filled {
+    .p-radiobutton {
+        .p-radiobutton-box {
+            background-color: $inputBg;
+        }
+
+        &:not(.p-disabled) {
+            &:has(.p-radiobutton-input:hover) {
+                background-color: $inputBg;
+            }
+        }
+    }
+}

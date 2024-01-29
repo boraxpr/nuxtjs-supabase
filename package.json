@@ -17,6 +17,7 @@
     "happy-dom": "^13.2.1",
     "nuxt": "^3.8.2",
     "playwright-core": "^1.41.1",
+    "sass": "^1.70.0",
     "vitest": "^1.2.1",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
