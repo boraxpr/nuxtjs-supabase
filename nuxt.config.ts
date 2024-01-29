@@ -4,9 +4,9 @@ export default defineNuxtConfig({
   modules: ["nuxt-primevue", "@nuxtjs/supabase", "@nuxtjs/tailwindcss"],
   css: [
     "@/assets/css/tailwind.css",
-    "@/assets/css/main.css",
     "primeicons/primeicons.css",
-    "primevue/resources/themes/aura-light-green/theme.css",
+    // "primevue/resources/themes/saga-orange/theme.css",
+    "@/assets/css/themes/mytheme/theme.scss",
   ],
   // https://primevue.org/theming/
   primevue: {
