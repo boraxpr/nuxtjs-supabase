@@ -1,5 +1,5 @@
 <script setup>
-const { data } = await useFetch("/api/supabase/quotations");
+const { data } = await useFetch("/api/get/quotations");
 useHead({
   title: "Quotation - List",
 });
@@ -12,13 +12,10 @@ useHead({
         <div class="text-5xl">Quotations</div>
       </div>
       <div class="Container flex justify-end items-end">
-        <Button
-          label="Create"
-          rounded
-          outlined
-          class="ml-auto"
-          :onClick="() => navigateTo('/quotation/create')"
-        ></Button>
+        
+          >
+          <Button label="Create" rounded outlined class="ml-auto"></Button
+        >
       </div>
     </div>
   </header>
