@@ -83,9 +83,9 @@ const signOut = async () => {
           </div>
         </div>
       </div>
-      <div>
-        <NuxtPage />
-      </div>
+      <div> -->
+  <NuxtPage />
+  <!-- </div>
     </div>
   </div> -->
 </template>
