@@ -57,7 +57,9 @@ const passwordWarning = ref(false);
 const passwordWarningMsg = ref(
   "The password you entered is not in a valid format. Please check and try again."
 );
-
+useHead({
+  title: "Signup",
+});
 const handleSignup = async () => {
   try {
     if (password.value !== confirmPassword.value) {
