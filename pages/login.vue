@@ -39,6 +39,24 @@ const handleMessageClose = () => {
   emailWarning.value = false;
 };
 
+
+const signInWithOAuth = async (provider) => {
+  loading.value = true;
+  const { error, data } = await supabase.auth.signInWithOAuth({
+    provider
+  });
+
+  if (error) {
+    console.error(`Error signing in with ${provider}:`, error.message);
+    loading.value = false;
+  } 
+  if (data) {
+    // Navigate to the confirmation page
+    navigateTo({ path: "/confirm" });
+  }
+  
+
+};
 // definePageMeta({
 //   layout: "loginlayout",
 // });
@@ -127,16 +145,25 @@ const handleMessageClose = () => {
           <div class="w-28 h-[1px] border-b-2"></div>
         </div>
         <div class="flex gap-4 justify-center">
-          <Button
-            class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
-            ><img src="/assets/img/googleLogo.png" />
-            Google
-          </Button>
-          <Button
-            class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
-            ><img src="/assets/img/facebookLogo.png" />
-            Facebook
-          </Button>
+          <!-- Button for signing in with Google -->
+        <Button
+          @click="() => signInWithOAuth('google')"
+          :disabled="loading"
+          class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
+        >
+          <img src="/assets/img/googleLogo.png" />
+          Google
+        </Button>
+
+        <!-- Button for signing in with Facebook -->
+        <Button
+          @click="() => signInWithOAuth('facebook')"
+          :disabled="loading"
+          class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
+        >
+          <img src="/assets/img/facebookLogo.png" />
+          Facebook
+        </Button>
           <Button
             class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
             ><img src="/assets/img/lineLogo.png" />
