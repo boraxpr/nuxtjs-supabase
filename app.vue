@@ -1,7 +1,7 @@
 <script setup>
 import Button from "primevue/button";
 
-import "primeicons/primeicons.css";
+// import "primeicons/primeicons.css";
 
 const signOut = async () => {
   try {
@@ -84,7 +84,7 @@ const signOut = async () => {
         </div>
       </div>
       <div> -->
-  <NuxtPage />
+
   <!-- </div>
     </div>
   </div> -->
