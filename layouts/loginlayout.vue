@@ -6,7 +6,10 @@
     <div
       class="absolute flex w-full h-full justify-center items-center top-0 bg-transparent"
     >
-      <slot />
+      <div class="flex flex-col bg-white rounded-3xl p-14">
+        <img src="assets/img/SphereLogo.png" class="w-96 h-14 object-cover" />
+        <slot class="flex flex-col"></slot>
+      </div>
     </div>
   </section>
 </template>

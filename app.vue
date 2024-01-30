@@ -13,7 +13,9 @@ const signOut = async () => {
 };
 </script>
 <template>
-  <NuxtPage></NuxtPage>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
   <!-- <div class="w-screen h-screen flex justify-evenly">
     <div class="w-1/6 border-r border-black flex flex-col items-center">
       <button class="btn">
