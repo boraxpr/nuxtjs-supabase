@@ -1,4 +1,6 @@
 <script setup>
+import Divider from "primevue/divider";
+
 const supabase = useSupabaseClient();
 const email = ref("");
 const password = ref(""); // Add a separate variable for the password
@@ -32,6 +34,7 @@ const signInWithPassword = async () => {
     return navigateTo({ path: "/confirm" });
   }
 };
+
 const handleMessageClose = () => {
   emailWarning.value = false;
 };
@@ -43,7 +46,7 @@ const handleMessageClose = () => {
 
 <template>
   <NuxtLayout name="loginlayout">
-    <div class="flex flex-col bg-white rounded-lg p-14">
+    <div class="flex flex-col bg-white rounded-3xl p-14">
       <img src="assets/img/SphereLogo.png" class="w-96 h-14 object-cover" />
       <h1 class="mt-10 text-center font-semibold">Log in to your account</h1>
       <div class="mt-6 space-y-5">
@@ -58,6 +61,7 @@ const handleMessageClose = () => {
               height="38"
               viewBox="0 0 37 38"
               fill="none"
+              class="svg-login ml-4"
             >
               <g clip-path="url(#clip0_333_370)">
                 <path
@@ -80,39 +84,105 @@ const handleMessageClose = () => {
               id="email"
               v-model="email"
               aria-describedby="email-help"
-              class="border border-black w-full"
+              class="border w-full border-b-2 border-t-0 border-l-0 border-r-0 focus:shadow-none pl-20"
               required
               size="large"
+              placeholder="Email"
             />
           </span>
+          <div class="flex flex-col items-center">
+            <Message
+              v-if="emailWarning"
+              severity="warn"
+              @close="() => (emailWarning = false)"
+              >{{ emailWarningMsg }}</Message
+            >
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center">
+          <div class="w-full">
+            <span class="p-input-icon-left w-full flex items-center">
+              <img
+                src="/assets/img/padlock.png"
+                class="absolute left-2 ml-4 mb-2"
+              />
+              <InputText
+                id="password"
+                v-model="password"
+                aria-describedby="password-help"
+                class="border w-full border-b-2 border-t-0 border-l-0 border-r-0 focus:shadow-none pl-20"
+                type="password"
+                size="large"
+                required
+                placeholder="Password"
+              />
+            </span>
+          </div>
+        </div>
+
+        <div class="flex gap-6 items-center justify-center">
+          <div class="w-28 h-[1px] border-b-2"></div>
+          <p class="text-lg font-semibold">or continue with</p>
+          <div class="w-28 h-[1px] border-b-2"></div>
+        </div>
+        <div class="flex gap-4 justify-center">
+          <Button
+            class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
+            ><img src="/assets/img/googleLogo.png" />
+            Google
+          </Button>
+          <Button
+            class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
+            ><img src="/assets/img/facebookLogo.png" />
+            Facebook
+          </Button>
+          <Button
+            class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
+            ><img src="/assets/img/lineLogo.png" />
+            Line
+          </Button>
         </div>
       </div>
-      <div class="flex gap-2 flex-col items-center">
-        <Message
-          v-if="emailWarning"
-          severity="warn"
-          @close="() => (emailWarning = false)"
-          >{{ emailWarningMsg }}</Message
+      <div class="flex justify-between mt-6">
+        <div class="flex items-center gap-2">
+          <Checkbox v-model="checked" :binary="true" />
+          <p class="font-bold text-lg">Remember me</p>
+        </div>
+        <NuxtLink
+          to="/"
+          target="_blank"
+          rel="noopener"
+          class="text-blue-600 visited:text-blue-600 text-lg font-semibold hover:underline"
+        >
+          Forgot Password ?</NuxtLink
         >
       </div>
-      <div class="flex flex-col gap-2 items-center">
-        <label for="password">Password</label>
-        <InputText
-          id="password"
-          v-model="password"
-          aria-describedby="password-help"
-          class="border border-black"
-          type="password"
-          required
-        />
-      </div>
 
-      <Button @click="signInWithPassword" :disabled="loading.value">
+      <Button
+        @click="signInWithPassword"
+        :disabled="loading.value"
+        class="my-10 text-center rounded-2xl h-16 justify-center"
+      >
         <div v-if="loading">
           <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
         </div>
-        <div v-else>SIGN IN</div>
+        <div v-else class="text-lg font-bold">SIGN IN</div>
       </Button>
+      <div class="flex justify-center gap-6">
+        <p class="font-bold text-lg">Don't have an account?</p>
+        <NuxtLink
+          to="/signup"
+          class="text-blue-600 visited:text-blue-600 text-lg font-semibold hover:underline"
+          >Create an account</NuxtLink
+        >
+      </div>
     </div>
   </NuxtLayout>
 </template>
+
+<style>
+.p-input-icon-left > svg {
+  top: 25%;
+}
+</style>

@@ -3,15 +3,15 @@ import component from "./.nuxt/types/vue-shim";
 export default defineNuxtConfig({
   modules: ["nuxt-primevue", "@nuxtjs/supabase", "@nuxtjs/tailwindcss"],
   css: [
-    "@/assets/css/tailwind.css",
     "primeicons/primeicons.css",
-    // "primevue/resources/themes/saga-orange/theme.css",
+    // "primevue/resources/themes/saga-orange/theme.css", .
     "@/assets/css/themes/mytheme/theme.scss",
+    "@/assets/css/tailwind.css",
   ],
   // https://primevue.org/theming/
   primevue: {
     usePrimevue: true,
-    cssLayerOrder: "tailwind-base, tailwind-utilities, primevue",
+    cssLayerOrder: "tailwind-base,primevue ,tailwind-utilities",
     options: {
       unstyled: false,
       ripple: true,
