@@ -25,7 +25,7 @@ const props = defineProps({
           Page not found
         </p>
         <div class="mt-10 flex items-center justify-center gap-x-6">
-          <Button type="button" class="inline-flex items-center">
+          <Button type="button" class="inline-flex items-center" @click="()=>navigateTo("/")">
             <!----><span class="">Go back home</span
             ><!---->
           </Button>
