@@ -12,8 +12,13 @@ useHead({
         <div class="text-5xl">Quotations</div>
       </div>
       <div class="Container flex justify-end items-end">
-        >
-        <Button label="Create" rounded outlined class="ml-auto"></Button>
+        <Button
+          label="Create"
+          rounded
+          outlined
+          class="ml-auto"
+          :onclick="() => navigateTo('/quotation/create')"
+        ></Button>
       </div>
     </div>
   </header>
