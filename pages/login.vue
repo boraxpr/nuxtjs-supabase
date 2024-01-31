@@ -39,22 +39,37 @@ const handleMessageClose = () => {
   emailWarning.value = false;
 };
 
+// const signInWithOAuth = async (provider) => {
+//   loading.value = true;
+//   const { data, error } = await supabase.auth.signInWithOAuth({
+//     provider
+//   });
 
-const signInWithOAuth = async (provider) => {
-  loading.value = true;
-  const { error, data } = await supabase.auth.signInWithOAuth({
-    provider
-  });
-
-  if (error) {
-    console.error(`Error signing in with ${provider}:`, error.message);
-    loading.value = false;
-  } 
-  if (data) {
-    // Navigate to the confirmation page
-    navigateTo({ path: "/confirm" });
-  }
+//   if (error) {
+//     console.error(`Error signing in with ${provider}:`, error.message);
+//     loading.value = false;
+//   } 
+//   if (useSupabaseUser().value) {
+//     // Navigate to the confirmation page
+//     return navigateTo({ path: "/confirm" });
+//   }
   
+const signInWithOAuth = async (provider) => {
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: provider,
+      options: {
+        redirectTo: 'http://localhost:3000/confirm', // Use absolute URL
+      },
+    });
+
+    if (error) {
+      console.error(`Error signing in with ${provider}:`, error.message);
+    }
+  } catch (error) {
+    console.error('Error during OAuth sign-in:', error.message);
+  }
+
 
 };
 // definePageMeta({
@@ -164,6 +179,7 @@ const signInWithOAuth = async (provider) => {
           <img src="/assets/img/facebookLogo.png" />
           Facebook
         </Button>
+        
           <Button
             class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
             ><img src="/assets/img/lineLogo.png" />
