@@ -7,7 +7,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "update-types": "npx supabase gen types typescript --project-id trnzctneontojtkdkmxc > .nuxt/types/database.types.ts"
+    "update-types": "npx supabase gen types typescript --project-id trnzctneontojtkdkmxc > types/database.types.ts"
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.0.3",
@@ -28,6 +28,7 @@
     "chart.js": "^4.4.1",
     "nuxt-primevue": "^0.2.2",
     "primeicons": "^6.0.1",
-    "primevue": "^3.47.0"
+    "primevue": "^3.46.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
   }
 }
