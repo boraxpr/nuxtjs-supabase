@@ -6,7 +6,9 @@
     <div
       class="absolute flex w-full h-full justify-center items-center top-0 bg-transparent"
     >
-      <div class="flex flex-col bg-white rounded-3xl p-14 max-w-xl">
+      <div
+        class="flex flex-col bg-white rounded-3xl p-14 max-w-xl min-w-[589px]"
+      >
         <div class="flex justify-center">
           <img src="assets/img/SphereLogo.png" class="w-96 h-14 object-cover" />
         </div>

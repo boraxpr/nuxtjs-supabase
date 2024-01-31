@@ -147,8 +147,7 @@ definePageMeta({
       <p class="font-bold text-lg">Remember me</p>
     </div>
     <NuxtLink
-      to="/"
-      target="_blank"
+      to="/resetpassword"
       rel="noopener"
       class="text-blue-600 visited:text-blue-600 text-lg font-semibold hover:underline"
     >
