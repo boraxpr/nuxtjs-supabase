@@ -14,6 +14,4 @@ npm install
 
 ```bash
 npm run update-types
-```
-
-5t
+``
