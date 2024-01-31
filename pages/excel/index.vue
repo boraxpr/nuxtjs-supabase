@@ -12,12 +12,15 @@
 </template>
 
 <script setup>
+import csv_to_json from "~/utils/csv_to_json";
+
 const toast = useToast();
 const file = ref();
 const records = ref();
 const onSelect = async (event) => {
-  file.value = event.files;
-  const { recordData } = await excelImport(file.value);
+  file.value = event.files[0];
+  console.log("HEY " + file.value);
+  const { recordData } = await csv_to_json(file.value);
   toast.add({
     severity: "info",
     summary: "Success",

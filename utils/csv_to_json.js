@@ -1,7 +1,7 @@
 export default async function (csvFile) {
   const reader = new FileReader();
   const csvString = reader.readAsText(csvFile);
-
+  console.log("csvString " + csvString);
   const records = csvString.split("\n");
   const header = records[0].split(",");
 
