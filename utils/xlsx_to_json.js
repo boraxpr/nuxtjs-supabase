@@ -1,5 +1,7 @@
-import * as XLSX from ''
+import * as XLSX from "xlsx";
 export default async function (xlsxFile) {
-  const reader = new FileReader();
-
+  const workbook = XLSX.read(xlsxFile);
+  const sheetName = workbook.SheetNames;
+  const sheet = workbook.Sheets[sheetName];
+  return XLSX.utils.sheet_add_json(sheet);
 }
