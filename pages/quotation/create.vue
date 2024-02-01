@@ -71,7 +71,14 @@
               />
             </svg>
           </Button>
-          <Button label="Close" severity="danger" raised outlined rounded />
+          <Button
+            label="Close"
+            severity="danger"
+            raised
+            outlined
+            rounded
+            :onclick="() => navigateTo('/quotation')"
+          />
           <Button label="Save" severity="success" raised outlined rounded />
         </div>
       </div>
@@ -81,7 +88,7 @@
         <div class="m-5 mt-0 flex flex-row justify-between space-x-5">
           <div class="w-1/2">
             <div class="mb-4 w-1/2 space-y-2">
-              <Dropdown> </Dropdown>
+              <Dropdown v-model="selectedCustomer"> </Dropdown>
             </div>
           </div>
           <div class="w-[40%]">
@@ -143,6 +150,7 @@
 useHead({
   title: "Quotation - Create",
 });
+const selectedCustomer = ref();
 </script>
 <style scoped>
 .line-file1-a {
