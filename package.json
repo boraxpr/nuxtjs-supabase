@@ -28,6 +28,7 @@
     "@nuxtjs/svg": "^0.4.1",
     "@supabase/supabase-js": "^2.39.3",
     "chart.js": "^4.4.1",
+    "flowbite": "^2.2.1",
     "nuxt-primevue": "^0.2.2",
     "primeicons": "^6.0.1",
     "primevue": "^3.47.0"
