@@ -233,7 +233,9 @@ onMounted(() => {
     </div>
   </aside>
 
-  <slot></slot>
+  <div class="p-4 sm:ml-[320px] sm:mr-8">
+    <slot></slot>
+  </div>
 </template>
 
 <style></style>
