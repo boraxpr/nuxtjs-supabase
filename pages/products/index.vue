@@ -13,9 +13,9 @@
     <main>
       <div>
         <DataTable v-model:filters="filters" :value="products" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" stripedRows tableStyle="min-width: 50rem"
-        dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'product_type', 'category', 'main_unit', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit']"
-        paginatorTemplate="PrevPageLink CurrentPageReport NextPageLink "
-        currentPageReportTemplate="{first} to {last} of {totalRecords}">
+        dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'product_type', 'category', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit','isActive']"
+        paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" 
+        currentPageReportTemplate="{first} - {last} of {totalRecords} products" >
           <template #header>
             <div class="flex justify-between">
               <div class="flex gap-5">
@@ -42,38 +42,78 @@
               </div>
               <div>
                 <Nuxt-link :to="`/products/create`">
-                  <div class="flex justify-center items-center w-[203px] h-[54px] hover:bg-gray-200 rounded-[24px] bg-[#F17121] text-white text-xl">
+                  <div class="flex justify-center items-center w-[203px] h-[54px] hover:bg-gray-200 rounded-[20px] bg-[#F17121] text-white text-xl">
                     + New Product
                   </div>
                 </Nuxt-link>
               </div>
             </div>
-            <div class="container w-full h-[58px] rounded-[20px] bg-[#F17121] mt-5 flex items-center">
-              <button class="w-[151px] h-[42px] bg-white rounded-[15px] ml-4 font-bold text-lg">Total</button>
-              <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
-              <button class="w-[151px] h-[42px] bg-white rounded-[15px] ml-4 font-bold text-lg">Active</button>
-              <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
-              <button class="w-[151px] h-[42px] bg-white rounded-[15px] ml-4 font-bold text-lg">InActive</button>
+            <div class="w-full h-[58px] rounded-[20px] bg-[#F17121] mt-5 flex items-center">
+              <div class="flex ml-4">
+                <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg" 
+                :class="total ? 'active': 'inActive'" 
+                @click="changeStatusBtn('')">
+                  Total
+                </button>
+                <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
+                <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg"
+                :class="active ? 'active': 'inActive'" 
+                @click="changeStatusBtn(1)">
+                  Active
+                </button>
+                <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
+                <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg"
+                :class="inActive ? 'active': 'inActive'"
+                @click="changeStatusBtn(2)">
+                  In Active
+                </button>
+              </div>
             </div>
           </template>
           <template #empty> No customers found. </template>
           <template #loading> Loading customers data. Please wait. </template>
-          <Column field="product_code" header="Product Code">
+          <!-- <Column field="product_code" header="Product Code">
             <template #body="product">
-                <div class="text-center">
+                <div>
                     {{ product.data.product_code }}
                 </div>
             </template>
-          </Column>
-          <Column field="barcode" header="Barcode"></Column>
-           <Column field="product_name" header="Product Name">
+          </Column> -->
+          <Column field="barcode">
+            <template #header>
+              <div class="flex justify-center w-full">
+                Code/Barcode
+              </div>
+            </template>
             <template #body="product">
-              <Nuxt-link :to="`/products/${product.data.product_number}`" class="underline">{{
-                product.data.product_name
-              }}</Nuxt-link>
+              <div class="text-center">
+                {{ product.data.barcode }}
+              </div>
             </template>
           </Column>
-          <Column field="productType" header="Product Type">
+          <Column field="product_name">
+            <template #header>
+              <div class="flex justify-center w-full">
+                Product
+              </div>
+            </template>
+            <template #body="product">
+              <div class="flex justify-between">
+                <div class="flex items-center">
+                  {{ product.data.product_name }}
+                </div>
+                <div>
+                  <div class="text-end">
+                    {{ product.data.productType?.product_type_name }}
+                  </div>
+                  <div class="text-end">
+                    {{ product.data.category?.category_name }}
+                  </div>
+                </div>
+              </div>
+            </template>
+          </Column>
+          <!-- <Column field="productType" header="Product Type">
             <template #body="product">
                 <div>
                     {{ product.data.productType?.product_type_name }}
@@ -86,7 +126,7 @@
                     {{ product.data.category?.category_name }}
                 </div>
             </template>
-          </Column>
+          </Column> -->
           <Column field="selling_price">
             <template #header>
               <div class="flex justify-center w-full">
@@ -101,7 +141,20 @@
                 </div>
             </template>
           </Column>
-          <Column field="unit" header="Unit"></Column>
+          <Column field="unit">
+            <template #header>
+              <div class="flex justify-center w-full">
+                <div>
+                  Unit
+                </div>
+              </div>
+            </template>
+            <template #body="product">
+                <div class="text-center">
+                    {{ product.data.unit }}
+                </div>
+            </template>
+          </Column>
           <!-- <Column field="main_unit" header="Main Unit">
             <template #body="product">
                 <div class="text-center">
@@ -109,7 +162,23 @@
                 </div>
             </template>
           </Column> -->
-           <Column field="isActive" header="Status"></Column>
+           <Column field="isActive">
+            <template #header>
+              <div class="flex justify-center w-full">
+                <div>
+                  Status
+                </div>
+              </div>
+            </template>
+            <template  #body="product">
+              <div class="flex justify-center w-full">
+                <div :class="product.data.isActive ? 'inActive': 'active'" class="w-[111px] h-[35px] rounded-[10px] border flex justify-center items-center text-[12px]">
+                  <span v-if="product.data.isActive" >Active</span>
+                  <span v-else >In Active</span>
+                </div>
+              </div>
+            </template>
+           </Column>
           <!-- <Column field="vat" header="Vat">
             <template #body="product">
                 <div class="text-center">
@@ -119,8 +188,20 @@
           </Column>
           <Column field="product_description" header="Product Description"></Column>
           <Column field="income_account" header="Income Account"></Column> -->
-          <column header="Latest Modifier"></column>
-          <column header="Edit"></column>
+          <column>
+            <template #header>
+              <div class="flex justify-center w-full">
+                Latest Modifier
+              </div>
+            </template>
+          </column>
+          <column header="Edit">
+            <template #body="product">
+              <Nuxt-link :to="`/products/${product.data.product_number}`" class="underline">
+                <img src="/assets/img/edit.png" class="h-[27px]"/>
+              </Nuxt-link>
+            </template>
+          </column>
         </DataTable>
       </div>
     </main>
@@ -137,6 +218,9 @@ const products = ref([]);
 const loading = ref(true);
 const productTypeDropdown = ref([]);
 const categoryDropdown = ref([]);
+const total = ref(true);
+const active = ref(false);
+const inActive = ref(false);
 
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -150,14 +234,33 @@ const filters = ref({
     vat: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     product_description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     income_account: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    unit: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
-
+    unit: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    isActive: { value: null, matchMode: FilterMatchMode.EQUALS }
 });
+
+const changeStatusBtn = (value) => {
+  if(value === ""){
+    total.value = true
+    active.value = false
+    inActive.value = false
+    filters.value.isActive.value = null
+  }else if(value === 1){
+    total.value = false
+    active.value = true
+    inActive.value = false
+    filters.value.isActive.value = true
+  }else if(value === 2){
+    total.value = false
+    active.value = false
+    inActive.value = true
+    filters.value.isActive.value = false
+  }
+}
 
 async function fetchData() {
   const { data } = await client.from('product').select('*, productType(id,product_type_name), category(*)');
   products.value = data || [];
-  // console.log("products.value ",products.value);
+  console.log("products.value ",products.value);
   // console.log("products.product_type_name ",products.value[0].productType.product_type_name);
 }
 
@@ -187,6 +290,16 @@ onMounted(() => {
 </script>
 
 <style>
+
+.active {
+  background-color: white;
+  color: black;
+  /* font-weight: bold; */
+}
+.inActive{
+  background-color: #F17121;
+  color: white;
+}
 .p-column-header-content{
     white-space: nowrap;
     height: 56px;
@@ -196,5 +309,11 @@ onMounted(() => {
 }
 .p-row-odd{
     height: 56px;
+}
+.p-paginator-current{
+  margin-right: auto;
+}
+.p-datatable .p-datatable-header{
+  background-color: white;
 }
 </style>

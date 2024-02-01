@@ -26,7 +26,8 @@
                     <label for="">Product Type</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="product_type" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <!-- <input v-model="product_type" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2"> -->
+                    <Dropdown v-model="product_type" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem"/>
                   </div>
                 </div>
                 <div>
@@ -42,7 +43,8 @@
                     <label for="">Category</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="category" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <!-- <input v-model="category" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2"> -->
+                    <Dropdown v-model="category" :options="categoryDropdown" optionLabel="category_name" placeholder="Select Category" class="w-full md:w-14rem"/>
                   </div>
                 </div>
                 <div>
@@ -79,10 +81,10 @@
                 </div>
                 <div>
                   <div>
-                    <label for="">Product Description</label>
+                    <label for="">Unit</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="product_desc" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <input v-model="unit" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
                   </div>
                 </div>
                 <div>
@@ -95,10 +97,10 @@
                 </div>
                 <div>
                   <div>
-                    <label for="">Unit</label>
+                    <label for="">Description</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="unit" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <input v-model="product_desc" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
                   </div>
                 </div>
               </div>
@@ -180,9 +182,9 @@
                   </div>
                 </div>
               </div> -->
-              <div>
+              <div class="mb-4">
                   <div>
-                    <label for="">Product Img</label>
+                    <label>Product Picture</label>
                   </div>
                   <div class="Container mt-2">
                     <!-- <input type="file" @change="onChangeFile"> -->
@@ -222,15 +224,23 @@
                     </div>
                   </div>
                 </div>
+                <div>
+                  <div>
+                    <label>Active</label>
+                  </div>
+                  <div class="mt-2">
+                    <InputSwitch v-model="isActive" />
+                  </div>
+                </div>
             </div>
-            <div class="flex justify-center mt-7 gap-3 min-h-16">
+            <div class="flex justify-center mt-7 gap-4 min-h-16">
               <div>
                 <Nuxt-link :to="`/products`">
-                    <button class="border shadow-md border-solid rounded-[30px] text-red-600 border-red-600 h-10 w-24 hover:bg-gray-100">CANCEL</button>
+                    <button class="border  shadow-md border-solid rounded-[24px] h-[54px] w-[215px] hover:bg-gray-200">Cancel</button>
                 </Nuxt-link>
               </div>
               <div>
-                <button @click="insertData" class="border shadow-md border-solid rounded-[30px] text-lime-600 border-lime-600 h-10 w-24 hover:bg-gray-100">SAVE</button>
+                <button @click="insertData" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
               </div>
             </div>
         </main>
@@ -251,6 +261,10 @@ const vat = ref("");
 const product_desc = ref("");
 const income_account = ref("");
 const unit = ref("");
+const isActive = ref(true);
+
+const productTypeDropdown = ref([]);
+const categoryDropdown = ref([]);
 // const product_img = ref(File | null);
 
 const primevue = usePrimeVue();
@@ -258,6 +272,10 @@ const primevue = usePrimeVue();
 const totalSize = ref(0);
 const totalSizePercent = ref(0);
 const files = ref([]);
+
+const test = () => {
+  console.log("category ",category.value);
+}
 
 const insertData = async () => {
   console.log("files: ",files.value[0]);
@@ -291,9 +309,15 @@ const insertData = async () => {
   }
 }
 
-// const onChangeFile = (event) => {
-//   product_img.value = event.target.files[0] 
-// }
+async function fetchCategory() {
+  const { data } = await client.from('category').select('*');
+  categoryDropdown.value = data || [];
+}
+
+async function fetchProductType() {
+  const { data } = await client.from('productType').select('*');
+  productTypeDropdown.value = data || [];
+}
 
 const uploadImg = async (id) => {
   const { data, error } = await client.storage
@@ -341,6 +365,10 @@ const formatSize = (bytes) => {
     return `${formattedSize} ${sizes[i]}`;
 };
 
+onMounted(() => {
+  fetchProductType();
+  fetchCategory();
+});
 </script>
 
 <style lang="scss" scoped>
