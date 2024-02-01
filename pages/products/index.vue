@@ -16,7 +16,18 @@
     </header>
     <main>
       <div>
-        <DataTable :value="products" tableStyle="min-width: 50rem">
+        <DataTable v-model:filters="filters" :value="products" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" stripedRows tableStyle="min-width: 50rem"
+        dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'product_type', 'category', 'main_unit', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit']">
+          <template #header>
+            <div class="flex justify-content-end">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search" />
+                    <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
+                </span>
+            </div>
+          </template>
+          <template #empty> No customers found. </template>
+          <template #loading> Loading customers data. Please wait. </template>
           <Column field="product_name" header="Product Name">
             <template #body="product">
               <Nuxt-link :to="`/products/${product.data.product_number}`" class="underline">{{
@@ -69,9 +80,28 @@
 <script setup>
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import { FilterMatchMode } from 'primevue/api';
 
 const client = useSupabaseClient();
 const products = ref([]);
+const loading = ref(true);
+
+const filters = ref({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    product_name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    product_code: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    product_type: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    category: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    main_unit: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    barcode: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    selling_price: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    vat: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    product_description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    income_account: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    unit: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
+
+});
+
 async function fetchData() {
   const { data } = await client.from("product").select("*");
   products.value = data || [];
@@ -85,6 +115,7 @@ useHead({
 
 onMounted(() => {
   fetchData();
+  loading.value = false;
 });
 </script>
 

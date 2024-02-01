@@ -31,6 +31,7 @@
     "flowbite": "^2.2.1",
     "nuxt-primevue": "^0.2.2",
     "primeicons": "^6.0.1",
-    "primevue": "^3.47.0"
+    "primevue": "^3.47.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
   }
 }
