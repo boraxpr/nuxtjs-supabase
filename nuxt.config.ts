@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   // https://primevue.org/theming/
   primevue: {
     usePrimevue: true,
-    cssLayerOrder: "tailwind-base, tailwind-utilities, primevue",
+    cssLayerOrder: "tailwind-base, primevue, tailwind-utilities",
     options: {
       unstyled: false,
       ripple: true,
