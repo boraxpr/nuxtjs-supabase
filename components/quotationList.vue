@@ -23,8 +23,5 @@
 </template>
 
 <script setup>
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-
 const { quotations } = defineProps(["quotations"]);
 </script>
