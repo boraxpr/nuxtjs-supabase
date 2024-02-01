@@ -21,7 +21,6 @@
               <div class="flex gap-5">
                 <div class="flex justify-content-end">
                     <span class="p-input-icon-right">
-                        <InputText v-model="filters['global'].value" class="rounded-[25px] w-[404px] h-[54px] p-6" placeholder="Search by Name , Code , Barcode , ..." />
                         <i class="pi pi-search mr-2" />
                     </span>
                 </div>
@@ -205,7 +204,7 @@
 <script setup>
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-import { FilterMatchMode } from 'primevue/api';
+import { FilterMatchMode } from "primevue/api";
 
 const client = useSupabaseClient();
 const products = ref([]);
@@ -314,17 +313,20 @@ const getLinkImg = async (path) => {
 }
 
 const formatCurrency = (value) => {
-    return value.toLocaleString(undefined, { minimumFractionDigits: 2 });
+  return value.toLocaleString(undefined, { minimumFractionDigits: 2 });
 };
 useHead({
   title: "Dashboard",
-})
+});
 
 onMounted(() => {
   fetchData();
   fetchProductType();
   fetchCategory();
   loading.value = false;
+});
+definePageMeta({
+  layout: "mainlayout",
 });
 </script>
 
@@ -342,11 +344,11 @@ onMounted(() => {
     white-space: nowrap;
     height: 56px;
 }
-.p-row-even{
-    height: 56px;
+.p-row-even {
+  height: 56px;
 }
-.p-row-odd{
-    height: 56px;
+.p-row-odd {
+  height: 56px;
 }
 .p-paginator-current{
   margin-right: auto;

@@ -40,7 +40,6 @@
         <div
           class="w-9/12 print:w-11/12 mx-auto p-4 m-2 bg-card shadow-md rounded-md border"
         >
-          
           <div class="flex flex-row space-x-3">
             <div class="mb-4 w-9/12">
               <div class="flex flex-row space-x-1 items-center"></div>
@@ -90,5 +89,9 @@
 <script setup>
 useHead({
   title: "Quotation - Create",
+});
+
+definePageMeta({
+  layout: "mainlayout",
 });
 </script>
