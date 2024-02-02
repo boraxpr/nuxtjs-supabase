@@ -7,7 +7,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "update-types": "npx supabase gen types typescript --project-id trnzctneontojtkdkmxc > .nuxt/types/database.types.ts"
+    "update-types": "npx supabase gen types typescript --project-id trnzctneontojtkdkmxc > .nuxt/types/database.types.ts",
+    "gitfr": "git fetch origin && git rebase origin/main"
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.0.3",
