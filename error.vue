@@ -10,7 +10,6 @@ const props = defineProps({
   <div
     class="flex flex-col lg:grid lg:grid-cols-10 lg:gap-8 w-screen h-screen bg-[--secondary-color]"
   >
-    <!---->
     <div class="lg:col-span-10">
       <div class="flex flex-col items-center justify-center">
         <p class="text-base font-semibold text-primary">404</p>
@@ -25,13 +24,13 @@ const props = defineProps({
           Page not found
         </p>
         <div class="mt-10 flex items-center justify-center gap-x-6">
-          <Button type="button" class="inline-flex items-center" @click="()=>navigateTo("/")">
-            <!----><span class="">Go back home</span
-            ><!---->
-          </Button>
+          <NuxtLink to="/"
+            ><Button type="button" class="inline-flex items-center">
+              Go back home</Button
+            ></NuxtLink
+          >
         </div>
       </div>
     </div>
-    <!---->
   </div>
 </template>
