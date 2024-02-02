@@ -1,7 +1,7 @@
 <script setup>
 import Button from "primevue/button";
 
-import "primeicons/primeicons.css";
+// import "primeicons/primeicons.css";
 
 const signOut = async () => {
   try {
@@ -13,7 +13,10 @@ const signOut = async () => {
 };
 </script>
 <template>
-  <div class="w-screen h-screen flex justify-evenly">
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+  <!-- <div class="w-screen h-screen flex justify-evenly">
     <div class="w-1/6 border-r border-black flex flex-col items-center">
       <button class="btn">
         <a href=""> </a>
@@ -82,10 +85,10 @@ const signOut = async () => {
           </div>
         </div>
       </div>
-      <div>
-        <NuxtPage />
-      </div>
+      <div> -->
+
+  <!-- </div>
     </div>
-  </div>
+  </div> -->
 </template>
 <style></style>

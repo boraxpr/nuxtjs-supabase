@@ -1,17 +1,17 @@
 import component from "./.nuxt/types/vue-shim";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["nuxt-primevue", "@nuxtjs/supabase", "@nuxtjs/tailwindcss"],
+  modules: ["nuxt-primevue", "@nuxtjs/supabase", "@nuxtjs/tailwindcss", "@nuxt/image"],
   css: [
-    "@/assets/css/tailwind.css",
-    "@/assets/css/main.css",
     "primeicons/primeicons.css",
-    "primevue/resources/themes/aura-light-green/theme.css",
+    // "primevue/resources/themes/saga-orange/theme.css", .
+    "@/assets/css/themes/mytheme/theme.scss",
+    "@/assets/css/tailwind.css",
   ],
   // https://primevue.org/theming/
   primevue: {
-    usePrimevue: true,
-    cssLayerOrder: "tailwind-base, tailwind-utilities, primevue",
+    usePrimeVue: true,
+    cssLayerOrder: "tailwind-base,primevue ,tailwind-utilities",
     options: {
       unstyled: false,
       ripple: true,
