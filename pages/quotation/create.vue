@@ -90,8 +90,4 @@
 useHead({
   title: "Quotation - Create",
 });
-
-definePageMeta({
-  layout: "mainlayout",
-});
 </script>
