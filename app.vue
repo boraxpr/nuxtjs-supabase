@@ -1,5 +1,5 @@
 <script setup>
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SpeedInsights } from "@vercel/speed-insights/vue";
 
 const signOut = async () => {
   try {
@@ -11,6 +11,7 @@ const signOut = async () => {
 };
 </script>
 <template>
+  <SpeedInsights />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
