@@ -1,7 +1,5 @@
 <script setup>
-import Button from "primevue/button";
-
-// import "primeicons/primeicons.css";
+import { SpeedInsights } from "@vercel/speed-insights/vue";
 
 const signOut = async () => {
   try {
@@ -13,6 +11,7 @@ const signOut = async () => {
 };
 </script>
 <template>
+  <SpeedInsights />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
