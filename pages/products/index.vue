@@ -148,9 +148,6 @@ onMounted(() => {
   fetchData();
   loading.value = false;
 });
-definePageMeta({
-  layout: "mainlayout",
-});
 </script>
 
 <style>
