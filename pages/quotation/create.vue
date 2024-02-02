@@ -6,8 +6,7 @@
       >
         <!-- Header -->
         <div>
-          <div className="text-left text-3xl font-semibold">Add Quotation</div>
-        </div>
+          <div className="text-left text-3xl font-semibold">Add Quotatdiv        </div>
         <div class="grid grid-cols-3 gap-2 print:hidden">
           <Button
             id="printButton"
