@@ -93,3 +93,4 @@ sw.*
 
 # Vercel
 .vercel
+.vscode/settings.json
