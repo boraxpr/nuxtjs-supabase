@@ -1,7 +1,5 @@
 <script setup>
-import Button from "primevue/button";
-
-// import "primeicons/primeicons.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const signOut = async () => {
   try {
