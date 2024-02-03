@@ -16,11 +16,12 @@
         dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'product_type', 'category', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit','isActive']"
         paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" 
         currentPageReportTemplate="{first} - {last} of {totalRecords} products" >
-          <template #header>
+        <template #header>
             <div class="flex justify-between">
               <div class="flex gap-5">
                 <div class="flex justify-content-end">
                     <span class="p-input-icon-right">
+                        <InputText v-model="filters['global'].value" class="rounded-[25px] w-[404px] h-[54px] p-6" placeholder="Search by Name , Code , Barcode , ..." />
                         <i class="pi pi-search mr-2" />
                     </span>
                 </div>
