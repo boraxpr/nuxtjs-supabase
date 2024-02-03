@@ -72,13 +72,6 @@
           </template>
           <template #empty> No customers found. </template>
           <template #loading> Loading customers data. Please wait. </template>
-          <!-- <Column field="product_code" header="Product Code">
-            <template #body="product">
-                <div>
-                    {{ product.data.product_code }}
-                </div>
-            </template>
-          </Column> -->
           <Column field="barcode">
             <template #header>
               <div class="flex justify-center w-full">
@@ -118,20 +111,6 @@
               </div>
             </template>
           </Column>
-          <!-- <Column field="productType" header="Product Type">
-            <template #body="product">
-                <div>
-                    {{ product.data.productType?.product_type_name }}
-                </div>
-            </template>
-          </Column>
-          <Column field="category" header="Category">
-            <template #body="product">
-                <div>
-                    {{ product.data.category?.category_name }}
-                </div>
-            </template>
-          </Column> -->
           <Column field="selling_price">
             <template #header>
               <div class="flex justify-center w-full">
@@ -160,13 +139,6 @@
                 </div>
             </template>
           </Column>
-          <!-- <Column field="main_unit" header="Main Unit">
-            <template #body="product">
-                <div class="text-center">
-                    {{ product.data.main_unit }}
-                </div>
-            </template>
-          </Column> -->
            <Column>
             <template #header>
               <div class="flex justify-center w-full">
@@ -184,15 +156,6 @@
               </div>
             </template>
            </Column>
-          <!-- <Column field="vat" header="Vat">
-            <template #body="product">
-                <div class="text-center">
-                    {{ product.data.vat }}
-                </div>
-            </template>
-          </Column>
-          <Column field="product_description" header="Product Description"></Column>
-          <Column field="income_account" header="Income Account"></Column> -->
           <column>
             <template #header>
               <div class="flex justify-center w-full">
@@ -223,7 +186,6 @@
                     {{ formatTime(product.data.created_at) }}
                   </div>
                 </span>
-                
               </div>
             </template>
           </column>
