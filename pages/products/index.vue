@@ -86,8 +86,13 @@
               </div>
             </template>
             <template #body="product">
-              <div class="text-center">
-                {{ product.data.barcode }}
+              <div class="flex justify-between">
+                <div class="flex items-center">
+                  <img :src="product.data.linkImg" alt="" class="h-48">
+                </div>
+                <div class="flex items-center">
+                  {{ product.data.barcode }}
+                </div>
               </div>
             </template>
           </Column>
@@ -162,7 +167,7 @@
                 </div>
             </template>
           </Column> -->
-           <Column field="isActive">
+           <Column>
             <template #header>
               <div class="flex justify-center w-full">
                 <div>
@@ -172,8 +177,8 @@
             </template>
             <template  #body="product">
               <div class="flex justify-center w-full">
-                <div :class="product.data.isActive ? 'inActive': 'active'" class="w-[111px] h-[35px] rounded-[10px] border flex justify-center items-center text-[12px]">
-                  <span v-if="product.data.isActive" >Active</span>
+                <div :class="product.data.status ? 'inActive': 'active'" class="w-[111px] h-[35px] rounded-[10px] border flex justify-center items-center text-[12px]">
+                  <span v-if="product.data.status" >Active</span>
                   <span v-else >In Active</span>
                 </div>
               </div>
@@ -192,6 +197,33 @@
             <template #header>
               <div class="flex justify-center w-full">
                 Latest Modifier
+              </div>
+            </template>
+            <template #body="product">
+              <div class="flex justify-center w-full">
+                <span v-if="product.data.updated_by?.full_name">
+                  <div class="flex justify-center w-full">
+                    {{ product.data.updated_by?.full_name }}
+                  </div>
+                  <div class="mt-2">
+                    {{ formatDate(product.data.updated_at) }}
+                  </div>
+                  <div>
+                    {{ formatTime(product.data.updated_at) }}
+                  </div>
+                </span>
+                <span v-else>
+                  <div class="flex justify-center w-full">
+                    {{ product.data.created_by?.full_name }}
+                  </div>
+                  <div class="mt-2">
+                    {{ formatDate(product.data.created_at) }}
+                  </div>
+                  <div>
+                    {{ formatTime(product.data.created_at) }}
+                  </div>
+                </span>
+                
               </div>
             </template>
           </column>
@@ -235,7 +267,7 @@ const filters = ref({
     product_description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     income_account: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     unit: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    isActive: { value: null, matchMode: FilterMatchMode.EQUALS }
+    status: { value: null, matchMode: FilterMatchMode.EQUALS }
 });
 
 const changeStatusBtn = (value) => {
@@ -243,25 +275,62 @@ const changeStatusBtn = (value) => {
     total.value = true
     active.value = false
     inActive.value = false
-    filters.value.isActive.value = null
+    filters.value.status.value = null
   }else if(value === 1){
     total.value = false
     active.value = true
     inActive.value = false
-    filters.value.isActive.value = true
+    filters.value.status.value = true
   }else if(value === 2){
     total.value = false
     active.value = false
     inActive.value = true
-    filters.value.isActive.value = false
+    filters.value.status.value = false
   }
 }
 
+function formatDate(date) {
+  let d = new Date(date);
+  let month, day, year
+
+  month = '' + (d.getMonth() + 1);
+  day = '' + d.getDate();
+  year = d.getFullYear();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+  return [day, month, year].join('/');
+}
+
+function formatTime(date) {
+  let d = new Date(date);
+  let hour, min, sec
+  hour = d.getHours();
+  min = '' + d.getMinutes();
+  sec = '' + d.getSeconds();
+
+  if (hour.length < 2) 
+      hour = '0' + hour;
+  if (min.length < 2) 
+      min = '0' + min;
+  if (sec.length < 2) 
+      sec = '0' + sec;
+  return [hour, min, sec].join(' : ');
+}
+
 async function fetchData() {
-  const { data } = await client.from('product').select('*, productType(id,product_type_name), category(*)');
+  const { data } = await client.from('product').select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)');
   products.value = data || [];
   console.log("products.value ",products.value);
-  // console.log("products.product_type_name ",products.value[0].productType.product_type_name);
+
+  for(let i in products.value){
+    if(products.value[i].product_img !== ''){
+      let link = await getLinkImg(products.value[i].product_img);
+      products.value[i].linkImg = link;
+    }
+  }
 }
 
 async function fetchCategory() {
@@ -272,6 +341,14 @@ async function fetchCategory() {
 async function fetchProductType() {
   const { data } = await client.from('productType').select('*');
   productTypeDropdown.value = data || [];
+}
+
+const getLinkImg = async (path) => {
+    const { data, error } = await client
+    .storage
+    .from('product')
+    .createSignedUrl(path, 600)
+    return data.signedUrl;
 }
 
 const formatCurrency = (value) => {
@@ -294,7 +371,6 @@ onMounted(() => {
 .active {
   background-color: white;
   color: black;
-  /* font-weight: bold; */
 }
 .inActive{
   background-color: #F17121;

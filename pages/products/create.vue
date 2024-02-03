@@ -229,7 +229,7 @@
                     <label>Active</label>
                   </div>
                   <div class="mt-2">
-                    <InputSwitch v-model="isActive" />
+                    <InputSwitch v-model="status" />
                   </div>
                 </div>
             </div>
@@ -261,7 +261,7 @@ const vat = ref("");
 const product_desc = ref("");
 const income_account = ref("");
 const unit = ref("");
-const isActive = ref(true);
+const status = ref(true);
 
 const productTypeDropdown = ref([]);
 const categoryDropdown = ref([]);
@@ -272,10 +272,6 @@ const primevue = usePrimeVue();
 const totalSize = ref(0);
 const totalSizePercent = ref(0);
 const files = ref([]);
-
-const test = () => {
-  console.log("category ",category.value);
-}
 
 const insertData = async () => {
   console.log("files: ",files.value[0]);
