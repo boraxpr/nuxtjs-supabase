@@ -257,20 +257,100 @@
         </DataTable>
       </div>
 
-      <div
-        class="w-11/12 print:w-11/12 mx-auto pb-10 bg-card grid grid-flow-col gap-4"
-      >
+      <div class="w-11/12 print:w-11/12 mx-auto p-4 m-2 bg-card shadow-md rounded-md border">
+        <div class="grid grid-cols-3 gap-28">
+          <div class="col-span-2">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <div>
+                  <label>Remark:</label>
+                </div>
+                <div>
+                  <textarea name="" id="" rows="3" class="rounded-lg border w-full border-gray-300"></textarea>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <div>
+                    <label>Internal Note:</label>
+                  </div>
+                  <div>
+                    <textarea name="" id="" rows="3" class="rounded-lg border w-full border-gray-300"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div>
+                <label>Attachment</label>
+              </div>
+              <div>
+                <textarea name="" id="" rows="3" class="rounded-lg border w-full border-gray-300"></textarea>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between">
+              <div>Amount:</div>
+              <div>100.00</div>
+            </div>
+            <div class="flex justify-between">
+              <div class="flex">
+                <div>
+                  Discount:
+                </div>
+                <div>
+                  <input type="number" class="rounded-md w-[80px] h-7 mx-1 border-gray-400">%
+                </div>
+              </div>
+              <div>10.00</div>
+            </div>
+            <div class="flex justify-between">
+              <div>Amount after discount:</div>
+              <div>90.00</div>
+            </div>
+            <div class="flex justify-between">
+              <div class="flex gap-2">
+                <div>
+                  <input type="checkbox" class="rounded border-gray-400">
+                </div>
+                <div>Vat Include:</div>
+              </div>
+              <div>0.00</div>
+            </div>
+            <div class="flex justify-between">
+              <div>Total Amount:</div>
+              <div>90.00</div>
+            </div>
+            <div class="border my-2"></div>
+            <div class="flex gap-2">
+              <div>
+                <input type="checkbox" class="rounded border-gray-400">
+              </div>
+              <div>With holding tax</div>
+            </div>
+            <div class="flex gap-2">
+              <div>
+                <input type="checkbox" class="rounded border-gray-400">
+              </div>
+              <div>Electronic Signature</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- <div class="w-11/12 print:w-11/12 mx-auto pb-10 bg-card grid grid-flow-col gap-4">
         <div class="flex flex-col col-span-1 space-y-5">
           <div></div>
-          <div></div>
+          <div class="border rounded-lg">
+            <div class="m-5 flex flex-row justify-between"></div>
+          </div>
           <div class="border rounded-lg">
             <div class="m-5 flex flex-row justify-between"></div>
           </div>
           <div class="flex flex-row space-x-3 items-center"></div>
         </div>
-        <div
-          class="flex flex-col col-span-4 divide-y border shadow-lg rounded-lg"
-        >
+        <div class="flex flex-col col-span-4 divide-y border shadow-lg rounded-lg">
           <div class="m-5 divide-y-2">
             <div class="space-y-5">
               <div>Total</div>
@@ -286,7 +366,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
