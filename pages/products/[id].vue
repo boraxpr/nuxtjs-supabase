@@ -18,7 +18,7 @@
               <label for="">Product No</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="id" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
+              <input v-model="id" type="text" disabled class="p-2.5 h-10 w-full border-gray-300 rounded-lg  bg-gray-200">
             </div>
           </div>
           <div>
