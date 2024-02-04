@@ -12,13 +12,21 @@
         </header>
         <main>
             <div class="p-6 border-2 shadow-md rounded-lg">
-              <div class="grid grid-cols-2 gap-4 mb-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <div>
+                    <label for="">Product No</label>
+                  </div>
+                  <div class="Container mt-2">
+                    <input v-model="product_no" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
+                  </div>
+                </div>
                 <div>
                   <div>
                     <label for="">Product Name</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="product_name" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <input v-model="product_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
                   </div>
                 </div>
                 <div>
@@ -26,8 +34,7 @@
                     <label for="">Product Type</label>
                   </div>
                   <div class="Container mt-2">
-                    <!-- <input v-model="product_type" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2"> -->
-                    <Dropdown v-model="product_type" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem"/>
+                    <Dropdown v-model="product_type" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem rounded-lg"/>
                   </div>
                 </div>
                 <div>
@@ -35,7 +42,7 @@
                     <label for="">Product Code</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="product_code" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <input v-model="product_code" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
                   </div>
                 </div>
                 <div>
@@ -43,16 +50,7 @@
                     <label for="">Category</label>
                   </div>
                   <div class="Container mt-2">
-                    <!-- <input v-model="category" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2"> -->
-                    <Dropdown v-model="category" :options="categoryDropdown" optionLabel="category_name" placeholder="Select Category" class="w-full md:w-14rem"/>
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Main Unit</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="main_unit" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <Dropdown v-model="category" :options="categoryDropdown" optionLabel="category_name" placeholder="Select Category" class="w-full md:w-14rem rounded-lg"/>
                   </div>
                 </div>
                 <div>
@@ -60,7 +58,7 @@
                     <label for="">Barcode</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="barcode" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <input v-model="barcode" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
                   </div>
                 </div>
                 <div>
@@ -68,7 +66,7 @@
                     <label for="">Selling Price</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="selling_price" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <input v-model="selling_price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
                   </div>
                 </div>
                 <div>
@@ -76,15 +74,25 @@
                     <label for="">Vat</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="vat" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <input v-model="vat" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
                   </div>
                 </div>
-                <div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label for="">Unit</label>
+                    <div>
+                      <label for="">Main Unit</label>
+                    </div>
+                    <div class="Container mt-2">
+                      <input v-model="main_unit" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                    </div>
                   </div>
-                  <div class="Container mt-2">
-                    <input v-model="unit" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                  <div>
+                    <div>
+                      <label for="">Unit</label>
+                    </div>
+                    <div class="Container mt-2">
+                      <input v-model="unit" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -92,97 +100,20 @@
                     <label for="">Income Account</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="income_account" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Description</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="product_desc" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+                    <input v-model="income_account" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
                   </div>
                 </div>
               </div>
-              <!-- <div class="grid grid-cols-2 gap-4 mb-4">
+              <div>
                 <div>
-                  <div>
-                    <label for="">Product Code</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="product_code" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-                  </div>
+                  <label for="">Description</label>
                 </div>
-                <div>
-                  <div>
-                    <label for="">Category</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="category" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-                  </div>
+                <div class="Container mt-2">
+                  <textarea v-model="product_desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
                 </div>
-                <div>
-                  <div>
-                    <label for="">Main Unit</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="main_unit" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Barcode</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="barcode" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-                  </div>
-                </div>
-              </div> -->
-              <!-- <div class="grid grid-cols-3 gap-4 mb-4">
-                <div>
-                  <div>
-                    <label for="">Selling Price</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="selling_price" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Vat</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="vat" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Product Description</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="product_desc" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-                  </div>
-                </div>
-              </div> -->
-              <!-- <div class="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <div>
-                    <label for="">Income Account</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="income_account" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Unit</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="unit" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-                  </div>
-                </div>
-              </div> -->
-              <div class="mb-4">
+              </div>
+              <div class="grid grid-cols-2 gap-4 mt-2">
+                <div class="mb-4">
                   <div>
                     <label>Product Picture</label>
                   </div>
@@ -224,6 +155,7 @@
                     </div>
                   </div>
                 </div>
+              </div>
                 <div>
                   <div>
                     <label>Active</label>
@@ -250,6 +182,7 @@
 <script setup>
 const client = useSupabaseClient();
 
+const product_no = ref("");
 const product_name = ref("");
 const product_type = ref("");
 const product_code = ref("");
@@ -277,9 +210,9 @@ const insertData = async () => {
   console.log("files: ",files.value[0]);
   const Input = {
       product_name: product_name.value,
-      product_type: product_type.value,
+      product_type_id: product_type.value.id,
       product_code: product_code.value,
-      category: category.value,
+      category_id: category.value.id,
       main_unit: main_unit.value,
       barcode: barcode.value,
       selling_price: selling_price.value,
@@ -287,14 +220,17 @@ const insertData = async () => {
       product_description: product_desc.value,
       income_account: income_account.value,
       unit: unit.value,
-      product_img: ""
+      product_img: "",
+      created_by: await getUserId(),
+      status: status.value
   }
+  console.log("Input ",Input);
   const { data, error } = await client.from('product').insert([
       Input,
   ])
   .select()
   if(error === null){
-    if(files.value[0] !== 0){
+    if(files.value.length > 0){
       uploadImg(data[0].product_number);
     }
       alert("successfully");
@@ -303,6 +239,11 @@ const insertData = async () => {
       alert("error to insert the product to supabase");
       console.log("error ",error)
   }
+}
+
+async function getUserId(){
+  const { data, error } = await client.auth.getUser()
+  return data.user.id;
 }
 
 async function fetchCategory() {
@@ -367,6 +308,13 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style>
+
+.p-fileupload-buttonbar{
+  border-radius: 10px 10px 0px 0px;
+}
+.p-fileupload-content{
+  border-radius: 0px 0px 10px 10px;
+}
 
 </style>

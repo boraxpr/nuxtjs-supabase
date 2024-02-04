@@ -81,7 +81,7 @@
             <template #body="product">
               <div class="flex justify-between">
                 <div class="flex items-center">
-                  <img :src="product.data.linkImg" alt="" class="h-48">
+                  <img :src="product.data.linkImg" alt="" class="max-h-24 h-auto">
                 </div>
                 <div class="flex items-center">
                   {{ product.data.barcode }}
@@ -165,7 +165,7 @@
             <template #body="product">
               <div class="flex justify-center w-full">
                 <span v-if="product.data.updated_by?.full_name">
-                  <div class="flex justify-center w-full">
+                  <div class="flex justify-center w-full text-[#F17121]">
                     {{ product.data.updated_by?.full_name }}
                   </div>
                   <div class="mt-2">
@@ -176,7 +176,7 @@
                   </div>
                 </span>
                 <span v-else>
-                  <div class="flex justify-center w-full">
+                  <div class="flex justify-center w-full text-[#F17121]">
                     {{ product.data.created_by?.full_name }}
                   </div>
                   <div class="mt-2">
@@ -259,26 +259,32 @@ function formatDate(date) {
   day = '' + d.getDate();
   year = d.getFullYear();
 
-  if (month.length < 2) 
-      month = '0' + month;
-  if (day.length < 2) 
-      day = '0' + day;
+  if (month.length < 2) {
+    month = '0' + month;
+  }
+  if (day.length < 2) {
+    day = '0' + day;
+  }
   return [day, month, year].join('/');
 }
 
 function formatTime(date) {
   let d = new Date(date);
   let hour, min, sec
-  hour = d.getHours();
+
+  hour = ''+d.getHours();
   min = '' + d.getMinutes();
   sec = '' + d.getSeconds();
 
-  if (hour.length < 2) 
-      hour = '0' + hour;
-  if (min.length < 2) 
-      min = '0' + min;
-  if (sec.length < 2) 
-      sec = '0' + sec;
+  if (hour.length < 2) {
+    hour = '0' + hour;
+  }
+  if (min.length < 2) {
+    min = '0' + min;
+  }
+  if (sec.length < 2) {
+    sec = '0' + sec;
+  }
   return [hour, min, sec].join(' : ');
 }
 
