@@ -268,7 +268,7 @@ async function fetchData() {
   const { data } = await client.from("product").select("*,productType(*), category(*)").eq('product_number', route.id);
   product.value = data[0] || {};
 
-  console.log(" product.value ", product.value);
+  // console.log(" product.value ", product.value);
   titleName.value = product.value.product_name;
 
   id.value = product.value.product_number;
@@ -315,9 +315,9 @@ const save = async () => {
 const update = async () => {
   const dataInput = {
         product_name: product_name.value,
-        product_type_id: product_type.value.id,
+        product_type_id: product_type.value?.id,
         product_code: product_code.value,
-        category_id: category.value.id,
+        category_id: category.value?.id,
         main_unit: main_unit.value,
         barcode: barcode.value,
         selling_price: selling_price.value,
@@ -325,7 +325,9 @@ const update = async () => {
         product_description: product_desc.value,
         income_account: income_account.value,
         unit: unit.value,
-        product_img: product_img.value
+        product_img: product_img.value,
+        updated_at: new Date().toISOString(),
+        updated_by: await getUserId()
     }
 
     const { data, error } = await client.from('product')
@@ -356,6 +358,11 @@ const deleteFile = async () => {
     if(error != null){
       console.log("error ",error)
     }
+}
+
+async function getUserId(){
+  const { data, error } = await client.auth.getUser()
+  return data.user.id;
 }
 
 const deleteFileBtn = () => {
@@ -420,6 +427,6 @@ onMounted(() => {
 
 </script>
 
-<style lang="scss" scoped>
+<style>
 
 </style>

@@ -291,7 +291,7 @@ function formatTime(date) {
 async function fetchData() {
   const { data } = await client.from('product').select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)');
   products.value = data || [];
-  console.log("products.value ",products.value);
+  // console.log("products.value ",products.value);
 
   for(let i in products.value){
     if(products.value[i].product_img !== ''){
