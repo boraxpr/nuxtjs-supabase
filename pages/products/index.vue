@@ -13,7 +13,7 @@
     <main>
       <div>
         <DataTable v-model:filters="filters" :value="products" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" stripedRows tableStyle="min-width: 50rem"
-        dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'product_type', 'category', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit','isActive']"
+        dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'productType.product_type_name', 'category.category_name', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit','isActive']"
         paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" 
         currentPageReportTemplate="{first} - {last} of {totalRecords} products" >
         <template #header>
