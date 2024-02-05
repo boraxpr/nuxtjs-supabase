@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="componentRef">
     <div class="w-full shadow-lg bg-card">
       <div
         class="w-11/12 print:w-11/12 mx-auto p-2 m-10 mt-2 mb-0 pb-0 flex flex-row justify-between"
@@ -14,6 +14,7 @@
             raised
             class="justify-center"
             severity="info"
+            @click="handlePrint"
             rounded
           >
             <svg
@@ -93,7 +94,7 @@
                 <Dropdown
                   v-model="selectedCity"
                   inputId="dd-customer"
-                  :options="cities"
+                  :options="customers"
                   optionLabel="name"
                   class="w-full"
                 />
@@ -130,7 +131,7 @@
               <div class="flex flex-row justify-between">
                 <label>Date:</label>
                 <Calendar
-                  v-model="icondisplay"
+                  v-model="date"
                   showIcon
                   iconDisplay="input"
                   class="w-[70%]"
@@ -143,7 +144,7 @@
               <div class="flex flex-row justify-between">
                 <label>Due Date:</label>
                 <Calendar
-                  v-model="icondisplay"
+                  v-model="duedate"
                   showIcon
                   iconDisplay="input"
                   class="w-[70%]"
@@ -217,7 +218,6 @@
         <DataTable
           :value="products"
           editMode="cell"
-          @cell-edit-complete="onCellEditComplete"
           :pt="{
             table: { style: 'min-width: 50rem' },
             column: {
@@ -257,7 +257,9 @@
         </DataTable>
       </div>
 
-      <div class="w-11/12 print:w-11/12 mx-auto p-4 m-2 bg-card shadow-md rounded-md border">
+      <div
+        class="w-11/12 print:w-11/12 mx-auto p-4 m-2 bg-card shadow-md rounded-md border"
+      >
         <div class="grid grid-cols-3 gap-28">
           <div class="col-span-2">
             <div class="grid grid-cols-2 gap-4">
@@ -266,7 +268,12 @@
                   <label>Remark:</label>
                 </div>
                 <div>
-                  <textarea name="" id="" rows="3" class="rounded-lg border w-full border-gray-300"></textarea>
+                  <textarea
+                    name=""
+                    id=""
+                    rows="3"
+                    class="rounded-lg border w-full border-gray-300"
+                  ></textarea>
                 </div>
               </div>
               <div>
@@ -275,7 +282,12 @@
                     <label>Internal Note:</label>
                   </div>
                   <div>
-                    <textarea name="" id="" rows="3" class="rounded-lg border w-full border-gray-300"></textarea>
+                    <textarea
+                      name=""
+                      id=""
+                      rows="3"
+                      class="rounded-lg border w-full border-gray-300"
+                    ></textarea>
                   </div>
                 </div>
               </div>
@@ -285,7 +297,12 @@
                 <label>Attachment</label>
               </div>
               <div>
-                <textarea name="" id="" rows="3" class="rounded-lg border w-full border-gray-300"></textarea>
+                <textarea
+                  name=""
+                  id=""
+                  rows="3"
+                  class="rounded-lg border w-full border-gray-300"
+                ></textarea>
               </div>
             </div>
           </div>
@@ -296,11 +313,12 @@
             </div>
             <div class="flex justify-between">
               <div class="flex">
+                <div>Discount:</div>
                 <div>
-                  Discount:
-                </div>
-                <div>
-                  <input type="number" class="rounded-md w-[80px] h-7 mx-1 border-gray-400">%
+                  <input
+                    type="number"
+                    class="rounded-md w-[80px] h-7 mx-1 border-gray-400"
+                  />%
                 </div>
               </div>
               <div>10.00</div>
@@ -312,7 +330,7 @@
             <div class="flex justify-between">
               <div class="flex gap-2">
                 <div>
-                  <input type="checkbox" class="rounded border-gray-400">
+                  <input type="checkbox" class="rounded border-gray-400" />
                 </div>
                 <div>Vat Include:</div>
               </div>
@@ -325,20 +343,20 @@
             <div class="border my-2"></div>
             <div class="flex gap-2">
               <div>
-                <input type="checkbox" class="rounded border-gray-400">
+                <input type="checkbox" class="rounded border-gray-400" />
               </div>
               <div>With holding tax</div>
             </div>
             <div class="flex gap-2">
               <div>
-                <input type="checkbox" class="rounded border-gray-400">
+                <input type="checkbox" class="rounded border-gray-400" />
               </div>
               <div>Electronic Signature</div>
             </div>
           </div>
         </div>
       </div>
-      
+
       <!-- <div class="w-11/12 print:w-11/12 mx-auto pb-10 bg-card grid grid-flow-col gap-4">
         <div class="flex flex-col col-span-1 space-y-5">
           <div></div>
@@ -372,14 +390,26 @@
 </template>
 
 <script setup>
+import { useVueToPrint } from "vue-to-print";
+const { progress, isLoading, start, finish, clear } = useLoadingIndicator({
+  duration: 2000,
+  throttle: 200,
+  // This is how progress is calculated by default
+  estimatedProgress: (duration, elapsed) =>
+    (2 / Math.PI) * 100 * Math.atan(((elapsed / duration) * 100) / 50),
+});
+const componentRef = ref();
 useHead({
   title: "Quotation - Create",
 });
 const currentSales = await useSupabaseClient().auth.getUser().email;
 const selectedCustomer = ref();
+const selectedCity = ref();
+const customers = ref([]);
+const date = ref();
+const duedate = ref();
 const selectedCurrency = ref();
 const selectedProject = ref();
-const products = ref();
 const columns = ref([
   { field: "code", header: "Code" },
   { field: "name", header: "Name" },
@@ -394,6 +424,20 @@ const projects = ref([
   { name: "Sphere Soft 2025" },
   { name: "Sphere Soft 2024" },
 ]);
+const handleAfterPrint = () => {
+  console.log("`onAfterPrint` called"); // tslint:disable-line no-console
+};
+
+const handleBeforePrint = () => {
+  console.log("`onBeforePrint` called"); // tslint:disable-line no-console
+};
+const { handlePrint } = useVueToPrint({
+  content: () => componentRef.value,
+  documentTitle: "quotation-N39",
+  onAfterPrint: handleAfterPrint,
+  onBeforePrint: handleBeforePrint,
+  removeAfterPrint: false,
+});
 </script>
 <style scoped>
 .line-file1-a {
