@@ -92,10 +92,12 @@
               <div class="md:w-14rem space-y-2">
                 <label for="dd-customer">Customer Name</label>
                 <Dropdown
-                  v-model="selectedCity"
+                  v-model="selectedCustomer"
                   inputId="dd-customer"
-                  :options="customers"
+                  :options="quotation.customers"
+                  placeholder=""
                   optionLabel="name"
+                  optionValue=""
                   class="w-full"
                 />
               </div>
@@ -268,12 +270,13 @@
                   <label>Remark:</label>
                 </div>
                 <div>
-                  <textarea
+                  <Textarea
                     name=""
                     id=""
                     rows="3"
-                    class="rounded-lg border w-full border-gray-300"
-                  ></textarea>
+                    class="rounded-lg border w-full"
+                    autoResize
+                  ></Textarea>
                 </div>
               </div>
               <div>
@@ -282,12 +285,13 @@
                     <label>Internal Note:</label>
                   </div>
                   <div>
-                    <textarea
+                    <Textarea
                       name=""
                       id=""
                       rows="3"
-                      class="rounded-lg border w-full border-gray-300"
-                    ></textarea>
+                      class="rounded-lg border w-full"
+                      autoResize
+                    ></Textarea>
                   </div>
                 </div>
               </div>
@@ -297,12 +301,13 @@
                 <label>Attachment</label>
               </div>
               <div>
-                <textarea
+                <Textarea
                   name=""
                   id=""
                   rows="3"
-                  class="rounded-lg border w-full border-gray-300"
-                ></textarea>
+                  class="rounded-lg border w-full"
+                  autoResize
+                ></Textarea>
               </div>
             </div>
           </div>
@@ -391,21 +396,26 @@
 
 <script setup>
 import { useVueToPrint } from "vue-to-print";
-const { progress, isLoading, start, finish, clear } = useLoadingIndicator({
-  duration: 2000,
-  throttle: 200,
-  // This is how progress is calculated by default
-  estimatedProgress: (duration, elapsed) =>
-    (2 / Math.PI) * 100 * Math.atan(((elapsed / duration) * 100) / 50),
-});
 const componentRef = ref();
 useHead({
   title: "Quotation - Create",
 });
+const quotation = reactive({
+  customers: [],
+  selected: {
+    customer: ref(),
+  },
+});
+onMounted(async () => {
+  // Fetch customers and update the reactive object
+  const { data: quotations } = await useSupabaseClient()
+    .from("customers")
+    .select("*");
+  quotation.customers = quotations;
+});
+
 const currentSales = await useSupabaseClient().auth.getUser().email;
 const selectedCustomer = ref();
-const selectedCity = ref();
-const customers = ref([]);
 const date = ref();
 const duedate = ref();
 const selectedCurrency = ref();
