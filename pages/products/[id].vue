@@ -1,13 +1,9 @@
 <template>
     <div>
-        <!-- {{ productName }} -->
-    </div>
-    <div>
     <header>
       <div class="Container grid grid-cols-2 gap-4 mb-4 h-40">
         <div class="Container flex items-center">
-          <div class="text-5xl">Edit : {{ titleName }}</div>
-          <!-- <button class="ml-2 text-red-400 underline">Delete</button> -->
+          <div class="text-5xl">Product Detail</div>
         </div>
         <div class="Container flex justify-end items-end">
           
@@ -16,13 +12,21 @@
     </header>
     <main>
       <div class="p-6 border-2 shadow-md rounded-lg">
-        <div class="grid grid-cols-3 gap-4 mb-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <div>
+              <label for="">Product No</label>
+            </div>
+            <div class="Container mt-2">
+              <input v-model="id" type="text" disabled class="p-2.5 h-10 w-full border-gray-300 rounded-lg  bg-gray-200">
+            </div>
+          </div>
           <div>
             <div>
               <label for="">Product Name</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="product_name" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="product_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -30,7 +34,7 @@
               <label for="">Product Type</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="product_type" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <Dropdown v-model="product_type" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem rounded-lg"/>
             </div>
           </div>
           <div>
@@ -38,25 +42,15 @@
               <label for="">Product Code</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="product_code" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="product_code" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
-        </div>
-        <div class="grid grid-cols-3 gap-4 mb-4">
           <div>
             <div>
               <label for="">Category</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="category" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-            </div>
-          </div>
-          <div>
-            <div>
-              <label for="">Main Unit</label>
-            </div>
-            <div class="Container mt-2">
-              <input v-model="main_unit" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <Dropdown v-model="category" :options="categoryDropdown" optionLabel="category_name" placeholder="Select Category" class="w-full md:w-14rem rounded-lg"/>
             </div>
           </div>
           <div>
@@ -64,17 +58,15 @@
               <label for="">Barcode</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="barcode" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="barcode" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
-        </div>
-        <div class="grid grid-cols-3 gap-4 mb-4">
           <div>
             <div>
               <label for="">Selling Price</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="selling_price" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="selling_price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -82,38 +74,48 @@
               <label for="">Vat</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="vat" type="number" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="vat" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
-          <div>
+          <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
-              <label for="">Product Description</label>
+              <div>
+                <label for="">Main Unit</label>
+              </div>
+              <div class="Container mt-2">
+                <input v-model="main_unit" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
+              </div>
             </div>
-            <div class="Container mt-2">
-              <input v-model="product_desc" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+            <div>
+              <div>
+                <label for="">Unit</label>
+              </div>
+              <div class="Container mt-2">
+                <input v-model="unit" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
+              </div>
             </div>
           </div>
-        </div>
-        <div class="grid grid-cols-3 gap-4 mb-4" v-if="product_img !== '' && isEditFile === false">
           <div>
             <div>
               <label for="">Income Account</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="income_account" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="income_account" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
+        </div>
+        <div>
           <div>
-            <div>
-              <label for="">Unit</label>
-            </div>
-            <div class="Container mt-2">
-              <input v-model="unit" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
-            </div>
+            <label for="">Description</label>
           </div>
+          <div class="Container mt-2">
+            <textarea v-model="product_desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
+          </div>
+        </div>
+        <!-- <div class="grid grid-cols-2 gap-4 mb-4" v-if="product_img !== '' && isEditFile === false">
           <div>
             <div>
-              <label for="">Product Img</label>
+              <label>Product Picture</label>
               <button @click="getLinkImg" class="ml-2" v-if="product_img !== '' && isEditFile === false">
                 <span v-if="showImg" class="underline">hide</span> 
                 <span v-else class="underline">show</span>
@@ -126,8 +128,8 @@
             </div>
           </div>
         </div>
-        <div v-else>
-        <div class="grid grid-cols-2 gap-4 mb-4">
+        <div v-else> -->
+        <!-- <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
             <div>
               <label for="">Income Account</label>
@@ -144,16 +146,23 @@
               <input v-model="unit" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
             </div>
           </div>
-        </div>
-        <div>
-            <div>
-              <label for="">Product Img</label>
-              <button @click="getLinkImg" class="ml-2" v-if="product_img !== '' && isEditFile === false">
+        </div> -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <div class="mt-2">
+              <label>Product Picture</label>
+              <!-- <button @click="getLinkImg" class="ml-2" v-if="product_img !== '' && isEditFile === false">
                 <span v-if="showImg" class="underline">hide</span> 
                 <span v-else class="underline">show</span>
-              </button>
+              </button> -->
             </div>
-            <div class="Container mt-2">
+            <div v-if="product_img !== '' && isEditFile === false">
+              <div class="flex items-start gap-2 mt-2">
+                <img :src="linkImg" alt="" class="h-auto max-h-48">
+                <button @click="deleteFileBtn" class="text-red-400">x</button>
+              </div>
+            </div>
+            <div class="Container mt-2" v-else>
                 <div class="card">
                   <Toast />
                   <FileUpload :multiple="false" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
@@ -188,26 +197,30 @@
                       </template>
                   </FileUpload>
                 </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div v-if="product_img !== '' && isEditFile === false">
-          <div v-if="showImg" class="flex justify-center">
-            <div class="flex items-start gap-2">
-              <img :src="linkImg" alt="" class="h-48">
-              <button @click="deleteFileBtn" class="text-red-400">x</button>
-            </div>
+        <!-- </div> -->
+        
+
+
+        <div class="mt-2">
+          <div>
+            <label>Active</label>
+          </div>
+          <div class="mt-2">
+            <InputSwitch v-model="status" />
           </div>
         </div>
       </div>
-      <div class="flex justify-end mt-7 gap-3">
+      <div class="flex justify-center mt-7 gap-4 min-h-16">
         <div>
           <Nuxt-link :to="`/products`">
-            <button class="border shadow-md border-solid rounded-[30px] text-red-600 border-red-600 h-10 w-24 hover:bg-gray-100">CANCEL</button>
+              <button class="border  shadow-md border-solid rounded-[24px] h-[54px] w-[215px] hover:bg-gray-200">Cancel</button>
           </Nuxt-link>
         </div>
         <div>
-            <button @click="save" class="border shadow-md border-solid rounded-[30px] text-lime-600 border-lime-600 h-10 w-24 hover:bg-gray-100">SAVE</button>
+          <button @click="save" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
         </div>
       </div>
     </main>
@@ -218,6 +231,7 @@
 const client = useSupabaseClient();
 const route = useRoute().params
 
+// const product_no = ref("");
 const id = ref("");
 const product_name = ref("");
 const product_type = ref("");
@@ -234,6 +248,7 @@ const product_img = ref("");
 const product_img_old = ref('');
 const product = ref();
 const titleName = ref("");
+const status = ref();
 // const file = ref(File | null);
 
 const primevue = usePrimeVue();
@@ -246,14 +261,19 @@ const linkImg = ref("");
 const showImg = ref(false);
 const isEditFile = ref(false);
 
+const productTypeDropdown = ref([]);
+const categoryDropdown = ref([]);
+
 async function fetchData() {
-  const { data } = await client.from("product").select("*").eq('product_number', route.id);
+  const { data } = await client.from("product").select("*,productType(*), category(*)").eq('product_number', route.id);
   product.value = data[0] || {};
+
+  console.log(" product.value ", product.value);
   titleName.value = product.value.product_name;
 
   id.value = product.value.product_number;
   product_name.value = product.value.product_name;
-  product_type.value = product.value.product_type;
+  product_type.value = product.value.productType;
   product_code.value = product.value.product_code;
   category.value = product.value.category;
   main_unit.value = product.value.main_unit;
@@ -264,6 +284,21 @@ async function fetchData() {
   income_account.value = product.value.income_account;
   unit.value = product.value.unit;
   product_img.value = product.value.product_img;
+  status.value = product.value.status
+
+  if(product_img.value !== ''){
+    getLinkImg();
+  }
+}
+
+async function fetchCategory() {
+  const { data } = await client.from('category').select('*');
+  categoryDropdown.value = data || [];
+}
+
+async function fetchProductType() {
+  const { data } = await client.from('productType').select('*');
+  productTypeDropdown.value = data || [];
 }
 
 const save = async () => {
@@ -280,9 +315,9 @@ const save = async () => {
 const update = async () => {
   const dataInput = {
         product_name: product_name.value,
-        product_type: product_type.value,
+        product_type_id: product_type.value.id,
         product_code: product_code.value,
-        category: category.value,
+        category_id: category.value.id,
         main_unit: main_unit.value,
         barcode: barcode.value,
         selling_price: selling_price.value,
@@ -379,6 +414,8 @@ const formatSize = (bytes) => {
 
 onMounted(() => {
   fetchData();
+  fetchProductType();
+  fetchCategory();
 });
 
 </script>
