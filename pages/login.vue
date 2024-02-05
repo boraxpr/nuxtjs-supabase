@@ -144,8 +144,7 @@ const signInWithOAuth = async (provider) => {
       <Button
           @click="() => signInWithOAuth('google')"
           :disabled="loading"
-          class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
-        >
+          class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg">
           <img src="/assets/img/googleLogo.png" />
           Google
         </Button>
