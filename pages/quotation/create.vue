@@ -359,6 +359,157 @@
             </div>
           </div>
         </div>
+        <div class="flex flex-row space-x-5 items-center">
+          <Textarea placeholder="Detail" rows="4" autoResize class="w-full">
+          </Textarea>
+        </div>
+      </div>
+      <div
+        class="w-11/12 print:w-11/12 mx-auto p-4 m-2 bg-card shadow-md rounded-md border"
+      >
+        <DataTable
+          :value="products"
+          editMode="cell"
+          :pt="{
+            table: { style: 'min-width: 50rem' },
+            column: {
+              bodycell: ({ state }) => ({
+                class: [{ 'pt-0 pb-0': state['d_editing'] }],
+              }),
+            },
+          }"
+        >
+          <Column
+            v-for="col of columns"
+            :key="col.field"
+            :field="col.field"
+            :header="col.header"
+            style="width: 25%"
+          >
+            <template #body="{ data, field }">
+              {{
+                field === "price" ? formatCurrency(data[field]) : data[field]
+              }}
+            </template>
+            <template #editor="{ data, field }">
+              <template v-if="field !== 'price'">
+                <InputText v-model="data[field]" autofocus />
+              </template>
+              <template v-else>
+                <InputNumber
+                  v-model="data[field]"
+                  mode="currency"
+                  currency="USD"
+                  locale="en-US"
+                  autofocus
+                />
+              </template>
+            </template>
+          </Column>
+        </DataTable>
+      </div>
+
+      <div
+        class="w-11/12 print:w-11/12 mx-auto p-4 m-2 bg-card shadow-md rounded-md border"
+      >
+        <div class="grid grid-cols-3 gap-28">
+          <div class="col-span-2">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <div>
+                  <label>Remark:</label>
+                </div>
+                <div>
+                  <Textarea
+                    name=""
+                    id=""
+                    rows="3"
+                    class="rounded-lg border w-full"
+                    autoResize
+                  ></Textarea>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <div>
+                    <label>Internal Note:</label>
+                  </div>
+                  <div>
+                    <Textarea
+                      name=""
+                      id=""
+                      rows="3"
+                      class="rounded-lg border w-full"
+                      autoResize
+                    ></Textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div>
+                <label>Attachment</label>
+              </div>
+              <div>
+                <Textarea
+                  name=""
+                  id=""
+                  rows="3"
+                  class="rounded-lg border w-full"
+                  autoResize
+                ></Textarea>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between">
+              <div>Amount:</div>
+              <div>100.00</div>
+            </div>
+            <div class="flex justify-between">
+              <div class="flex">
+                <div>Discount:</div>
+                <div>
+                  <input
+                    type="number"
+                    class="rounded-md w-[80px] h-7 mx-1 border-gray-400"
+                  />%
+                </div>
+              </div>
+              <div>10.00</div>
+            </div>
+            <div class="flex justify-between">
+              <div>Amount after discount:</div>
+              <div>90.00</div>
+            </div>
+            <div class="flex justify-between">
+              <div class="flex gap-2">
+                <div>
+                  <input type="checkbox" class="rounded border-gray-400" />
+                </div>
+                <div>Vat Include:</div>
+              </div>
+              <div>0.00</div>
+            </div>
+            <div class="flex justify-between">
+              <div>Total Amount:</div>
+              <div>90.00</div>
+            </div>
+            <div class="border my-2"></div>
+            <div class="flex gap-2">
+              <div>
+                <input type="checkbox" class="rounded border-gray-400" />
+              </div>
+              <div>With holding tax</div>
+            </div>
+            <div class="flex gap-2">
+              <div>
+                <input type="checkbox" class="rounded border-gray-400" />
+              </div>
+              <div>Electronic Signature</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- <div class="w-11/12 print:w-11/12 mx-auto pb-10 bg-card grid grid-flow-col gap-4">
