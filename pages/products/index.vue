@@ -2,7 +2,7 @@
   <div>
     <header>
       <div class="Container grid grid-cols-2 gap-4 mb-4 h-20">
-        <div class="Container flex items-center">
+        <div class="Container flex items-end">
           <div class="text-4xl font-semibold">Products</div>
         </div>
         <div class="Container flex justify-end items-end">
@@ -349,13 +349,6 @@ useHead({
 }
 .p-column-header-content{
     white-space: nowrap;
-    height: 56px;
-}
-.p-row-even {
-  height: 56px;
-}
-.p-row-odd {
-  height: 56px;
 }
 .p-paginator-current{
   margin-right: auto;
