@@ -12,10 +12,10 @@
     </header>
     <main>
       <div>
-        <DataTable v-model:filters="filters" :value="products" paginator :rows="10" stripedRows tableStyle="min-width: 50rem"
+        <DataTable v-model:filters="filters" :value="products" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" stripedRows tableStyle="min-width: 50rem"
         dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'productType.product_type_name', 'category.category_name', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit']"
-        
-        >
+        paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" 
+        currentPageReportTemplate="{first} - {last} of {totalRecords} products">
         <template #header>
             <div class="flex justify-between">
               <div class="flex gap-5">
@@ -26,18 +26,22 @@
                     </span>
                 </div>
                 <div>
-                  <Dropdown v-model="filters['product_type_id'].value" optionValue="id" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Type" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 12rem" :showClear="true">
+                  <MultiSelect v-model="filters['product_type_id'].value" display="chip" :maxSelectedLabels="2" optionValue="id" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Type" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 14rem">
                       <template #option="slotProps">
-                          <Tag :value="slotProps.option.product_type_name" />
+                          <div class="flex align-items-center gap-2">
+                              <span>{{ slotProps.option.product_type_name }}</span>
+                          </div>
                       </template>
-                  </Dropdown>
+                  </MultiSelect>
                 </div>
                 <div>
-                  <Dropdown v-model="filters['category_id'].value" optionValue="id" :options="categoryDropdown" optionLabel="category_name" placeholder="Category" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 12rem" :showClear="true">
+                  <MultiSelect v-model="filters['category_id'].value" display="chip"  optionValue="id" :options="categoryDropdown" optionLabel="category_name" placeholder="Category" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 14rem" :maxSelectedLabels="2">
                       <template #option="slotProps">
-                          <Tag :value="slotProps.option.category_name" />
+                          <div class="flex align-items-center gap-2">
+                              <span>{{ slotProps.option.category_name }}</span>
+                          </div>
                       </template>
-                  </Dropdown>
+                  </MultiSelect>
                 </div>
               </div>
               <div>
@@ -220,8 +224,8 @@ const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     product_name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     product_code: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    product_type_id: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    category_id: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    product_type_id: { value: null, matchMode: FilterMatchMode.IN },
+    category_id: { value: null, matchMode: FilterMatchMode.IN },
     main_unit: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     barcode: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     selling_price: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -291,10 +295,9 @@ function formatTime(date) {
 async function fetchData() {
   const { data } = await client.from('product').select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)');
   products.value = data || [];
-  // console.log("products.value ",products.value);
 
   for(let i in products.value){
-    if(products.value[i].product_img !== ''){
+    if(products.value[i]?.product_img !== null && products.value[i]?.product_img !== ""){
       let link = await getLinkImg(products.value[i].product_img);
       products.value[i].linkImg = link;
     }
@@ -320,18 +323,18 @@ const getLinkImg = async (path) => {
 }
 
 const formatCurrency = (value) => {
-  return value.toLocaleString(undefined, { minimumFractionDigits: 2 });
+  if(value !== null){
+    return value.toLocaleString(undefined, { minimumFractionDigits: 2 });
+  }
 };
 useHead({
-  title: "Dashboard",
+  title: "Products",
 });
 
-onMounted(() => {
   fetchData();
   fetchProductType();
   fetchCategory();
   loading.value = false;
-});
 </script>
 
 <style>
