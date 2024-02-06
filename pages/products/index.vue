@@ -16,7 +16,7 @@
         dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'productType.product_type_name', 'category.category_name', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit']"
         paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" 
         currentPageReportTemplate="{first} - {last} of {totalRecords} products">
-        <template #header>
+        <div class="mb-4">
             <div class="flex justify-between">
               <div class="flex gap-5">
                 <div class="flex justify-content-end">
@@ -73,7 +73,7 @@
                 </button>
               </div>
             </div>
-          </template>
+          </div>
           <template #empty> No customers found. </template>
           <template #loading> Loading customers data. Please wait. </template>
           <Column field="barcode">
