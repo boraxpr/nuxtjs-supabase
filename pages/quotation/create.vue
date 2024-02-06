@@ -73,14 +73,10 @@
               />
             </svg>
           </Button>
-          <Button
-            label="Close"
-            severity="danger"
-            raised
-            outlined
-            rounded
-            :onclick="() => navigateTo('/quotation')"
-          />
+          <NuxtLink to="/quotation">
+            <Button label="Close" severity="danger" raised outlined rounded />
+          </NuxtLink>
+
           <Button label="Save" severity="success" raised outlined rounded />
         </div>
       </div>
@@ -109,14 +105,14 @@
 
             <div class="space-y-2">
               <label> Customer Detail </label>
-              <Textarea
+              <!-- <Textarea
                 v-model="createQuotationFormData.db.customer.address"
                 placeholder="Address"
                 rows="3"
+                col="20"
                 class="w-full text-black"
-                disabled
                 autoResize
-              />
+              /> -->
 
               <div class="flex flex-row justify-between">
                 <InputText
@@ -233,7 +229,7 @@
                   :options="createQuotationFormData.db.projects"
                   inputId="dd-customer"
                   optionLabel="project_name"
-                  optionValue="project_name"
+                  optionValue="id"
                   placeholder="Select a Project"
                   @change="handleProjectChange"
                   class="w-full"
@@ -503,8 +499,20 @@ const fetchCurrencies = async () => {
 };
 const fetchCustomers = async () => {
   const { data } = await useSupabaseClient().from("customers").select("*");
-  createQuotationFormData.db.customers = data;
+  if (process.client) {
+    console.info("CACHE INVALIDATED GET NEW DATA: " + data);
+  }
+  if (process.server) {
+    console.info("CACHE HIT: " + JSON.stringify(data, null, 2));
+  }
+  console.info(data);
+  return data;
 };
+const { data: customersData, error: customersError } = await useAsyncData(
+  "customers",
+  fetchCustomers
+);
+createQuotationFormData.db.customers = customersData;
 const fetchProjects = async () => {
   const { data } = await useSupabaseClient().from("project").select("*");
   createQuotationFormData.db.projects = data;
@@ -516,7 +524,7 @@ const fetchSaleName = async () => {
 };
 fetchCurrencies();
 
-Promise.all([fetchCustomers(), fetchProjects(), fetchSaleName()])
+Promise.all([fetchProjects(), fetchSaleName()])
   .then((results) => {
     console.log("All fetches completed successfully"), results;
   })
@@ -538,7 +546,7 @@ const handleProjectChange = async () => {
   const { data } = await useSupabaseClient()
     .from("project")
     .select("*")
-    .eq("project_name", createQuotationFormData.userInputs.project)
+    .eq("id", createQuotationFormData.userInputs.project)
     .single();
   createQuotationFormData.db.project = data;
   console.log("Success Project On Change", data);
@@ -551,7 +559,6 @@ const columns = ref([
   { field: "quantity", header: "Quantity" },
   { field: "price", header: "Price" },
 ]);
-
 const handleAfterPrint = () => {
   console.log("`onAfterPrint` called"); // tslint:disable-line no-console
 };
