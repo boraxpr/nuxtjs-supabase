@@ -1,9 +1,9 @@
 <template>
   <div>
     <header>
-      <div class="Container grid grid-cols-2 gap-4 mb-4 h-40">
+      <div class="Container grid grid-cols-2 gap-4 mb-4 h-20">
         <div class="Container flex items-center">
-          <div class="text-3xl">Products</div>
+          <div class="text-4xl font-semibold">Products</div>
         </div>
         <div class="Container flex justify-end items-end">
           
@@ -12,7 +12,7 @@
     </header>
     <main>
       <div>
-        <DataTable v-model:filters="filters" :value="products" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" stripedRows tableStyle="min-width: 50rem"
+        <DataTable v-model:filters="filters" :value="products" paginator :rows="10" stripedRows tableStyle="min-width: 50rem"
         dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'productType.product_type_name', 'category.category_name', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit']"
         paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" 
         currentPageReportTemplate="{first} - {last} of {totalRecords} products">
