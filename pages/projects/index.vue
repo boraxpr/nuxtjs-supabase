@@ -1,9 +1,9 @@
 <template>
     <div>
         <header>
-            <div class="Container grid grid-cols-2 gap-4 mb-4 h-40">
-              <div class="Container flex items-center">
-                <div class="text-3xl">Projects</div>
+            <div class="Container grid grid-cols-2 gap-4 mb-4 h-20">
+              <div class="Container flex items-end">
+                <div class="text-4xl font-semibold">Projects</div>
               </div>
               <div class="Container flex justify-end items-end">
 
@@ -12,7 +12,9 @@
         </header>
         <main>
             <div>
-                <DataTable v-model:filters="filters" :value="projects" :globalFilterFields="['project_name','detail']">
+                <DataTable v-model:filters="filters" paginator :rows="10" :value="projects" :globalFilterFields="['project_name','detail']"
+                paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" 
+                currentPageReportTemplate="{first} - {last} of {totalRecords} projects">
                     <div class="mb-4">
                         <div class="flex justify-between">
                             <div class="flex gap-5">
@@ -23,11 +25,18 @@
                                     </span>
                                 </div>
                                 <div>
-                                    <Dropdown v-model="filters['customer_id'].value" optionValue="id" :options="customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 12rem" :showClear="true">
+                                  <MultiSelect v-model="filters['customer_id'].value" display="chip" :maxSelectedLabels="2" optionValue="id" :options="customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 14rem">
+                                      <template #option="slotProps">
+                                          <div class="flex align-items-center gap-2">
+                                              <span>{{ slotProps.option.name }}</span>
+                                          </div>
+                                      </template>
+                                  </MultiSelect>
+                                    <!-- <Dropdown v-model="filters['customer_id'].value" optionValue="id" :options="customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 12rem" :showClear="true">
                                         <template #option="slotProps">
                                             <Tag :value="slotProps.option.name" />
                                         </template>
-                                    </Dropdown>
+                                    </Dropdown> -->
                                 </div>
                             </div>
                             <div>
@@ -174,7 +183,7 @@ const inActive = ref(false);
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     project_name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    customer_id: { value: null, matchMode: FilterMatchMode.EQUALS },
+    customer_id: { value: null, matchMode: FilterMatchMode.IN },
     status: { value: null, matchMode: FilterMatchMode.EQUALS }
 });
 
