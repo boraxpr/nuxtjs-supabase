@@ -12,10 +12,10 @@
     </header>
     <main>
       <div>
-        <DataTable v-model:filters="filters" :value="products" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" stripedRows tableStyle="min-width: 50rem"
-        dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'productType.product_type_name', 'category.category_name', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit','isActive']"
-        paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" 
-        currentPageReportTemplate="{first} - {last} of {totalRecords} products" >
+        <DataTable v-model:filters="filters" :value="products" paginator :rows="10" stripedRows tableStyle="min-width: 50rem"
+        dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'productType.product_type_name', 'category.category_name', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit']"
+        
+        >
         <template #header>
             <div class="flex justify-between">
               <div class="flex gap-5">
@@ -41,11 +41,11 @@
                 </div>
               </div>
               <div>
-                <Nuxt-link :to="`/products/create`">
+                <NuxtLink :to="`/products/create`">
                   <div class="flex justify-center items-center w-[203px] h-[54px] hover:bg-gray-200 rounded-[20px] bg-[#F17121] text-white text-xl">
                     + New Product
                   </div>
-                </Nuxt-link>
+                </NuxtLink>
               </div>
             </div>
             <div class="w-full h-[58px] rounded-[20px] bg-[#F17121] mt-5 flex items-center">
@@ -191,9 +191,9 @@
           </column>
           <column header="Edit">
             <template #body="product">
-              <Nuxt-link :to="`/products/${product.data.product_number}`" class="underline">
+              <NuxtLink :to="`/products/${product.data.product_number}`" class="underline">
                 <img src="/assets/img/edit.png" class="h-[27px]"/>
-              </Nuxt-link>
+              </NuxtLink>
             </template>
           </column>
         </DataTable>
