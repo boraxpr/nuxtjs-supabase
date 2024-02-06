@@ -97,7 +97,7 @@
                   placeholder="Select a Customer"
                   optionLabel="name"
                   optionValue="id"
-                  class="w-full"
+                  class=""
                   @change="handleCustomerChange"
                 />
               </div>
@@ -105,14 +105,14 @@
 
             <div class="space-y-2">
               <label> Customer Detail </label>
-              <!-- <Textarea
+              <Textarea
                 v-model="createQuotationFormData.db.customer.address"
                 placeholder="Address"
                 rows="3"
                 col="20"
                 class="w-full text-black"
                 autoResize
-              /> -->
+              />
 
               <div class="flex flex-row justify-between">
                 <InputText
@@ -445,6 +445,9 @@
 
 <script setup>
 import { useVueToPrint } from "vue-to-print";
+
+import Textarea from "primevue/textarea";
+
 const componentRef = ref();
 useHead({
   title: "Quotation - Create",
@@ -497,34 +500,36 @@ const fetchCurrencies = async () => {
     { name: "US Dollar", code: "USD" },
   ];
 };
+// -- Fetch with caching --
+// 1 customers
 const fetchCustomers = async () => {
-  const { data } = await useSupabaseClient().from("customers").select("*");
-  if (process.client) {
-    console.info("CACHE INVALIDATED GET NEW DATA: " + data);
-  }
-  if (process.server) {
-    console.info("CACHE HIT: " + JSON.stringify(data, null, 2));
-  }
-  console.info(data);
+  const { data, error } = await useSupabaseClient()
+    .from("customers")
+    .select("*");
   return data;
 };
-const { data: customersData, error: customersError } = await useAsyncData(
+const { data: customersData } = await useLazyAsyncData(
   "customers",
   fetchCustomers
 );
 createQuotationFormData.db.customers = customersData;
+// 2 projects
 const fetchProjects = async () => {
-  const { data } = await useSupabaseClient().from("project").select("*");
-  createQuotationFormData.db.projects = data;
+  const { data, error } = await useSupabaseClient().from("project").select("*");
+  return data;
 };
-
+const { data: projectsData } = await useLazyAsyncData(
+  "projects",
+  fetchProjects
+);
+createQuotationFormData.db.projects = projectsData;
 const fetchSaleName = async () => {
   const currentSales = await useSupabaseClient().auth.getUser().email;
   createQuotationFormData.db.salesName = currentSales;
 };
 fetchCurrencies();
 
-Promise.all([fetchProjects(), fetchSaleName()])
+Promise.all([fetchSaleName()])
   .then((results) => {
     console.log("All fetches completed successfully"), results;
   })
