@@ -12,29 +12,52 @@
         </header>
         <main>
             <div>
-                <DataTable v-model:filters="filters" :value="projects" :globalFilterFields="['project_name']">
-                    <div class="flex justify-between">
-                        <div class="flex gap-5">
-                            <div class="flex justify-content-end">
-                                <span class="p-input-icon-right">
-                                    <InputText v-model="filters['global'].value" class="rounded-[25px] w-[404px] h-[54px] p-6" placeholder="Search by Project Name" />
-                                    <i class="pi pi-search mr-2" />
-                                </span>
+                <DataTable v-model:filters="filters" :value="projects" :globalFilterFields="['project_name','detail']">
+                    <div class="mb-4">
+                        <div class="flex justify-between">
+                            <div class="flex gap-5">
+                                <div class="flex justify-content-end">
+                                    <span class="p-input-icon-right">
+                                        <InputText v-model="filters['global'].value" class="rounded-[25px] w-[404px] h-[54px] p-6" placeholder="Search by Project Name" />
+                                        <i class="pi pi-search mr-2" />
+                                    </span>
+                                </div>
+                                <div>
+                                    <Dropdown v-model="filters['customer_id'].value" optionValue="id" :options="customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 12rem" :showClear="true">
+                                        <template #option="slotProps">
+                                            <Tag :value="slotProps.option.name" />
+                                        </template>
+                                    </Dropdown>
+                                </div>
                             </div>
                             <div>
-                                <Dropdown :options="customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 12rem" :showClear="true">
-                                    <template #option="slotProps">
-                                        <Tag :value="slotProps.option.name" />
-                                    </template>
-                                </Dropdown>
+                              <Nuxt-link :to="`/projects/create`">
+                                <div class="flex justify-center items-center w-[203px] h-[54px] hover:bg-gray-200 rounded-[20px] bg-[#F17121] text-white text-xl">
+                                  + New Project
+                                </div>
+                              </Nuxt-link>
                             </div>
                         </div>
-                        <div>
-                          <Nuxt-link :to="`/projects/create`">
-                            <div class="flex justify-center items-center w-[203px] h-[54px] hover:bg-gray-200 rounded-[20px] bg-[#F17121] text-white text-xl">
-                              + New Project
-                            </div>
-                          </Nuxt-link>
+                        <div class="w-full h-[58px] rounded-[20px] bg-[#F17121] mt-5 flex items-center">
+                          <div class="flex ml-4">
+                            <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg" 
+                            :class="total ? 'active': 'inActive'" 
+                            @click="changeStatusBtn('')">
+                              Total
+                            </button>
+                            <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
+                            <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg"
+                            :class="active ? 'active': 'inActive'" 
+                            @click="changeStatusBtn(1)">
+                              Active
+                            </button>
+                            <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
+                            <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg"
+                            :class="inActive ? 'active': 'inActive'"
+                            @click="changeStatusBtn(2)">
+                              In Active
+                            </button>
+                          </div>
                         </div>
                     </div>
                     <Column>
@@ -44,7 +67,9 @@
                     </Column>
                     <Column>
                         <template #header>
-                            Project Name
+                            <div class="flex justify-center w-full">
+                                Project Name
+                            </div>
                         </template>
                         <template #body="projects">
                             {{ projects.data.project_name }}
@@ -52,7 +77,9 @@
                     </Column>
                     <Column>
                         <template #header>
-                            Customer Name
+                            <div class="flex justify-center w-full">
+                                Customer Name
+                            </div>
                         </template>
                         <template #body="projects">
                             {{ projects.data.customers?.name }}
@@ -60,7 +87,9 @@
                     </Column>
                     <Column>
                         <template #header>
-                            Project Detail
+                            <div class="flex justify-center w-full">
+                                Project Detail
+                            </div>
                         </template>
                         <template #body="projects">
                             {{ projects.data.detail }}
@@ -68,7 +97,9 @@
                     </Column>
                     <Column>
                         <template #header>
-                            Status
+                            <div class="flex justify-center w-full">
+                                Status
+                            </div>
                         </template>
                         <template  #body="projects">
                           <div class="flex justify-center w-full">
@@ -81,7 +112,9 @@
                     </Column>
                     <Column>
                         <template #header>
-                            Latest Modifier
+                            <div class="flex justify-center w-full">
+                                Latest Modifier
+                            </div>
                         </template>
                         <template #body="projects">
                           <div class="flex justify-center w-full">
@@ -115,7 +148,7 @@
                             Edit
                         </template>
                         <template #body="projects">
-                          <Nuxt-link :to="`/projects/${projects.data.customer_id}`" class="underline">
+                          <Nuxt-link :to="`/projects/${projects.data.id}`" class="underline">
                             <img src="/assets/img/edit.png" class="h-[27px]"/>
                           </Nuxt-link>
                         </template>
@@ -134,13 +167,19 @@ const client = useSupabaseClient();
 const projects = ref([]);
 const customerDropdown = ref([]);
 
+const total = ref(true);
+const active = ref(false);
+const inActive = ref(false);
+
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    project_name: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
+    project_name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    customer_id: { value: null, matchMode: FilterMatchMode.EQUALS },
+    status: { value: null, matchMode: FilterMatchMode.EQUALS }
 });
 
 async function fetchData() {
-    const { data } = await client.from('project').select('*,customers(name),created_by:created_by(*), updated_by:updated_by(*)');
+    const { data } = await client.from('project').select('*,customers(id,name),created_by:created_by(*), updated_by:updated_by(*)');
     projects.value = data || [];
     console.log("projects.value ", projects.value);
 }
@@ -149,6 +188,25 @@ async function fetchCustomer() {
     const { data } = await client.from('customers').select('*');
     customerDropdown.value = data || [];
     console.log("customerDropdown.value ", customerDropdown.value);
+}
+
+const changeStatusBtn = (value) => {
+  if(value === ""){
+    total.value = true
+    active.value = false
+    inActive.value = false
+    filters.value.status.value = null
+  }else if(value === 1){
+    total.value = false
+    active.value = true
+    inActive.value = false
+    filters.value.status.value = true
+  }else if(value === 2){
+    total.value = false
+    active.value = false
+    inActive.value = true
+    filters.value.status.value = false
+  }
 }
 
 function formatDate(date) {
