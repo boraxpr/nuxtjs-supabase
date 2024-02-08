@@ -132,6 +132,7 @@
 
         <div class="flex flex-row justify-between">
           <InputText
+            v-model="createQuotationFormData.db.customer.zipcode"
             placeholder="Zip Code"
             class="w-[45%] text-black"
             disabled
@@ -596,6 +597,7 @@ const handleCustomerChange = async () => {
     .select("*")
     .eq("id", createQuotationFormData.userInputs.customer_id)
     .single();
+  console.log(data);
   createQuotationFormData.db.customer = data;
 };
 const handleProjectChange = async () => {
