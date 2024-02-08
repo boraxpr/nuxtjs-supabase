@@ -13,7 +13,7 @@ useHead({
   title: "Login",
 });
 
-const signInWithPassword = async () => {
+const signIn = async () => {
   loading.value = true;
   if (!isEmailValid(email.value)) {
     emailWarning.value = true;
@@ -156,7 +156,7 @@ definePageMeta({
   </div>
 
   <Button
-    @click="signInWithPassword"
+    @click="signIn"
     :disabled="loading.value"
     class="my-10 text-center rounded-2xl h-16 justify-center"
   >
