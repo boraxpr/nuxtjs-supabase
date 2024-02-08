@@ -1,9 +1,10 @@
 <template>
   <div ref="componentRef">
-    <div class="bg-card w-full shadow-lg">
+    <div class="w-full">
+      <Toast position="bottom-right" />
       <!-- SECTION 0 -->
       <div
-        class="m-2 mx-auto flex w-11/12 flex-row justify-between rounded-md py-4 print:hidden print:w-11/12"
+        class="m-2 mx-auto flex w-full flex-row justify-between rounded-md py-4 print:hidden print:w-11/12"
       >
         <!-- Header -->
         <div class="text-left text-3xl font-semibold">Add Quotation</div>
@@ -12,7 +13,6 @@
           <div
             class="flex flex-auto flex-wrap space-x-5 md:flex-nowrap print:hidden"
           >
-            <!-- <div class="flex-1"> -->
             <Button
               id="printButton"
               raised
@@ -77,8 +77,6 @@
                 />
               </svg>
             </Button>
-            <!-- </div> -->
-            <!-- <div class="flex-1"> -->
             <NuxtLink to="/quotation" class="h-full w-full">
               <Button
                 label="Close"
@@ -89,8 +87,7 @@
                 class="h-14 w-full"
               />
             </NuxtLink>
-            <!-- </div> -->
-            <!-- <div class="flex-1"> -->
+
             <Button
               label="Save"
               severity="success"
@@ -98,8 +95,8 @@
               outlined
               rounded
               class="h-14 w-full"
+              @click="handleSave"
             />
-            <!-- </div> -->
           </div>
         </div>
       </div>
@@ -210,14 +207,14 @@
 
           <label>Currency:</label>
           <Dropdown
-            v-model="createQuotationFormData.userInputs.currency"
+            v-model="createQuotationFormData.userInputs.currency_code"
             :options="createQuotationFormData.db.currencies"
             placeholder="Select a Currency"
             inputId="dd-customer"
             optionLabel="name"
             optionValue="code"
             class=""
-          />
+          ></Dropdown>
         </div>
       </div>
 
@@ -229,7 +226,7 @@
           <div class="space-y-2">
             <label> Projects </label>
             <Dropdown
-              v-model="createQuotationFormData.userInputs.project"
+              v-model="createQuotationFormData.userInputs.project_id"
               :options="createQuotationFormData.db.projects"
               inputId="dd-customer"
               optionLabel="project_name"
@@ -237,6 +234,7 @@
               placeholder="Select a Project"
               @change="handleProjectChange"
               class="w-full"
+              showClear
             />
           </div>
           <div class="space-y-2">
@@ -308,7 +306,7 @@
 
       <!-- SECTION 4 : SUMMARY -->
       <div
-        class="bg-card mx-auto grid w-11/12 grid-flow-col grid-cols-4 space-x-5 rounded-lg border pb-10 shadow-lg print:w-11/12"
+        class="bg-card mx-auto grid w-11/12 grid-flow-col grid-cols-[7fr,3fr] space-x-5 rounded-lg border pb-10 shadow-lg print:w-11/12"
       >
         <!-- SECTION 4 : LEFT -->
         <div class="col-span-3 flex flex-col space-y-5 border">
@@ -339,8 +337,6 @@
             </div>
           </div>
         </div>
-        <!-- SECTION 4 : MIDDLE SPACE SPAN -->
-        <!-- <div class="flex flex-col col-span divide-y border"></div> -->
         <!-- SECTION : RIGHT -->
         <div class="col-span-1 flex flex-col divide-y border">
           <div class="m-5 mr-0 flex flex-row justify-between space-x-5">
@@ -367,6 +363,8 @@
 
 <script setup>
 import { useVueToPrint } from "vue-to-print";
+const toast = useToast();
+
 const componentRef = ref();
 useHead({
   title: "Quotation - Create",
@@ -375,6 +373,7 @@ const createQuotationFormData = reactive({
   // Fetch from Database
   db: {
     customers: ref([]),
+    products: ref([]),
     customer: {
       zipcode: ref(""),
       address: ref(""),
@@ -395,8 +394,8 @@ const createQuotationFormData = reactive({
     // DROPDOWNS
     // Customer Name -> Customer Id -changes-> proc Customer Detail Fetching
     customer_id: ref(),
-    currency: ref(),
-    project: ref(),
+    currency_code: ref(),
+    project_id: ref(),
     quotation: {
       // DATE
       date: ref(),
@@ -412,6 +411,35 @@ const createQuotationFormData = reactive({
     grand_total: ref(),
   },
 });
+// Save
+const handleSave = async () => {
+  const { userInputs, calculations } = createQuotationFormData;
+  const { data, error } = await useSupabaseClient()
+    .from("quotations")
+    .insert({
+      created_date: userInputs.quotation.date,
+      due_date: userInputs.quotation.due_date,
+      status: "Draft",
+      is_active: true,
+      currency: userInputs.currency_code,
+      project_name: userInputs.project_id,
+      grand_total: calculations.grand_total,
+      customer_id: userInputs.customer_id,
+      credit_day: userInputs.credit_day,
+    })
+    .select()
+    .single();
+  console.log(data);
+  if (!error) {
+    toast.add({
+      severity: "success",
+      summary: "Success",
+      detail: `Quotation ${data.doc_num} Created Successfully`,
+      life: 5000,
+    });
+  }
+};
+
 // FETCHES INITIAL DATA
 const fetchCurrencies = async () => {
   createQuotationFormData.db.currencies = [
@@ -437,8 +465,13 @@ const { data: customersData, error: customersError } = await useAsyncData(
 createQuotationFormData.db.customers = customersData;
 const fetchProjects = async () => {
   const { data } = await useSupabaseClient().from("project").select("*");
-  createQuotationFormData.db.projects = data;
+  return data;
 };
+const { data: projectsData, error: projectsError } = await useAsyncData(
+  "projects",
+  fetchProjects,
+);
+createQuotationFormData.db.projects = projectsData;
 
 const fetchSaleName = async () => {
   const currentSales = await useSupabaseClient().auth.getUser().email;
@@ -446,33 +479,42 @@ const fetchSaleName = async () => {
 };
 fetchCurrencies();
 
-Promise.all([fetchProjects(), fetchSaleName()])
+Promise.all([fetchSaleName()])
   .then((results) => {
     console.log("All fetches completed successfully"), results;
   })
   .catch((error) => {
     console.error("An error occured: ", error);
   });
-
-// FETCHES @CHANGE
-const handleCustomerRemove = (clearCallback) => {
-  clearCallback();
-  createQuotationFormData.db.customer = ref();
+const setPropertiesToEmpty = (object) => {
+  const emptyValue = null;
+  for (const key in object) {
+    if (object.hasOwnProperty(key)) {
+      object[key] = emptyValue;
+    }
+  }
 };
+
 const handleCustomerChange = async () => {
+  console.log("Customer Id", createQuotationFormData.userInputs.customer_id);
+  if (createQuotationFormData.userInputs.customer_id == null) {
+    setPropertiesToEmpty(createQuotationFormData.db.customer);
+  }
   const { data } = await useSupabaseClient()
     .from("customers")
     .select("*")
     .eq("id", createQuotationFormData.userInputs.customer_id)
     .single();
   createQuotationFormData.db.customer = data;
-  console.log("Success Customer On Change", data);
 };
 const handleProjectChange = async () => {
+  if (createQuotationFormData.userInputs.project_id == null) {
+    setPropertiesToEmpty(createQuotationFormData.db.project);
+  }
   const { data } = await useSupabaseClient()
     .from("project")
     .select("*")
-    .eq("id", createQuotationFormData.userInputs.project)
+    .eq("id", createQuotationFormData.userInputs.project_id)
     .single();
   createQuotationFormData.db.project = data;
   console.log("Success Project On Change", data);
