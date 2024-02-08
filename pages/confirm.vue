@@ -1,14 +1,12 @@
 <script setup>
 const user = useSupabaseUser();
-watch(
-  user,
-  () => {
-    if (user.value) {
-      return navigateTo("/");
-    }
-  },
-  { immediate: true }
-);
+watchEffect(() => {
+  if (user.value) {
+    navigateTo("/");
+  } else {
+    navigateTo("/login");
+  }
+});
 </script>
 <template>
   <div>Waiting for login...</div>

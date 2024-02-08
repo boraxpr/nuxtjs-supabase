@@ -1,10 +1,17 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["nuxt-primevue", "@nuxtjs/supabase", "@nuxtjs/tailwindcss", "@nuxt/image"],
+  debug: true,
+  modules: [
+    "nuxt-primevue",
+    "@nuxtjs/supabase",
+    "@nuxtjs/tailwindcss",
+    "@nuxt/image",
+  ],
   css: [
     "primeicons/primeicons.css",
-    // "primevue/resources/themes/saga-orange/theme.css", .
-    "@/assets/css/themes/mytheme/theme.scss",
+    // "primevue/resources/themes/saga-orange/theme.css",
+    "primevue/resources/themes/aura-light-noir/theme.css",
+    // "@/assets/css/themes/mytheme/theme.scss",
     "@/assets/css/tailwind.css",
   ],
   // https://primevue.org/theming/
