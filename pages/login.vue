@@ -7,7 +7,7 @@ const password = ref(""); // Add a separate variable for the password
 const loading = ref(false);
 const emailWarning = ref(false);
 const emailWarningMsg = ref(
-  "The email address you entered is not in a valid format. Please check and try again."
+  "The email address you entered is not in a valid format. Please check and try again.",
 );
 useHead({
   title: "Login",
@@ -48,7 +48,7 @@ const signInWithOAuth = async (provider) => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
-        redirectTo: 'http://localhost:3000/confirm', // Use absolute URL
+        redirectTo: "http://localhost:3000/confirm", // Use absolute URL
       },
     });
 
@@ -56,7 +56,7 @@ const signInWithOAuth = async (provider) => {
       console.error(`Error signing in with ${provider}:`, error.message);
     }
   } catch (error) {
-    console.error('Error during OAuth sign-in:', error.message);
+    console.error("Error during OAuth sign-in:", error.message);
   }
 };
 
@@ -65,11 +65,11 @@ const signInWithOAuth = async (provider) => {
 <template>
   <h1 class="mt-10 text-center font-semibold">Log in to your account</h1>
   <div class="mt-6 space-y-5">
-    <h5 class="text-muted-foreground text-lg text-[#4B4B4B] font-semibold">
+    <h5 class="text-muted-foreground text-lg font-semibold text-[#4B4B4B]">
       Log in with your email:
     </h5>
     <div class="w-full">
-      <span class="p-input-icon-left w-full flex items-center">
+      <span class="p-input-icon-left flex w-full items-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="35"
@@ -99,7 +99,7 @@ const signInWithOAuth = async (provider) => {
           id="email"
           v-model="email"
           aria-describedby="email-help"
-          class="border w-full border-b-2 border-t-0 border-l-0 border-r-0 focus:shadow-none pl-20"
+          class="w-full border border-b-2 border-l-0 border-r-0 border-t-0 bg-white pl-20 shadow-transparent focus:border-b-orange-500 focus:shadow-none focus:outline-0"
           required
           size="large"
           placeholder="Email"
@@ -117,16 +117,16 @@ const signInWithOAuth = async (provider) => {
 
     <div class="flex flex-col items-center">
       <div class="w-full">
-        <span class="p-input-icon-left w-full flex items-center">
+        <span class="p-input-icon-left flex w-full items-center">
           <img
             src="/assets/img/padlock.png"
-            class="absolute left-2 ml-4 mb-2"
+            class="absolute left-2 mb-2 ml-4"
           />
           <InputText
             id="password"
             v-model="password"
             aria-describedby="password-help"
-            class="border w-full border-b-2 border-t-0 border-l-0 border-r-0 focus:shadow-none pl-20"
+            class="w-full border border-b-2 border-l-0 border-r-0 border-t-0 bg-white pl-20 focus:border-b-orange-500 focus:shadow-transparent focus:outline-0"
             type="password"
             size="large"
             required
@@ -136,42 +136,43 @@ const signInWithOAuth = async (provider) => {
       </div>
     </div>
 
-    <div class="flex gap-6 items-center justify-center">
-      <div class="w-28 h-[1px] border-b-2"></div>
+    <div class="flex items-center justify-center gap-6">
+      <div class="h-[1px] w-28 border-b-2"></div>
       <p class="text-lg font-semibold">or continue with</p>
-      <div class="w-28 h-[1px] border-b-2"></div>
+      <div class="h-[1px] w-28 border-b-2"></div>
     </div>
-    <div class="flex gap-4 justify-center">
+    <div class="flex justify-center gap-4">
       <Button
         @click="() => signInWithOAuth('google')"
         :disabled="loading"
-        class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
-        ><img src="/assets/img/googleLogo.png" />
+        class="flex h-14 w-36 items-center justify-center gap-2 border-gray-300 bg-white text-lg font-semibold text-gray-500"
+      >
+        <img src="/assets/img/googleLogo.png" />
         Google
       </Button>
       <Button
         @click="() => signInWithOAuth('facebook')"
         :disabled="loading"
-        class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
+        class="flex h-14 w-36 items-center justify-center gap-2 border-gray-300 bg-white text-lg font-semibold text-gray-500"
         ><img src="/assets/img/facebookLogo.png" />
         Facebook
       </Button>
       <Button
-        class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
+        class="flex h-14 w-36 items-center justify-center gap-2 border-gray-300 bg-white text-lg font-semibold text-gray-500"
         ><img src="/assets/img/lineLogo.png" />
         Line
       </Button>
     </div>
   </div>
-  <div class="flex justify-between mt-6">
+  <div class="mt-6 flex justify-between">
     <div class="flex items-center gap-2">
       <Checkbox :binary="true" />
-      <p class="font-bold text-lg">Remember me</p>
+      <p class="text-lg font-bold">Remember me</p>
     </div>
     <NuxtLink
       to="/resetpassword"
       rel="noopener"
-      class="text-blue-600 visited:text-blue-600 text-lg font-semibold hover:underline"
+      class="text-lg font-semibold text-blue-600 visited:text-blue-600 hover:underline"
     >
       Forgot Password ?</NuxtLink
     >
@@ -180,7 +181,7 @@ const signInWithOAuth = async (provider) => {
   <Button
     @click="signInWithPassword"
     :disabled="loading.value"
-    class="my-10 text-center rounded-2xl h-16 justify-center"
+    class="my-10 h-16 justify-center rounded-2xl text-center"
   >
     <div v-if="loading">
       <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
@@ -188,10 +189,10 @@ const signInWithOAuth = async (provider) => {
     <div v-else class="text-lg font-bold">SIGN IN</div>
   </Button>
   <div class="flex justify-center gap-6">
-    <p class="font-bold text-lg">Don't have an account?</p>
+    <p class="text-lg font-bold">Don't have an account?</p>
     <NuxtLink
       to="/signup"
-      class="text-blue-600 visited:text-blue-600 text-lg font-semibold hover:underline"
+      class="text-lg font-semibold text-blue-600 visited:text-blue-600 hover:underline"
       >Create an account</NuxtLink
     >
   </div>
