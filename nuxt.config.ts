@@ -6,7 +6,12 @@ export default defineNuxtConfig({
     "@nuxtjs/supabase",
     "@nuxtjs/tailwindcss",
     "@nuxt/image",
+    "@nuxtjs/eslint-module",
   ],
+  eslint: {
+    exclude: ["/assets"],
+    include: ["/pages/**/*.{ts,js,vue}"],
+  },
   css: [
     "primeicons/primeicons.css",
     // "primevue/resources/themes/saga-orange/theme.css",
