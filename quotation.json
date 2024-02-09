@@ -1,0 +1,33 @@
+{
+  "db": {
+    "customers": [],
+    "customer": {
+      "zipcode": "",
+      "address": "",
+      "tax_id": "",
+      "branch_code": "",
+      "branch_name": ""
+    },
+    "salesName": "",
+    "currencies": [],
+    "projects": [],
+    "project": {
+      "detail": ""
+    }
+  },
+  "userInputs": {
+    "reference": "",
+    "customer_id": "",
+    "currency": "",
+    "project": "",
+    "quotation": {
+      "date": "",
+      "due_date": ""
+    },
+    "credit_day": "",
+    "products": []
+  },
+  "calculations": {
+    "grand_total": ""
+  }
+}
