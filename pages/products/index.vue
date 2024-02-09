@@ -6,14 +6,13 @@
           <div class="text-4xl font-semibold">Products</div>
         </div>
         <div class="Container flex justify-end items-end">
-          
         </div>
       </div>
     </header>
     <main>
       <div>
-        <DataTable v-model:filters="filters" :value="products" paginator :rows="10" stripedRows tableStyle="min-width: 50rem"
-        dataKey="id" :loading="loading" :globalFilterFields="['product_name', 'product_code', 'productType.product_type_name', 'category.category_name', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit']"
+        <DataTable v-model:filters="productList.filters" :value="productList.db.products" paginator :rows="10" stripedRows tableStyle="min-width: 50rem"
+        dataKey="id" :loading="productList.param.loading" :globalFilterFields="['product_name', 'product_code', 'productType.product_type_name', 'category.category_name', 'barcode', 'selling_price', 'vat', 'product_description', 'income_account','unit']"
         paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" 
         currentPageReportTemplate="{first} - {last} of {totalRecords} products">
         <div class="mb-4">
@@ -21,12 +20,12 @@
               <div class="flex gap-5">
                 <div class="flex justify-content-end">
                     <span class="p-input-icon-right">
-                        <InputText v-model="filters['global'].value" class="rounded-[25px] w-[404px] h-[54px] p-6" placeholder="Search by Name , Code , Barcode , ..." />
+                        <InputText v-model="productList.filters.global.value" class="rounded-[25px] w-[404px] h-[54px] p-6" placeholder="Search by Name , Code , Barcode , ..." />
                         <i class="pi pi-search mr-2" />
                     </span>
                 </div>
                 <div>
-                  <MultiSelect v-model="filters['product_type_id'].value" display="chip" :maxSelectedLabels="2" optionValue="id" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Type" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 14rem">
+                  <MultiSelect v-model="productList.filters.product_type_id.value" display="chip" optionValue="id" :options="productList.db.productTypeDropdown" optionLabel="product_type_name" placeholder="Type" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 14rem" :maxSelectedLabels="2">
                       <template #option="slotProps">
                           <div class="flex align-items-center gap-2">
                               <span>{{ slotProps.option.product_type_name }}</span>
@@ -35,7 +34,7 @@
                   </MultiSelect>
                 </div>
                 <div>
-                  <MultiSelect v-model="filters['category_id'].value" display="chip"  optionValue="id" :options="categoryDropdown" optionLabel="category_name" placeholder="Category" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 14rem" :maxSelectedLabels="2">
+                  <MultiSelect v-model="productList.filters.category_id.value" display="chip" optionValue="id" :options="productList.db.categoryDropdown" optionLabel="category_name" placeholder="Category" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 14rem" :maxSelectedLabels="2">
                       <template #option="slotProps">
                           <div class="flex align-items-center gap-2">
                               <span>{{ slotProps.option.category_name }}</span>
@@ -55,19 +54,19 @@
             <div class="w-full h-[58px] rounded-[20px] bg-[#F17121] mt-5 flex items-center">
               <div class="flex ml-4">
                 <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg" 
-                :class="total ? 'active': 'inActive'" 
+                :class="productList.param.total ? 'active': 'inActive'" 
                 @click="changeStatusBtn('')">
                   Total
                 </button>
                 <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
                 <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg"
-                :class="active ? 'active': 'inActive'" 
+                :class="productList.param.active ? 'active': 'inActive'" 
                 @click="changeStatusBtn(1)">
                   Active
                 </button>
                 <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
                 <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg"
-                :class="inActive ? 'active': 'inActive'"
+                :class="productList.param.inActive ? 'active': 'inActive'"
                 @click="changeStatusBtn(2)">
                   In Active
                 </button>
@@ -85,7 +84,7 @@
             <template #body="product">
               <div class="flex justify-between">
                 <div class="flex items-center">
-                  <img :src="product.data.linkImg" alt="" class="max-h-24 h-auto">
+                  <NuxtImg :src="getLinkImg(product.data.product_img)" alt="" class="max-h-24 h-auto" loading="lazy"/>
                 </div>
                 <div class="flex items-center">
                   {{ product.data.barcode }}
@@ -167,9 +166,9 @@
               </div>
             </template>
             <template #body="product">
-              <div class="flex justify-center w-full">
+              <div class="flex w-full">
                 <span v-if="product.data.updated_by?.full_name">
-                  <div class="flex justify-center w-full text-[#F17121]">
+                  <div class="flex w-full text-[#F17121]">
                     {{ product.data.updated_by?.full_name }}
                   </div>
                   <div class="mt-2">
@@ -180,7 +179,7 @@
                   </div>
                 </span>
                 <span v-else>
-                  <div class="flex justify-center w-full text-[#F17121]">
+                  <div class="flex w-full text-[#F17121]">
                     {{ product.data.created_by?.full_name }}
                   </div>
                   <div class="mt-2">
@@ -212,15 +211,19 @@ import Column from "primevue/column";
 import { FilterMatchMode } from "primevue/api";
 
 const client = useSupabaseClient();
-const products = ref([]);
-const loading = ref(true);
-const productTypeDropdown = ref([]);
-const categoryDropdown = ref([]);
-const total = ref(true);
-const active = ref(false);
-const inActive = ref(false);
-
-const filters = ref({
+const productList = reactive({
+  db: {
+    products: ref(),
+    productTypeDropdown: ref([]),
+    categoryDropdown: ref([])
+  },
+  param: {
+    loading: ref(true),
+    total: ref(true),
+    active: ref(false),
+    inActive: ref(false)
+  },
+  filters: ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     product_name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     product_code: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -233,25 +236,27 @@ const filters = ref({
     product_description: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     income_account: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     unit: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS }
+    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    test:{ value: null, matchMode: FilterMatchMode.EQUALS }
+  })
 });
 
 const changeStatusBtn = (value) => {
   if(value === ""){
-    total.value = true
-    active.value = false
-    inActive.value = false
-    filters.value.status.value = null
+    productList.param.total = true
+    productList.param.active = false
+    productList.param.inActive = false
+    productList.filters.status.value = null
   }else if(value === 1){
-    total.value = false
-    active.value = true
-    inActive.value = false
-    filters.value.status.value = true
+    productList.param.total = false
+    productList.param.active = true
+    productList.param.inActive = false
+    productList.filters.status.value = true
   }else if(value === 2){
-    total.value = false
-    active.value = false
-    inActive.value = true
-    filters.value.status.value = false
+    productList.param.total= false
+    productList.param.active = false
+    productList.param.inActive = true
+    productList.filters.status.value = false
   }
 }
 
@@ -271,7 +276,6 @@ function formatDate(date) {
   }
   return [day, month, year].join('/');
 }
-
 function formatTime(date) {
   let d = new Date(date);
   let hour, min, sec
@@ -291,50 +295,64 @@ function formatTime(date) {
   }
   return [hour, min, sec].join(' : ');
 }
-
-async function fetchData() {
-  const { data } = await client.from('product').select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)');
-  products.value = data || [];
-
-  for(let i in products.value){
-    if(products.value[i]?.product_img !== null && products.value[i]?.product_img !== ""){
-      let link = await getLinkImg(products.value[i].product_img);
-      products.value[i].linkImg = link;
-    }
-  }
-}
-
-async function fetchCategory() {
-  const { data } = await client.from('category').select('*');
-  categoryDropdown.value = data || [];
-}
-
-async function fetchProductType() {
-  const { data } = await client.from('productType').select('*');
-  productTypeDropdown.value = data || [];
-}
-
-const getLinkImg = async (path) => {
-    const { data, error } = await client
-    .storage
-    .from('product')
-    .createSignedUrl(path, 600)
-    return data.signedUrl;
-}
-
 const formatCurrency = (value) => {
   if(value !== null){
     return value.toLocaleString(undefined, { minimumFractionDigits: 2 });
   }
 };
+
+const fetchProduct = async () => {
+  const { data, error } = await client
+    .from("product")
+    .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)');
+    let product = data;
+  if(error){
+    console.log("error:product ",error);
+  }
+  return product;
+};
+
+const getLinkImg = (path) =>{
+  const { data, error } = client.storage.from('product').getPublicUrl(path);
+  if(error){
+    console.log("error:getLinkImg ",error);
+  }
+  return data.publicUrl;
+}
+
+const { data: productData } = await useLazyAsyncData(
+  "product",
+  fetchProduct
+);
+
+async function fetchCategory() {
+  const { data } = await client.from('category').select('*');
+  return data;
+}
+
+const { data: categoryDropdownData } = await useLazyAsyncData(
+  "category",
+  fetchCategory
+);
+
+async function fetchProductType() {
+  const { data } = await client.from('productType').select('*');
+  return data;
+}
+
+const { data: productTypeDropdown } = await useLazyAsyncData(
+  "productType",
+  fetchProductType
+);
 useHead({
   title: "Products",
 });
 
-  fetchData();
-  fetchProductType();
-  fetchCategory();
-  loading.value = false;
+productList.db.products = productData;
+productList.db.productTypeDropdown = productTypeDropdown;
+productList.db.categoryDropdown = categoryDropdownData;
+productList.param.loading = false
+  
 </script>
 
 <style>
