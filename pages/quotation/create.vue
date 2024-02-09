@@ -272,13 +272,19 @@
             table: { style: 'min-width: 50rem' },
             column: {
               bodycell: ({ state }) => ({
-                class: [{ 'pt-0 pb-0 border': state['d_editing'] }],
+                class: [{ 'pt-2 pb-2': state['d_editing'] }],
               }),
             },
           }"
           ><Column field="code" header="Code" style="width: 20%">
             <template #editor="{ data, field }">
               <InputText v-model="data[field]" />
+            </template>
+            <template #body="{ data, field }">
+              <template v-if="data[field] === ''">
+                <span class="border border-amber-700">{{ data[field] }}</span>
+              </template>
+              <template v-else>{{ data[field] }}</template>
             </template>
           </Column>
           <Column field="name" header="Name" style="width: 20%">
@@ -334,7 +340,7 @@
       class="bg-card mx-auto grid w-11/12 grid-flow-col grid-cols-[7fr,3fr] space-x-5 rounded-lg border pb-10 shadow-lg print:w-11/12"
     >
       <!-- SECTION 4 : LEFT -->
-      <div class="col-span-3 flex flex-col space-y-5 border">
+      <div class="flex flex-col space-y-5">
         <div class="m-5 mr-0 flex flex-row justify-between space-x-5">
           <div class="w-full">
             <div>
@@ -379,30 +385,58 @@
         </div>
       </div>
       <!-- SECTION : RIGHT -->
-      <div class="col-span-1 flex flex-col divide-y border">
-        <div class="m-5 mr-0 flex flex-row justify-between space-x-5">
-          <div class="space-y-5">
-            <div>Amount:</div>
-            <div class="flex flex-row">
-              <div>Discount:</div>
-              <InputText class="w-[30%]"></InputText>
-              <span class="ml-1">%</span>
-            </div>
-            <div>Total After Discount</div>
-            <div class="flex flex-row items-center space-x-3"></div>
-            <div>Grand Total</div>
+      <!-- <div class="grid grid-cols-[5fr,5fr] p-6">
+        <div class="">
+          <div>Amount:</div>
+          <div class="p-fluid flex flex-row items-center">
+            <div>Discount:</div>
+            <InputText></InputText>%
           </div>
-          <div class="pt-5">
-            <div class="flex flex-row items-center space-x-3"></div>
-          </div>
+          <div>Total After Discount</div>
+
+          <div>Grand Total</div>
         </div>
+        <div class="text-right">
+          <div>0.00</div>
+          <div>0.00</div>
+          <div>0.00</div>
+          <div>0.00</div>
+          <div>0.00</div>
+        </div>
+      </div> -->
+      <div class="flex flex-col space-y-2 p-6">
+        <div>Amount:</div>
+        <div class="flex flex-col items-center justify-between md:flex-row">
+          <div class="mb-2 w-full text-left md:mb-0 md:w-1/4 md:text-right">
+            Discount:
+          </div>
+          <div class="p-fluid flex w-full flex-row items-center md:w-2/4">
+            <InputNumber
+              class="w-full md:w-5/6"
+              v-model="createQuotationFormData.userInputs.discount"
+              mode="decimal"
+              showButtons
+              :max="100"
+              :min="0"
+            ></InputNumber>
+            <span class="w-full pl-1 text-left md:w-1/6">%</span>
+          </div>
+          <div class="w-full text-right md:w-1/4">0.00</div>
+        </div>
+
+        <div>Amount after discount:</div>
+
+        <div class="">Total Amount:</div>
+        <Divider />
+
+        <div>Total Amount:</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-// import { useVueToPrint } from "vue-to-print";
+import { useVueToPrint } from "vue-to-print";
 import { FilterMatchMode } from "primevue/api";
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -454,6 +488,7 @@ const createQuotationFormData = reactive({
     remark: ref(),
     internal_note: ref(),
     attachment: ref(),
+    discount: ref(),
   },
   calculations: {
     grand_total: ref(),
@@ -518,7 +553,7 @@ const handleSave = async () => {
       customer_id: userInputs.customer_id,
       credit_day: userInputs.credit_day,
       remark: userInputs.remark,
-      internal_note: userInputs.internal_note,
+      note: userInputs.internal_note,
       attachment: userInputs.attachment,
     })
     .select()
