@@ -54,19 +54,19 @@
             <div class="w-full h-[58px] rounded-[20px] bg-[#F17121] mt-5 flex items-center">
               <div class="flex ml-4">
                 <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg" 
-                :class="productList.param.total ? 'active': 'inActive'" 
+                :class="productList.param.total ? 'active-btn': 'inActive-btn'" 
                 @click="changeStatusBtn('')">
                   Total
                 </button>
                 <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
                 <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg"
-                :class="productList.param.active ? 'active': 'inActive'" 
+                :class="productList.param.active ? 'active-btn': 'inActive-btn'" 
                 @click="changeStatusBtn(1)">
                   Active
                 </button>
                 <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
                 <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg"
-                :class="productList.param.inActive ? 'active': 'inActive'"
+                :class="productList.param.inActive ? 'active-btn': 'inActive-btn'"
                 @click="changeStatusBtn(2)">
                   In Active
                 </button>
@@ -152,7 +152,7 @@
             </template>
             <template  #body="product">
               <div class="flex justify-center w-full">
-                <div :class="product.data.status ? 'inActive': 'active'" class="w-[111px] h-[35px] rounded-[10px] border flex justify-center items-center text-[12px]">
+                <div :class="product.data.status ? 'inActive-btn': 'active-btn'" class="w-[111px] h-[35px] rounded-[10px] border flex justify-center items-center text-[12px]">
                   <span v-if="product.data.status" >Active</span>
                   <span v-else >In Active</span>
                 </div>
@@ -357,11 +357,11 @@ productList.param.loading = false
 
 <style>
 
-.active {
+.active-btn {
   background-color: white;
   color: black;
 }
-.inActive{
+.inActive-btn {
   background-color: #F17121;
   color: white;
 }
