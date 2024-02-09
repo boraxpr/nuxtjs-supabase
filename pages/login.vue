@@ -59,6 +59,7 @@ const signInWithOAuth = async (provider) => {
     console.error("Error during OAuth sign-in:", error.message);
   }
 };
+
 </script>
 
 <template>
