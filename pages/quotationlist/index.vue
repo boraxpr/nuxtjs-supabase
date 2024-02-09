@@ -1,134 +1,3 @@
-<template>
-  <div>
-    <header>
-      <div class="Container grid grid-cols-2 gap-4 mb-4 h-40">
-        <div class="Container flex items-center">
-          <div class="text-3xl">quotation</div>
-        </div>
-        <div class="Container flex justify-end items-end">
-          
-        </div>
-      </div>
-    </header>
-    <main>
-      <div>
-        <DataTable
-  v-model:filters="filters"
-  :value="quotation"
-  :paginator="true"
-  :rows="5"
-  :rowsPerPageOptions="[5, 10, 20, 50]"
-  :stripedRows="true"
-  tableStyle="min-width: 50rem"
-  dataKey="id"
-  :loading="loading"
-  :globalFilterFields="['doc_num', 'status', 'project_named', 'customer_name']"
-  paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-  currentPageReportTemplate="{first} - {last} of {totalRecords} quotation"
-  :sortField="'doc_num'" 
-  :sortOrder="1" 
->
-        <template #header>
-            <div class="flex justify-between">
-              <div class="flex gap-5">
-                <div class="flex justify-content-end">
-                    <span class="p-input-icon-right">
-                        <InputText v-model="filters['global'].value" class="rounded-[25px] w-[515px] h-[54px] p-6" placeholder="Search by Doc Number, Project Name, Customer Name, Status" />
-                        <i class="pi pi-search mr-2" />
-                    </span>
-                </div>
-              </div>
-              <div>
-                <Nuxt-link :to="`/quotationlist/create`">
-                  <div class="flex justify-center items-center w-[203px] h-[54px] hover:bg-gray-200 rounded-[20px] bg-[#F17121] text-white text-xl">
-                    + New Quotation
-                  </div>
-                </Nuxt-link>
-              </div>
-            </div>
-            <div class="w-full h-[58px] rounded-[20px] bg-[#F17121] mt-5 flex items-center">
-              <div class="flex ml-4">
-                <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg" 
-                :class="total ? 'active': 'inActive'" 
-                @click="changeStatusBtn('')">
-                  Show all
-                </button>
-                <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
-                <Button class="p-button-secondary p-button-rounded p-button-text p-button-lg excel-icon" icon="pi pi-file-excel"></Button>
-              </div>
-            </div>
-          </template>
-          <template #empty> No quotation found. </template>
-          <template #loading> Loading quotation data. Please wait. </template>
-          <Column  header="Document No.">
-              <template #body="quotation">
-                  <div class="card flex items-center justify-center">
-                      <Checkbox v-model="checked" :binary="true" />
-                      <div class="ml-2 text-[#F17121]">
-                          <span class="underline">{{quotation.data.doc_num}}</span>
-                      </div>
-                  </div>
-              </template>
-          </Column>
-          <Column field="customer_name" header="Customer Name"></Column>
-          <Column field="project_named" header="Project Name"></Column>
-          <Column field="customer_phone" header="Contact"></Column>
-          <Column field="grand_total" header="Total">
-          <template #body="quotation">
-            <div class="text-right">
-              {{ formatCurrency(quotation.data.grand_total) }}
-            </div>
-          </template>
-          </Column>
-          <Column header="Status">
-            <template #body="quotation">
-              <div class="card flex justify-content-center ">
-                <Dropdown v-model="dropdownStatus[quotation.data.doc_num]" :options="statusoption" optionLabel="name" :placeholder="quotation.data.status" @change="updateStatus(quotation.data.doc_num)" class="w-full md:w-14rem bg-[#F17121]" />
-              </div>
-            </template>
-          </Column>
-
-          <Column header="Latest Modifier">
-            <template #body="quotation">
-              <div class="flex flex-col items-left justify-center w-full">
-                <div class="text-[#F17121]">
-                  {{ quotation.data.updated_by?.full_name }}
-                </div>
-                <div class="mt-1">
-                  {{ formatDate(quotation.data.updated_at) }}
-                </div>
-                <div>
-                  {{ formatTime(quotation.data.updated_at) }}
-                </div>
-              </div>
-            </template>
-          </Column>
-          <Column header="Edit">
-            <template #body="quotation">
-              <!-- Edit button -->
-              <Nuxt-link :to="`/quotationlist/${quotation.data.doc_num}`">
-                <Button icon="pi pi-pencil" @click="editRow(rowData)" class="p-button-rounded p-button-text"></Button>
-              </Nuxt-link>
-              <!-- Delete icon -->
-                <Button icon="pi pi-trash" @click="showTemplate($event,quotation.data.doc_num)" class="p-button-rounded p-button-text"></Button>
-              <Toast />
-                  <ConfirmPopup group="templating">
-                      <template #message="slotProps">
-                          <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border p-3 mb-3 pb-0">
-                              <i :class="slotProps.message.icon" class="text-6xl text-primary-500"></i>
-                              <p>{{ slotProps.message.message }}</p>
-                          </div>
-                      </template>
-                  </ConfirmPopup>
-
-            </template>
-          </Column>
-        </DataTable>
-      </div>
-    </main>
-  </div>
-</template>
-
 <script setup>
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
@@ -175,8 +44,9 @@ async function fetchquotation() {
       return {
         ...quotation,
         customer_name: customer ? customer.name : 'Unknown Customer',
-        customer_phone: customer ? customer.phone_number : 'Unknown Customer phone number',
-        project_named: project ? project.project_name : 'Unknow Project name',
+        customer_phone: customer ? customer.phone_number : 'N/A',
+        customer_email: customer ? customer.email : 'N/A',
+        project_named: project ? project.project_name : 'N/A',
       };
     });
     
@@ -355,6 +225,148 @@ const formatCurrency = (value) => {
 
 </script>
 
+<template>
+  <div class="overflow-x-auto">
+    <header class="mb-4">
+      <div class="container grid grid-cols-1 md:grid-cols-2 gap-4 h-40">
+        <div class="flex items-center justify-center md:justify-start">
+          <div class="text-6xl font-bold">Quotation</div>
+        </div>
+        <div class="flex justify-end items-end">
+          
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <DataTable
+          v-model:filters="filters"
+          :value="quotation"
+          :paginator="true"
+          :rows="5"
+          :rowsPerPageOptions="[5, 10, 20, 50]"
+          :stripedRows="true"
+          tableStyle="min-width: 50rem"
+          dataKey="id"
+          :loading="loading"
+          :globalFilterFields="['doc_num', 'status', 'project_named', 'customer_name']"
+          paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+          currentPageReportTemplate="{first} - {last} of {totalRecords} quotation"
+          :sortField="'doc_num'"
+          :sortOrder="1"
+          class="table-font"
+        >
+        <template #header>
+            <div class="flex justify-between">
+              <div class="flex gap-5">
+                <div class="flex justify-content-end">
+                    <span class="p-input-icon-right">
+                        <InputText v-model="filters['global'].value" class="rounded-[25px] w-[555px] h-[54px] p-6" placeholder="Search by Doc Number, Project Name, Customer Name, Status" />
+                        <i class="pi pi-search mr-2" />
+                    </span>
+                </div>
+              </div>
+              <div>
+                <Nuxt-link :to="`/quotation/create`">
+                  <div class="flex justify-center items-center w-[203px] h-[54px] hover:bg-gray-200 rounded-[20px] bg-[#F17121] text-white text-xl">
+                    + New Quotation
+                  </div>
+                </Nuxt-link>
+              </div>
+            </div>
+            <div class="w-full h-[58px] rounded-[20px] bg-[#F17121] mt-5 flex items-center">
+              <div class="flex ml-4">
+                <button class="w-[151px] h-[42px] bg-white rounded-[15px] text-lg" 
+                :class="total ? 'active': 'inActive'" 
+                @click="changeStatusBtn('')">
+                  Show all
+                </button>
+                <Divider layout="vertical" class="w-[1px] bg-white min-h-[20px]" />
+                <Button class="p-button-secondary p-button-rounded p-button-text p-button-lg excel-icon" icon="pi pi-file-excel"></Button>
+              </div>
+            </div>
+          </template>
+          <template #empty> No quotation found. </template>
+          <template #loading> Loading quotation data. Please wait. </template>
+          <Column  header="Document No.">
+              <template #body="quotation">
+                  <div class="card flex items-center justify-center">
+                      <Checkbox v-model="checked" :binary="true" />
+                      <div class="ml-2 text-[#F17121]">
+                          <span class="underline">{{quotation.data.doc_num}}</span>
+                      </div>
+                  </div>
+              </template>
+          </Column>
+          <Column field="customer_name" header="Customer Name"></Column>
+          <Column field="project_named" header="Project Name"></Column>
+          <Column header="Contact">
+            <template #body="quotation">
+              <div class="flex flex-col items-left justify-center w-full">
+                <div class="mt-1">
+                  {{ quotation.data.customer_phone }}
+                </div>
+                <div>
+                  {{ quotation.data.customer_email }}
+                </div>
+              </div>
+            </template>
+          </Column>
+          <Column field="grand_total" header="Total" style="width: 175px;">
+          <template #body="quotation" >
+            <div class="text-right " >
+              {{ formatCurrency(quotation.data.grand_total) }}
+            </div>
+          </template>
+          </Column>
+          <Column header="Status">
+            <template #body="quotation">
+              <div class="card flex justify-content-center ">
+                <Dropdown v-model="dropdownStatus[quotation.data.doc_num]" :options="statusoption" optionLabel="name" :placeholder="quotation.data.status" @change="updateStatus(quotation.data.doc_num)" class="w-40 md:w-14rem bg-[#F17121]" />
+              </div>
+            </template>
+          </Column>
+
+          <Column header="Latest Modifier">
+            <template #body="quotation">
+              <div class="flex flex-col items-left justify-center w-full">
+                <div class="text-[#F17121]">
+                  {{ quotation.data.updated_by?.full_name }}
+                </div>
+                <div class="mt-1">
+                  {{ formatDate(quotation.data.updated_at) }}
+                </div>
+                <div>
+                  {{ formatTime(quotation.data.updated_at) }}
+                </div>
+              </div>
+            </template>
+          </Column>
+          <Column header="Edit">
+            <template #body="quotation">
+              <!-- Edit button -->
+              <Nuxt-link :to="`/quotation/${quotation.data.doc_num}`">
+                <Button icon="pi pi-pencil" @click="editRow(rowData)" class="p-button-rounded p-button-text text-blue-400"></Button>
+              </Nuxt-link>
+              <!-- Delete icon -->
+                <Button icon="pi pi-trash" @click="showTemplate($event,quotation.data.doc_num)" class="p-button-rounded p-button-text text-red-600"></Button>
+              <Toast />
+                  <ConfirmPopup group="templating">
+                      <template #message="slotProps">
+                          <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border p-3 mb-3 pb-0 place-content-center font-semibold">
+                              <i :class="slotProps.message.icon" class="text-6xl text-primary-500"></i>
+                              <p class="text-center">{{ slotProps.message.message }}</p>
+                          </div>
+                      </template>
+                  </ConfirmPopup>
+
+            </template>
+          </Column>
+        </DataTable>
+      </div>
+    </main>
+  </div>
+</template>
 
 <style>
 .p-column-header-content {
@@ -385,5 +397,45 @@ const formatCurrency = (value) => {
 .inActive {
   background-color: #E5E5E5;
   color: black;
+}
+
+.p-confirm-popup .p-confirm-popup-footer button:last-child {
+    background-color: #F17121;
+}
+
+
+/* Reduce font size for table */
+.table-font {
+  font-size: 14px; /* Adjust the font size as needed */
+}
+
+/* Reduce font size for header */
+.header-font {
+  font-size: 16px; /* Adjust the font size as needed */
+}
+
+/* Adjust the height of rows */
+.row-height {
+  height: 40px; /* Adjust the row height as needed */
+}
+
+/* Adjust the height of header */
+.header-height {
+  height: 40px; /* Adjust the header height as needed */
+}
+
+/* Adjust the height of dropdown */
+.dropdown-height {
+  height: 32px; /* Adjust the dropdown height as needed */
+}
+
+/* Adjust the width of columns */
+.column-width {
+  min-width: 100px; /* Adjust the column width as needed */
+}
+
+/* Adjust the padding of cells */
+.cell-padding {
+  padding: 8px; /* Adjust the cell padding as needed */
 }
 </style>

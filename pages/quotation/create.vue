@@ -402,7 +402,7 @@
 </template>
 
 <script setup>
-import { useVueToPrint } from "vue-to-print";
+// import { useVueToPrint } from "vue-to-print";
 import { FilterMatchMode } from "primevue/api";
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
