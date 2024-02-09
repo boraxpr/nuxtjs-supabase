@@ -50,6 +50,24 @@ const handleSignup = async () => {
 definePageMeta({
   layout: "loginlayout",
 });
+
+const signInWithOAuth = async (provider) => {
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: provider,
+      options: {
+        redirectTo: 'http://localhost:3000/confirm', // Use absolute URL
+      },
+    });
+
+    if (error) {
+      console.error(`Error signing in with ${provider}:`, error.message);
+    }
+  } catch (error) {
+    console.error('Error during OAuth sign-in:', error.message);
+  }
+};
+
 </script>
 
 <template>
@@ -141,11 +159,15 @@ definePageMeta({
       </div>
       <div class="flex gap-4 justify-center">
         <Button
+          @click="() => signInWithOAuth('google')"
+          :disabled="loading"
           class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
           ><img src="/assets/img/googleLogo.png" />
           Google
         </Button>
         <Button
+          @click="() => signInWithOAuth('facebook')"
+          :disabled="loading"
           class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
           ><img src="/assets/img/facebookLogo.png" />
           Facebook

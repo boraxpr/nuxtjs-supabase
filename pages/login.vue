@@ -59,6 +59,7 @@ const signInWithOAuth = async (provider) => {
     console.error('Error during OAuth sign-in:', error.message);
   }
 };
+
 </script>
 
 <template>
@@ -142,12 +143,12 @@ const signInWithOAuth = async (provider) => {
     </div>
     <div class="flex gap-4 justify-center">
       <Button
-          @click="() => signInWithOAuth('google')"
-          :disabled="loading"
-          class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg">
-          <img src="/assets/img/googleLogo.png" />
-          Google
-        </Button>
+        @click="() => signInWithOAuth('google')"
+        :disabled="loading"
+        class="w-36 h-14 justify-center items-center flex gap-2 bg-white text-gray-500 font-semibold border-gray-300 text-lg"
+        ><img src="/assets/img/googleLogo.png" />
+        Google
+      </Button>
       <Button
         @click="() => signInWithOAuth('facebook')"
         :disabled="loading"
