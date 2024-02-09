@@ -3,7 +3,7 @@
         <header>
             <div class="Container grid grid-cols-2 gap-4 mb-4 h-40">
               <div class="Container flex items-center">
-                <div class="text-5xl">Product Detail</div>
+                <div class="text-5xl">Add Product</div>
               </div>
               <div class="Container flex justify-end items-end">
 
@@ -15,26 +15,10 @@
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <div>
-                    <label for="">Product No</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="product_no" type="text" disabled class="p-2.5 h-10 w-full border-gray-300 rounded-lg bg-gray-200" >
-                  </div>
-                </div>
-                <div>
-                  <div>
                     <label for="">Product Name</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="product_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Product Type</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <Dropdown v-model="product_type" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem rounded-lg"/>
+                    <input v-model="createProduct.input.product_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
                   </div>
                 </div>
                 <div>
@@ -42,7 +26,15 @@
                     <label for="">Product Code</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="product_code" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                    <input v-model="createProduct.input.product_code" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <label for="">Product Type</label>
+                  </div>
+                  <div class="Container mt-2">
+                    <Dropdown v-model="createProduct.input.product_type" :options="createProduct.db.productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem rounded-lg"/>
                   </div>
                 </div>
                 <div>
@@ -50,49 +42,7 @@
                     <label for="">Category</label>
                   </div>
                   <div class="Container mt-2">
-                    <Dropdown v-model="category" :options="categoryDropdown" optionLabel="category_name" placeholder="Select Category" class="w-full md:w-14rem rounded-lg"/>
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Barcode</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="barcode" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Selling Price</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="selling_price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Vat</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="vat" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
-                  </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <div>
-                      <label for="">Main Unit</label>
-                    </div>
-                    <div class="Container mt-2">
-                      <input v-model="main_unit" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <label for="">Unit</label>
-                    </div>
-                    <div class="Container mt-2">
-                      <input v-model="unit" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
-                    </div>
+                    <Dropdown v-model="createProduct.input.category" :options="createProduct.db.categoryDropdown" optionLabel="category_name" placeholder="Select Category" class="w-full md:w-14rem rounded-lg"/>
                   </div>
                 </div>
                 <div>
@@ -100,16 +50,56 @@
                     <label for="">Income Account</label>
                   </div>
                   <div class="Container mt-2">
-                    <input v-model="income_account" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                    <input v-model="createProduct.input.income_account" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
                   </div>
                 </div>
-              </div>
-              <div>
                 <div>
-                  <label for="">Description</label>
+                  <div>
+                    <label for="">Barcode</label>
+                  </div>
+                  <div class="Container mt-2">
+                    <input v-model="createProduct.input.barcode" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  </div>
                 </div>
-                <div class="Container mt-2">
-                  <textarea v-model="product_desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
+                <div>
+                  <div>
+                    <label for="">Selling Price</label>
+                  </div>
+                  <div class="Container mt-2">
+                    <input v-model="createProduct.input.selling_price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <label for="">Vat</label>
+                  </div>
+                  <div class="Container mt-2">
+                    <input v-model="createProduct.input.vat" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <label for="">Main Unit</label>
+                  </div>
+                  <div class="Container mt-2">
+                    <input v-model="createProduct.input.main_unit" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <label for="">Unit</label>
+                  </div>
+                  <div class="Container mt-2">
+                    <input v-model="createProduct.input.unit" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  </div>
+                </div>
+                <div class="col-span-2">
+                  <div>
+                    <label for="">Description</label>
+                  </div>
+                  <div class="Container mt-2">
+                    <textarea v-model="createProduct.input.product_desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
+                  </div>
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-4 mt-2">
@@ -161,15 +151,15 @@
                     <label>Active</label>
                   </div>
                   <div class="mt-2">
-                    <InputSwitch v-model="status" />
+                    <InputSwitch v-model="createProduct.input.status" />
                   </div>
                 </div>
             </div>
             <div class="flex justify-center mt-7 gap-4 min-h-16">
               <div>
-                <Nuxt-link :to="`/products`">
+                <NuxtLink :to="`/products`">
                     <button class="border  shadow-md border-solid rounded-[24px] h-[54px] w-[215px] hover:bg-gray-200">Cancel</button>
-                </Nuxt-link>
+                </NuxtLink>
               </div>
               <div>
                 <button @click="insertData" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
@@ -181,60 +171,61 @@
 
 <script setup>
 const client = useSupabaseClient();
-
-const product_no = ref("");
-const product_name = ref("");
-const product_type = ref("");
-const product_code = ref("");
-const category = ref("");
-const main_unit = ref("");
-const barcode = ref("");
-const selling_price = ref("");
-const vat = ref("");
-const product_desc = ref("");
-const income_account = ref("");
-const unit = ref("");
-const status = ref(true);
-
-const productTypeDropdown = ref([]);
-const categoryDropdown = ref([]);
-// const product_img = ref(File | null);
-
 const primevue = usePrimeVue();
 
-const totalSize = ref(0);
-const totalSizePercent = ref(0);
-const files = ref([]);
+const createProduct = reactive({
+  db: {
+    productTypeDropdown: ref([]),
+    categoryDropdown: ref([])
+  },
+  input: {
+    product_name: ref(),
+    product_type: ref(),
+    product_code: ref(),
+    category: ref(),
+    main_unit: ref(),
+    barcode: ref(),
+    selling_price: ref(),
+    vat: ref(),
+    income_account: ref(),
+    product_desc: ref(),
+    unit: ref(),
+    status: ref(true)
+  },
+  file:{
+    totalSize: ref(0),
+    totalSizePercent: ref(0),
+    files: ref([])
+  }
+})
 
 const insertData = async () => {
-  console.log("files: ",files.value[0]);
   const Input = {
-      product_name: product_name.value,
-      product_type_id: product_type.value.id,
-      product_code: product_code.value,
-      category_id: category.value.id,
-      main_unit: main_unit.value,
-      barcode: barcode.value,
-      selling_price: selling_price.value,
-      vat: vat.value,
-      product_description: product_desc.value,
-      income_account: income_account.value,
-      unit: unit.value,
+      product_name: createProduct.input.product_name,
+      product_type_id: createProduct.input.product_type.id,
+      product_code: createProduct.input.product_code,
+      category_id: createProduct.input.category.id,
+      main_unit: createProduct.input.main_unit,
+      barcode: createProduct.input.barcode,
+      selling_price: createProduct.input.selling_price,
+      vat: createProduct.input.vat,
+      product_description: createProduct.input.product_desc,
+      income_account: createProduct.input.income_account,
+      unit: createProduct.input.unit,
       product_img: "",
       created_by: await getUserId(),
-      status: status.value
+      status: createProduct.input.status
   }
-  console.log("Input ",Input);
   const { data, error } = await client.from('product').insert([
       Input,
   ])
   .select()
   if(error === null){
-    if(files.value.length > 0){
-      uploadImg(data[0].product_number);
+    if(createProduct.file.files.length > 0){
+      await uploadImg(data[0].product_number)
     }
-      alert("successfully");
-      navigateTo('/products');
+    alert("successfully");
+    navigateTo('/products');
   }else{
       alert("error to insert the product to supabase");
       console.log("error ",error)
@@ -248,43 +239,54 @@ async function getUserId(){
 
 async function fetchCategory() {
   const { data } = await client.from('category').select('*');
-  categoryDropdown.value = data || [];
+  return data;
 }
+
+const { data: categoryDropdownData } = await useLazyAsyncData(
+  "category",
+  fetchCategory
+);
 
 async function fetchProductType() {
   const { data } = await client.from('productType').select('*');
-  productTypeDropdown.value = data || [];
+  return data;
 }
+
+const { data: productTypeDropdown } = await useLazyAsyncData(
+  "productType",
+  fetchProductType
+);
 
 const uploadImg = async (id) => {
   const { data, error } = await client.storage
     .from('product')
-    .upload(id+"/"+files.value[0].name, files.value[0])
+    .upload(id+"/"+createProduct.file.files[0].name, createProduct.file.files[0])
 
     if(error){
       console.log(error)
     }else{
       const { data, error } = await client
         .from('product')
-        .update({ product_img: id+"/"+files.value[0].name })
+        .update({ product_img: id+"/"+ createProduct.file.files[0].name })
         .eq('product_number', id)
         .select()
     }
+    
 }
 
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
     console.log("onRemoveTemplatingFile");
     removeFileCallback(index);
-    totalSize.value -= parseInt(formatSize(file.size));
-    totalSizePercent.value = totalSize.value / 10;
-    files.value === 0
+    createProduct.file.totalSize -= parseInt(formatSize(file.size));
+    createProduct.file.totalSizePercent = createProduct.file.totalSize / 10;
+    createProduct.file.files === 0
 };
 
 const onSelectedFiles = (event) => {
-    files.value = event.files;
-    files.value.forEach((file) => {
-    totalSize.value += parseInt(formatSize(file.size));
-    });
+  createProduct.file.files = event.files;
+  createProduct.file.files.forEach((file) => {
+    createProduct.file.totalSize += parseInt(formatSize(file.size));
+  });
 };
 
 const formatSize = (bytes) => {
@@ -302,10 +304,12 @@ const formatSize = (bytes) => {
     return `${formattedSize} ${sizes[i]}`;
 };
 
-onMounted(() => {
-  fetchProductType();
-  fetchCategory();
+useHead({
+  title: "Add Product",
 });
+
+createProduct.db.categoryDropdown = categoryDropdownData;
+createProduct.db.productTypeDropdown = productTypeDropdown;
 </script>
 
 <style>

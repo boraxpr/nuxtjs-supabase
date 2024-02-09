@@ -15,26 +15,10 @@
         <div class="grid grid-cols-2 gap-4">
           <div>
             <div>
-              <label for="">Product No</label>
-            </div>
-            <div class="Container mt-2">
-              <input v-model="id" type="text" disabled class="p-2.5 h-10 w-full border-gray-300 rounded-lg  bg-gray-200">
-            </div>
-          </div>
-          <div>
-            <div>
               <label for="">Product Name</label>
             </div>
             <div class="Container mt-2">
               <input v-model="product_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
-            </div>
-          </div>
-          <div>
-            <div>
-              <label for="">Product Type</label>
-            </div>
-            <div class="Container mt-2">
-              <Dropdown v-model="product_type" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem rounded-lg"/>
             </div>
           </div>
           <div>
@@ -47,10 +31,26 @@
           </div>
           <div>
             <div>
+              <label for="">Product Type</label>
+            </div>
+            <div class="Container mt-2">
+              <Dropdown v-model="product_type" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem rounded-lg"/>
+            </div>
+          </div>
+          <div>
+            <div>
               <label for="">Category</label>
             </div>
             <div class="Container mt-2">
               <Dropdown v-model="category" :options="categoryDropdown" optionLabel="category_name" placeholder="Select Category" class="w-full md:w-14rem rounded-lg"/>
+            </div>
+          </div>
+          <div>
+            <div>
+              <label for="">Income Account</label>
+            </div>
+            <div class="Container mt-2">
+              <input v-model="income_account" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -77,65 +77,12 @@
               <input v-model="vat" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <div>
-                <label for="">Main Unit</label>
-              </div>
-              <div class="Container mt-2">
-                <input v-model="main_unit" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
-              </div>
-            </div>
-            <div>
-              <div>
-                <label for="">Unit</label>
-              </div>
-              <div class="Container mt-2">
-                <input v-model="unit" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
-              </div>
-            </div>
-          </div>
           <div>
             <div>
-              <label for="">Income Account</label>
+              <label for="">Main Unit</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="income_account" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
-            </div>
-          </div>
-        </div>
-        <div>
-          <div>
-            <label for="">Description</label>
-          </div>
-          <div class="Container mt-2">
-            <textarea v-model="product_desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
-          </div>
-        </div>
-        <!-- <div class="grid grid-cols-2 gap-4 mb-4" v-if="product_img !== '' && isEditFile === false">
-          <div>
-            <div>
-              <label>Product Picture</label>
-              <button @click="getLinkImg" class="ml-2" v-if="product_img !== '' && isEditFile === false">
-                <span v-if="showImg" class="underline">hide</span> 
-                <span v-else class="underline">show</span>
-              </button>
-            </div>
-            <div class="Container mt-2">
-              <div>
-                <input v-model="product_img" type="text" :disabled="true" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg">
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-else> -->
-        <!-- <div class="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <div>
-              <label for="">Income Account</label>
-            </div>
-            <div class="Container mt-2">
-              <input v-model="income_account" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="main_unit" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -143,18 +90,22 @@
               <label for="">Unit</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="unit" type="text" class="p-2.5 h-10 w-full bg-gray-100 rounded-lg hover:border-2">
+              <input v-model="unit" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
-        </div> -->
+          <div class="col-span-2">
+            <div>
+              <label for="">Description</label>
+            </div>
+            <div class="Container mt-2">
+              <textarea v-model="product_desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
+            </div>
+          </div>
+        </div>
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
             <div class="mt-2">
               <label>Product Picture</label>
-              <!-- <button @click="getLinkImg" class="ml-2" v-if="product_img !== '' && isEditFile === false">
-                <span v-if="showImg" class="underline">hide</span> 
-                <span v-else class="underline">show</span>
-              </button> -->
             </div>
             <div v-if="product_img !== '' && isEditFile === false">
               <div class="flex items-start gap-2 mt-2">
@@ -163,47 +114,43 @@
               </div>
             </div>
             <div class="Container mt-2" v-else>
-                <div class="card">
-                  <Toast />
-                  <FileUpload :multiple="false" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
-                      <template #header="{ chooseCallback }">
-                          <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
-                              <div class="flex gap-2">
-                                  <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined></Button>
-                              </div>
-                          </div>
-                      </template>
-                      <template #content="{ files, removeFileCallback }">
-                          <div>
-                              <div class="flex flex-wrap">
-                                  <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="card m-0 px-6 flex flex-column border-1 surface-border align-items-center gap-3">
-                                      <div>
-                                          <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                                      </div>
-                                      <span class="font-semibold">{{ file.name }}</span>
-                                      <div>{{ formatSize(file.size) }}</div>
-                                      <Button icon="pi pi-times" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" outlined rounded  severity="danger" />
-                                  </div>
-                              </div>
-                          </div>
-                      </template>
-                      <template #empty>
-                          <div class="flex justify-center w-full">
-                              <div class="text-center">
-                                <i class="pi pi-cloud-upload border-2 rounded-full p-5 text-8xl text-400 border-400" />
-                                <p class="mt-4 mb-0">Drag and drop files to here to upload.</p>
-                              </div>
-                          </div>
-                      </template>
-                  </FileUpload>
-                </div>
+              <div class="card">
+                <Toast />
+                <FileUpload :multiple="false" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
+                    <template #header="{ chooseCallback }">
+                        <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
+                            <div class="flex gap-2">
+                                <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined></Button>
+                            </div>
+                        </div>
+                    </template>
+                    <template #content="{ files, removeFileCallback }">
+                        <div>
+                            <div class="flex flex-wrap">
+                                <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="card m-0 px-6 flex flex-column border-1 surface-border align-items-center gap-3">
+                                    <div>
+                                        <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                                    </div>
+                                    <span class="font-semibold">{{ file.name }}</span>
+                                    <div>{{ formatSize(file.size) }}</div>
+                                    <Button icon="pi pi-times" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" outlined rounded  severity="danger" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template #empty>
+                        <div class="flex justify-center w-full">
+                            <div class="text-center">
+                              <i class="pi pi-cloud-upload border-2 rounded-full p-5 text-8xl text-400 border-400" />
+                              <p class="mt-4 mb-0">Drag and drop files to here to upload.</p>
+                            </div>
+                        </div>
+                    </template>
+                </FileUpload>
               </div>
             </div>
           </div>
-        <!-- </div> -->
-        
-
-
+        </div>
         <div class="mt-2">
           <div>
             <label>Active</label>
@@ -231,7 +178,42 @@
 const client = useSupabaseClient();
 const route = useRoute().params
 
-// const product_no = ref("");
+// const product = reactive({
+//   db: {
+//     productTypeDropdown: ref([]),
+//     categoryDropdown: ref([]),
+//     product: ref()
+//   },
+//   input: {
+//     id: ref(),
+//     product_name: ref(),
+//     product_type: ref(),
+//     product_code: ref(),
+//     category: ref(),
+//     main_unit: ref(),
+//     barcode: ref(),
+//     selling_price: ref(),
+//     vat: ref(),
+//     income_account: ref(),
+//     product_desc: ref(),
+//     unit: ref(),
+//     status: ref(true),
+//     product_img: ref()
+//   },
+//   file: {
+//     totalSize: ref(0),
+//     totalSizePercent: ref(0),
+//     files: ref([])
+//   },
+//   param: {
+//     product_img_old: ref(),
+//     linkImg: ref(),
+//     showImg: ref(false),
+//     isEditFile: ref(false),
+//   }
+// })
+
+const product_no = ref("");
 const id = ref("");
 const product_name = ref("");
 const product_type = ref("");
@@ -269,7 +251,7 @@ async function fetchData() {
   product.value = data[0] || {};
 
   // console.log(" product.value ", product.value);
-  titleName.value = product.value.product_name;
+  // titleName.value = product.db.product.product_name;
 
   id.value = product.value.product_number;
   product_name.value = product.value.product_name;
@@ -419,11 +401,9 @@ const formatSize = (bytes) => {
     return `${formattedSize} ${sizes[i]}`;
 };
 
-onMounted(() => {
-  fetchData();
-  fetchProductType();
-  fetchCategory();
-});
+fetchData();
+fetchProductType();
+fetchCategory();
 
 </script>
 
