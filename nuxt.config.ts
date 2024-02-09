@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   css: [
     "primeicons/primeicons.css",
     // "primevue/resources/themes/aura-light-noir/theme.css",
-    "@/assets/css/themes/aura/aura-light/noir/theme.scss",
+    "@/assets/css/themes/aura/aura-light/orange/theme.scss",
     "@/assets/css/tailwind.css",
   ],
   // https://primevue.org/theming/
