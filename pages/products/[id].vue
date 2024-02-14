@@ -170,7 +170,7 @@
           <button @click="validateForm" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
         </div>
       </div>
-      <confirm :IsActive = "product.param.visible" @confirmFunc="confirmResult" />
+      <confirm :IsActive = "product.param.visible" message="Confirm Save ?" @confirmFunc="confirmResult" />
     </main>
   </div>
 </template>
