@@ -17,7 +17,7 @@
                       <label for="">Project Name</label>
                     </div>
                     <div class="Container mt-2">
-                        <input v-model="project_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
+                        <input v-model="createProject.input.project_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
                     </div>
                 </div>
                 <div>
@@ -25,7 +25,7 @@
                       <label for="">Customer</label>
                     </div>
                     <div class="Container mt-2">
-                        <Dropdown v-model="customer" :options="customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-full rounded-lg flex items-center text-center" style="min-width: 12rem" :showClear="true">
+                        <Dropdown v-model="createProject.input.customer" :options="createProject.db.customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-full rounded-lg flex items-center text-center" style="min-width: 12rem" :showClear="true">
                             <template #option="slotProps">
                                 <Tag :value="slotProps.option.name" />
                             </template>
@@ -37,7 +37,7 @@
                       <label for="">Price</label>
                     </div>
                     <div class="Container mt-2">
-                        <input v-model="price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
+                        <input v-model="createProject.input.price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
                     </div>
                 </div>
                 <div class="col-span-2">
@@ -45,7 +45,7 @@
                       <label for="">Description</label>
                     </div>
                     <div class="Container mt-2">
-                      <textarea v-model="desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
+                      <textarea v-model="createProject.input.desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
                     </div>
                 </div>
                 <div class="col-span-2">
@@ -53,7 +53,7 @@
                       <label>Active</label>
                     </div>
                     <div class="mt-2">
-                      <InputSwitch v-model="status" />
+                      <InputSwitch v-model="createProject.input.status" />
                     </div>
                 </div>
             </div>
@@ -65,34 +65,51 @@
             </Nuxt-link>
           </div>
           <div>
-            <button @click="insertData" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
+            <button @click="validateForm" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
           </div>
         </div>
+        <confirm :IsActive = "createProject.param.visible" cancelBtn="" confirmBtn="" message="Confirm Save ?" @confirmFunc="confirmResult" />
     </main>
 </template>
 <script setup>
 
 const client = useSupabaseClient();
-const customerDropdown = ref([]);
-const project_name = ref("");
-const customer = ref();
-const price = ref("");
-const desc= ref("");
-const status = ref(true);
+
+const createProject = reactive({
+  db: {
+    customerDropdown: ref()
+  },
+  input: {
+    project_name: ref(),
+    customer: ref(),
+    price: ref(),
+    desc: ref(),
+    status: ref(true)
+  },
+  param: {
+    visible: ref(false),
+    validate: ref(false)
+  }
+})
 
 async function fetchCustomer() {
-    const { data } = await client.from('customers').select('*');
-    customerDropdown.value = data || [];
+    const { data, error } = await client.from('customers').select('*');
+    checkError("fetchCustomer",error)
+    return data;
 }
+const { data: customerDropdown } = await useLazyAsyncData(
+  "customer",
+  fetchCustomer
+);
 
 const insertData = async () => {
     const input = {
-        project_name: project_name.value,
-        customer_id: customer.value.id,
-        price: price.value,
-        detail: desc.value,
+        project_name: createProject.input.project_name,
+        customer_id: createProject.input.customer.id,
+        price: createProject.input.price,
+        detail: createProject.input.desc,
         created_by: await getUserId(),
-        status: status.value
+        status: createProject.input.status
     }
     console.log(input);
     const { data, error } = await client.from('project').insert([
@@ -104,18 +121,38 @@ const insertData = async () => {
     navigateTo('/projects');
   }else{
     alert("error to insert the product to supabase");
-    console.log("error ",error)
+    checkError("insertData",error)
   }
-      
 }
 
 async function getUserId(){
   const { data, error } = await client.auth.getUser()
+  checkError("getUserId",error)
   return data.user.id;
 }
 
-onMounted(() => {
-    fetchCustomer();
-});
+const confirmResult = (value) => {
+  console.log("from parent")
+  console.log(value)
+  if(value){
+    console.log("insert");
+    insertData();
+  }
+  createProject.param.visible = false
+}
+const validateForm = () => {
+
+console.log("check validate"); //waiting for validation func
+createProject.param.validate = true; //waiting for validation func
+
+if(createProject.param.validate){
+  createProject.param.visible = true
+}else{
+  alert("invalid");
+}
+
+}
+
+createProject.db.customerDropdown = customerDropdown;
 
 </script>

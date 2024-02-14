@@ -246,9 +246,6 @@ async function fetchData() {
 async function fetchCategory() {
   const { data, error } = await client.from('category').select('*');
   checkError("fetchCategory", error);
-  // if(error){
-  //   console.log("error fetch category ",error);
-  // }
   return data;
 }
 
@@ -260,9 +257,6 @@ const { data: categoryDropdownData } = await useLazyAsyncData(
 async function fetchProductType() {
   const { data, error } = await client.from('productType').select('*');
   checkError("fetchProductType", error);
-  // if(error){
-  //   console.log("error fetch ProductType: ",error);
-  // }
   return data;
 }
 
@@ -310,7 +304,6 @@ const update = async () => {
       navigateTo("/products");
     }else{
       alert("error to update the product to supabase");
-      // console.log("error ",error)
       checkError("update", error);
     }
 }
@@ -322,9 +315,6 @@ const uploadFile = async () => {
     .upload(product.input.id+"/"+product.file.files[0].name, product.file.files[0])
 
     checkError("uploadFile", error);
-    // if(error){
-    //   console.log("error uploadFile: ",error);
-    // }
 }
 
 const deleteFile = async () => {
@@ -334,9 +324,6 @@ const deleteFile = async () => {
     .remove([product.param.product_img_old])
 
     checkError("deleteFile", error);
-    // if(error){
-    //   console.log("error delete file: ",error)
-    // }
 }
 
 const confirmResult = (value) => {
@@ -366,9 +353,6 @@ async function getUserId(){
   const { data, error } = await client.auth.getUser()
 
   checkError("getUserId", error);
-  // if(error){
-  //   console.log("error getUserId: ",error)
-  // }
   return data.user.id;
 }
 
@@ -426,12 +410,6 @@ const formatSize = (bytes) => {
 
     return `${formattedSize} ${sizes[i]}`;
 };
-
-const checkError = (funcName, error) => {
-  if(error){
-    console.log("error ",funcName,": ",error)
-  }
-}
 
 fetchData();
 product.db.categoryDropdown = categoryDropdownData;

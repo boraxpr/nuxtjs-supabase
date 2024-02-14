@@ -206,8 +206,6 @@
 </template>
 
 <script setup>
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
 import { FilterMatchMode } from "primevue/api";
 
 const client = useSupabaseClient();
@@ -308,9 +306,6 @@ const fetchProduct = async () => {
   
   let product = data;
   checkError("fetchProduct",error)
-  // if(error){
-  //   console.log("error:product ",error);
-  // }
   return product;
 };
 
@@ -318,9 +313,6 @@ const getLinkImg = (path) =>{
   const { data, error } = client.storage.from('product').getPublicUrl(path);
 
   checkError("getLinkImg",error)
-  // if(error){
-  //   console.log("error:getLinkImg ",error);
-  // }
   return data.publicUrl;
 }
 
@@ -355,12 +347,6 @@ const { data: productTypeDropdown } = await useLazyAsyncData(
 useHead({
   title: "Products",
 });
-
-const checkError = (funcName, error) => {
-  if(error){
-    console.log("error ",funcName,": ",error)
-  }
-}
 
 productList.db.products = productData;
 productList.db.productTypeDropdown = productTypeDropdown;

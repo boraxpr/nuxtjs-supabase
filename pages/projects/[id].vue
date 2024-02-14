@@ -17,7 +17,7 @@
                       <label for="">Project Name</label>
                     </div>
                     <div class="Container mt-2">
-                        <input v-model="project_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
+                        <input v-model="project.input.project_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
                     </div>
                 </div>
                 <div>
@@ -25,7 +25,7 @@
                       <label for="">Customer</label>
                     </div>
                     <div class="Container mt-2">
-                        <Dropdown v-model="customer" :options="customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-full rounded-lg flex items-center text-center" style="min-width: 12rem" :showClear="true">
+                        <Dropdown v-model="project.input.customer" :options="project.db.customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-full rounded-lg flex items-center text-center" style="min-width: 12rem" :showClear="true">
                             <template #option="slotProps">
                                 <Tag :value="slotProps.option.name" />
                             </template>
@@ -37,7 +37,7 @@
                       <label for="">Price</label>
                     </div>
                     <div class="Container mt-2">
-                        <input v-model="price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
+                        <input v-model="project.input.price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
                     </div>
                 </div>
                 <div class="col-span-2">
@@ -45,7 +45,7 @@
                       <label for="">Description</label>
                     </div>
                     <div class="Container mt-2">
-                      <textarea v-model="desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
+                      <textarea v-model="project.input.desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
                     </div>
                 </div>
                 <div class="col-span-2">
@@ -53,7 +53,7 @@
                       <label>Active</label>
                     </div>
                     <div class="mt-2">
-                      <InputSwitch v-model="status" />
+                      <InputSwitch v-model="project.input.status" />
                     </div>
                 </div>
             </div>
@@ -65,56 +65,71 @@
             </Nuxt-link>
           </div>
           <div>
-            <button @click="updateData" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
+            <button @click="validateForm" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
           </div>
         </div>
+        <confirm :IsActive = "project.param.visible" message="Confirm Save ?" @confirmFunc="confirmResult" />
     </main>
 </template>
 <script setup>
 const client = useSupabaseClient();
 const route = useRoute().params
 
-const id = ref();
-const customerDropdown = ref([]);
-const project_name = ref("");
-const customer = ref();
-const price = ref("");
-const desc= ref("");
-const status = ref(true);
-
-const project = ref();
+const project = reactive({
+  db: {
+    customerDropdown: ref(),
+    project: ref()
+  },
+  input: {
+    id: ref(),
+    project_name: ref(),
+    customer: ref(),
+    price: ref(),
+    desc: ref(),
+    status: ref(true)
+  },
+  param: {
+    visible: ref(false),
+    validate: ref(false)
+  }
+})
 
 async function fetchData() {
-  const { data } = await client.from("project").select("*,customers(id,name)").eq('id', route.id);
-  project.value = data[0] || {};
+  const { data, error } = await client.from("project").select("*,customers(id,name)").eq('id', route.id);
+  checkError("fetchData", error);
+  project.db.project = data[0] || {};
 
-  console.log(" project.value ", project.value);
-  id.value = project.value.id;
-  project_name.value = project.value.project_name;
-  customer.value = project.value.customers;
-  price.value = project.value.price;
-  desc.value = project.value.detail;
-  status.value = project.value.status;
+  project.input.id = project.db.project.id;
+  project.input.project_name = project.db.project.project_name;
+  project.input.customer = project.db.project.customers;
+  project.input.price = project.db.project.price;
+  project.input.desc = project.db.project.detail;
+  project.input.status = project.db.project.status;
 }
 
 async function fetchCustomer() {
-    const { data } = await client.from('customers').select('*');
-    customerDropdown.value = data || [];
+    const { data, error } = await client.from('customers').select('*');
+    checkError("fetchCustomer",error)
+    return data;
 }
+const { data: customerDropdown } = await useLazyAsyncData(
+  "customer",
+  fetchCustomer
+);
 
 const updateData = async () => {
     const input = {
-        project_name: project_name.value,
-        customer_id: customer.value.id,
-        price: price.value,
-        detail: desc.value,
+        project_name: project.input.project_name,
+        customer_id: project.input.customer.id,
+        price: project.input.price,
+        detail: project.input.desc,
         updated_by: await getUserId(),
         updated_at: new Date().toISOString(),
-        status: status.value
+        status: project.input.status
     }
     console.log(input);
     const { data, error } = await client.from('project').update(input)
-      .eq('id', id.value)
+      .eq('id', project.input.id)
       .select()
   .select()
   if(error === null){
@@ -122,7 +137,7 @@ const updateData = async () => {
     navigateTo('/projects');
   }else{
     alert("error to insert the product to supabase");
-    console.log("error ",error)
+    checkError("updateData", error);
   }
       
 }
@@ -132,9 +147,29 @@ async function getUserId(){
   return data.user.id;
 }
 
-onMounted(() => {
-    fetchData();
-    fetchCustomer();
-});
+const confirmResult = (value) => {
+  console.log("from parent")
+  console.log(value)
+  if(value){
+    console.log("insert");
+    updateData();
+  }
+  project.param.visible = false
+}
+
+const validateForm = () => {
+  console.log("check validate"); //waiting for validation func
+  project.param.validate = true; //waiting for validation func
+
+  if(project.param.validate){
+    project.param.visible = true
+  }else{
+    alert("invalid");
+  }
+  
+}
+
+fetchData();
+project.db.customerDropdown = customerDropdown;
 
 </script>
