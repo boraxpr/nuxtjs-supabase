@@ -168,7 +168,8 @@ const statusoption = ref([
 
 // Method to update the status of a quotation
 const updateStatus = async (docNum) => {
-  const selectedStatus = dropdownStatus.value[docNum]; // Get the selected status from the dropdown using the docNum as the key
+  const selectedStatus = dropdownStatus.value[docNum];
+  // Get the selected status from the dropdown using the docNum as the key
 
   try {
     const { error } = await client
@@ -189,6 +190,7 @@ const updateStatus = async (docNum) => {
   } catch (error) {
     console.error("Error:", error.message);
   }
+  console.log(selectedStatus);
 };
 
 function formatDate(date) {
@@ -357,7 +359,12 @@ const formatCurrency = (value) => {
                   optionLabel="name"
                   :placeholder="quotation.data.status"
                   @change="updateStatus(quotation.data.doc_num)"
-                  class="md:w-14rem w-40 bg-[#F17121]"
+                  class="md:w-14rem w-40 text-white"
+                  :class="{
+                    ' bg-blue-500': quotation.data.status === 'Pending Approve',
+                    'bg-green-500': quotation.data.status === 'Approved',
+                    'bg-red-500': quotation.data.status === 'Rejected',
+                  }"
                 />
               </div>
             </template>
@@ -485,5 +492,8 @@ const formatCurrency = (value) => {
 /* Adjust the padding of cells */
 .cell-padding {
   padding: 8px; /* Adjust the cell padding as needed */
+}
+.pendingapprove {
+  background-color: green;
 }
 </style>
