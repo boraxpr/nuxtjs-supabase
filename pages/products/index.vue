@@ -304,9 +304,8 @@ const fetchProduct = async () => {
     .from("product")
     .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)');
   
-  let product = data;
   checkError("fetchProduct",error)
-  return product;
+  return data;
 };
 
 const getLinkImg = (path) =>{
