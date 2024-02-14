@@ -18,7 +18,7 @@
               <label for="">Product Name</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="product_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
+              <input v-model="product.input.product_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -26,7 +26,7 @@
               <label for="">Product Code</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="product_code" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
+              <input v-model="product.input.product_code" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -34,7 +34,7 @@
               <label for="">Product Type</label>
             </div>
             <div class="Container mt-2">
-              <Dropdown v-model="product_type" :options="productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem rounded-lg"/>
+              <Dropdown v-model="product.input.product_type" :options="product.db.productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem rounded-lg"/>
             </div>
           </div>
           <div>
@@ -42,7 +42,7 @@
               <label for="">Category</label>
             </div>
             <div class="Container mt-2">
-              <Dropdown v-model="category" :options="categoryDropdown" optionLabel="category_name" placeholder="Select Category" class="w-full md:w-14rem rounded-lg"/>
+              <Dropdown v-model="product.input.category" :options="product.db.categoryDropdown" optionLabel="category_name" placeholder="Select Category" class="w-full md:w-14rem rounded-lg"/>
             </div>
           </div>
           <div>
@@ -50,7 +50,7 @@
               <label for="">Income Account</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="income_account" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
+              <input v-model="product.input.income_account" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -58,7 +58,7 @@
               <label for="">Barcode</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="barcode" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
+              <input v-model="product.input.barcode" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -66,7 +66,7 @@
               <label for="">Selling Price</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="selling_price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
+              <input v-model="product.input.selling_price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -74,7 +74,7 @@
               <label for="">Vat</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="vat" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
+              <input v-model="product.input.vat" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -82,7 +82,7 @@
               <label for="">Main Unit</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="main_unit" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
+              <input v-model="product.input.main_unit" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div>
@@ -90,7 +90,7 @@
               <label for="">Unit</label>
             </div>
             <div class="Container mt-2">
-              <input v-model="unit" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
+              <input v-model="product.input.unit" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg">
             </div>
           </div>
           <div class="col-span-2">
@@ -98,7 +98,7 @@
               <label for="">Description</label>
             </div>
             <div class="Container mt-2">
-              <textarea v-model="product_desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
+              <textarea v-model="product.input.product_desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
             </div>
           </div>
         </div>
@@ -107,9 +107,9 @@
             <div class="mt-2">
               <label>Product Picture</label>
             </div>
-            <div v-if="product_img !== '' && isEditFile === false">
+            <div v-if="product.input.product_img !== '' && product.param.isEditFile === false">
               <div class="flex items-start gap-2 mt-2">
-                <img :src="linkImg" alt="" class="h-auto max-h-48">
+                <img :src="product.param.linkImg" alt="" class="h-auto max-h-48">
                 <button @click="deleteFileBtn" class="text-red-400">x</button>
               </div>
             </div>
@@ -156,7 +156,7 @@
             <label>Active</label>
           </div>
           <div class="mt-2">
-            <InputSwitch v-model="status" />
+            <InputSwitch v-model="product.input.status" />
           </div>
         </div>
       </div>
@@ -167,9 +167,10 @@
           </Nuxt-link>
         </div>
         <div>
-          <button @click="save" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
+          <button @click="validateForm" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
         </div>
       </div>
+      <confirm :IsActive = "product.param.visible" @confirmFunc="confirmResult" />
     </main>
   </div>
 </template>
@@ -177,118 +178,105 @@
 <script setup>
 const client = useSupabaseClient();
 const route = useRoute().params
-
-// const product = reactive({
-//   db: {
-//     productTypeDropdown: ref([]),
-//     categoryDropdown: ref([]),
-//     product: ref()
-//   },
-//   input: {
-//     id: ref(),
-//     product_name: ref(),
-//     product_type: ref(),
-//     product_code: ref(),
-//     category: ref(),
-//     main_unit: ref(),
-//     barcode: ref(),
-//     selling_price: ref(),
-//     vat: ref(),
-//     income_account: ref(),
-//     product_desc: ref(),
-//     unit: ref(),
-//     status: ref(true),
-//     product_img: ref()
-//   },
-//   file: {
-//     totalSize: ref(0),
-//     totalSizePercent: ref(0),
-//     files: ref([])
-//   },
-//   param: {
-//     product_img_old: ref(),
-//     linkImg: ref(),
-//     showImg: ref(false),
-//     isEditFile: ref(false),
-//   }
-// })
-
-const product_no = ref("");
-const id = ref("");
-const product_name = ref("");
-const product_type = ref("");
-const product_code = ref("");
-const category = ref("");
-const main_unit = ref("");
-const barcode = ref("");
-const selling_price = ref("");
-const vat = ref("");
-const product_desc = ref("");
-const income_account = ref("");
-const unit = ref("");
-const product_img = ref("");
-const product_img_old = ref('');
-const product = ref();
-const titleName = ref("");
-const status = ref();
-// const file = ref(File | null);
-
 const primevue = usePrimeVue();
 
-const totalSize = ref(0);
-const totalSizePercent = ref(0);
-const files = ref([]);
-
-const linkImg = ref("");
-const showImg = ref(false);
-const isEditFile = ref(false);
-
-const productTypeDropdown = ref([]);
-const categoryDropdown = ref([]);
+const product = reactive({
+  db: {
+    productTypeDropdown: ref([]),
+    categoryDropdown: ref([]),
+    product: ref()
+  },
+  input: {
+    id: ref(""),
+    product_name: ref(""),
+    product_type: ref(""),
+    product_code: ref(""),
+    category: ref(""),
+    main_unit: ref(""),
+    barcode: ref(""),
+    selling_price: ref(""),
+    vat: ref(""),
+    income_account: ref(""),
+    product_desc: ref(""),
+    unit: ref(""),
+    status: ref(),
+    product_img: ref("")
+  },
+  file: {
+    totalSize: ref(0),
+    totalSizePercent: ref(0),
+    files: ref([])
+  },
+  param: {
+    product_img_old: ref(""),
+    linkImg: ref(""),
+    showImg: ref(false),
+    isEditFile: ref(false),
+    visible: ref(false),
+    validate: ref(false)
+  }
+})
 
 async function fetchData() {
-  const { data } = await client.from("product").select("*,productType(*), category(*)").eq('product_number', route.id);
-  product.value = data[0] || {};
+  const { data, error } = await client.from("product").select("*,productType(*), category(*)").eq("product_number", route.id);
+  checkError("fetchData", error);
 
-  // console.log(" product.value ", product.value);
-  // titleName.value = product.db.product.product_name;
+  product.db.product = data[0] || {};
 
-  id.value = product.value.product_number;
-  product_name.value = product.value.product_name;
-  product_type.value = product.value.productType;
-  product_code.value = product.value.product_code;
-  category.value = product.value.category;
-  main_unit.value = product.value.main_unit;
-  barcode.value = product.value.barcode;
-  selling_price.value = product.value.selling_price;
-  vat.value = product.value.vat;
-  product_desc.value = product.value.product_description;
-  income_account.value = product.value.income_account;
-  unit.value = product.value.unit;
-  product_img.value = product.value.product_img;
-  status.value = product.value.status
+  product.input.id = product.db.product.product_number;
+  product.input.product_name = product.db.product.product_name;
+  product.input.product_type = product.db.product.productType;
+  product.input.product_code = product.db.product.product_code;
+  product.input.category = product.db.product.category;
+  product.input.main_unit = product.db.product.main_unit;
+  product.input.barcode = product.db.product.barcode;
+  product.input.selling_price = product.db.product.selling_price;
+  product.input.vat = product.db.product.vat;
+  product.input.product_desc = product.db.product.product_description;
+  product.input.income_account = product.db.product.income_account;
+  product.input.unit = product.db.product.unit;
+  product.input.product_img = product.db.product.product_img;
+  product.input.status = product.db.product.status
 
-  if(product_img.value !== ''){
+  if(product.input.product_img !== "") {
     getLinkImg();
   }
 }
 
 async function fetchCategory() {
-  const { data } = await client.from('category').select('*');
-  categoryDropdown.value = data || [];
+  const { data, error } = await client.from('category').select('*');
+  checkError("fetchCategory", error);
+  // if(error){
+  //   console.log("error fetch category ",error);
+  // }
+  return data;
 }
+
+const { data: categoryDropdownData } = await useLazyAsyncData(
+  "category",
+  fetchCategory
+);
 
 async function fetchProductType() {
-  const { data } = await client.from('productType').select('*');
-  productTypeDropdown.value = data || [];
+  const { data, error } = await client.from('productType').select('*');
+  checkError("fetchProductType", error);
+  // if(error){
+  //   console.log("error fetch ProductType: ",error);
+  // }
+  return data;
 }
 
+const { data: productTypeDropdown } = await useLazyAsyncData(
+  "productType",
+  fetchProductType
+);
+
 const save = async () => {
-  if(product_img_old.value !== ""){
+  if(product.param.product_img_old !== "") {
     deleteFile();
   }
-  if(files.value.length !== 0){
-    product_img.value = id.value+"/"+files.value[0].name;
+  if(product.file.files.length !== 0) {
+    product.input.product_img = product.input.id+"/"+product.file.files[0].name;
     uploadFile();
   }
   update();
@@ -296,114 +284,158 @@ const save = async () => {
 
 const update = async () => {
   const dataInput = {
-        product_name: product_name.value,
-        product_type_id: product_type.value?.id,
-        product_code: product_code.value,
-        category_id: category.value?.id,
-        main_unit: main_unit.value,
-        barcode: barcode.value,
-        selling_price: selling_price.value,
-        vat: vat.value,
-        product_description: product_desc.value,
-        income_account: income_account.value,
-        unit: unit.value,
-        product_img: product_img.value,
+        product_name: product.input.product_name,
+        product_type_id: product.input.product_type?.id,
+        product_code: product.input.product_code,
+        category_id: product.input.category?.id,
+        main_unit: product.input.main_unit,
+        barcode: product.input.barcode,
+        selling_price: product.input.selling_price,
+        vat: product.input.vat,
+        product_description: product.input.product_desc,
+        income_account: product.input.income_account,
+        unit: product.input.unit,
+        product_img: product.input.product_img,
+        status: product.input.status,
         updated_at: new Date().toISOString(),
         updated_by: await getUserId()
     }
 
-    const { data, error } = await client.from('product')
+    const { data, error } = await client.from("product")
       .update(dataInput)
-      .eq('product_number', id.value)
+      .eq("product_number", product.input.id)
       .select()
     if(error === null){
       alert("successfully");
-      navigateTo('/products');
+      navigateTo("/products");
     }else{
       alert("error to update the product to supabase");
-      console.log("error ",error)
+      // console.log("error ",error)
+      checkError("update", error);
     }
 }
 
 const uploadFile = async () => {
+  console.log("id ",product.input.id,"file name ",product.file.files[0].name,"file ",product.file.files[0])
   const { data, error } = await client.storage
-    .from('product')
-    .upload(id.value+"/"+files.value[0].name, files.value[0])
+    .from("product")
+    .upload(product.input.id+"/"+product.file.files[0].name, product.file.files[0])
+
+    checkError("uploadFile", error);
+    // if(error){
+    //   console.log("error uploadFile: ",error);
+    // }
 }
 
 const deleteFile = async () => {
   const { data, error } = await client
     .storage
-    .from('product')
-    .remove([product_img_old.value])
+    .from("product")
+    .remove([product.param.product_img_old])
 
-    if(error != null){
-      console.log("error ",error)
-    }
+    checkError("deleteFile", error);
+    // if(error){
+    //   console.log("error delete file: ",error)
+    // }
+}
+
+const confirmResult = (value) => {
+  console.log("from parent")
+  console.log(value)
+  if(value){
+    console.log("insert");
+    save();
+  }
+  product.param.visible = false
+}
+
+const validateForm = () => {
+
+  console.log("check validate"); //waiting for validation func
+  product.param.validate = true; //waiting for validation func
+
+  if(product.param.validate){
+    product.param.visible = true
+  }else{
+    alert("invalid");
+  }
+  
 }
 
 async function getUserId(){
   const { data, error } = await client.auth.getUser()
+
+  checkError("getUserId", error);
+  // if(error){
+  //   console.log("error getUserId: ",error)
+  // }
   return data.user.id;
 }
 
 const deleteFileBtn = () => {
-  product_img_old.value = product_img.value;
-  product_img.value = "";
-  isEditFile.value = true;
+  product.param.product_img_old = product.input.product_img;
+  product.input.product_img = "";
+  product.param.isEditFile = true;
 }
 
 const getLinkImg = async () => {
-  if(linkImg.value===""){
-    const { data, error } = await client
+  if(product.param.linkImg===""){
+    const { data, error } = client
     .storage
-    .from('product')
-    .createSignedUrl(product_img.value, 600)
-    linkImg.value = data.signedUrl
-    showImg.value = true
+    .from('product').getPublicUrl(product.input.product_img)
+    product.param.linkImg = data.publicUrl
+    product.param.showImg = true
+
+    checkError("getLinkImg", error);
+    // if(error){
+    //   console.log("error getLinkImg: ",error);
+    // }
   }else{
-    if(showImg.value === true){
-      showImg.value = false
+    if(product.param.showImg === true){
+      product.param.showImg = false
     }else{
-      showImg.value = true
+      product.param.showImg = true
     }
   }
 }
 
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
     removeFileCallback(index);
-    totalSize.value -= parseInt(formatSize(file.size));
-    totalSizePercent.value = totalSize.value / 10;
-    // files.value === null
-    files.value === 0
+    product.file.totalSize -= parseInt(formatSize(file.size));
+    product.file.totalSizePercent = product.file.totalSize / 10;
+    product.file.files === 0
 };
 
 const onSelectedFiles = (event) => {
-    files.value = event.files;
-    files.value.forEach((file) => {
-    totalSize.value += parseInt(formatSize(file.size));
-    isEditFile.value = true;
-    });
+  product.file.files = event.files;
+  product.file.files.forEach((file) => {
+    product.file.totalSize += parseInt(formatSize(file.size));
+    product.param.isEditFile = true;
+  });
 };
 
 const formatSize = (bytes) => {
     const k = 1024;
     const dm = 3;
     const sizes = primevue.config.locale.fileSizeTypes;
-
     if (bytes === 0) {
         return `0 ${sizes[0]}`;
     }
-
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
 
     return `${formattedSize} ${sizes[i]}`;
 };
 
+const checkError = (funcName, error) => {
+  if(error){
+    console.log("error ",funcName,": ",error)
+  }
+}
+
 fetchData();
-fetchProductType();
-fetchCategory();
+product.db.categoryDropdown = categoryDropdownData;
+product.db.productTypeDropdown = productTypeDropdown;
 
 </script>
 
