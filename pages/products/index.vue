@@ -273,8 +273,6 @@
 </template>
 
 <script setup>
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
 import { FilterMatchMode } from "primevue/api";
 
 const client = useSupabaseClient();
@@ -374,25 +372,16 @@ const formatCurrency = (value) => {
 const fetchProduct = async () => {
   const { data, error } = await client
     .from("product")
-    .select(
-      "*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)",
-    );
-
-  let product = data;
-  checkError("fetchProduct", error);
-  // if(error){
-  //   console.log("error:product ",error);
-  // }
-  return product;
+    .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)');
+  
+  checkError("fetchProduct",error)
+  return data;
 };
 
 const getLinkImg = (path) => {
   const { data, error } = client.storage.from("product").getPublicUrl(path);
 
-  checkError("getLinkImg", error);
-  // if(error){
-  //   console.log("error:getLinkImg ",error);
-  // }
+  checkError("getLinkImg",error)
   return data.publicUrl;
 };
 
@@ -424,12 +413,6 @@ const { data: productTypeDropdown } = await useLazyAsyncData(
 useHead({
   title: "Products",
 });
-
-const checkError = (funcName, error) => {
-  if (error) {
-    console.log("error ", funcName, ": ", error);
-  }
-};
 
 productList.db.products = productData;
 productList.db.productTypeDropdown = productTypeDropdown;

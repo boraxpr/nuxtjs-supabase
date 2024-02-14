@@ -240,10 +240,7 @@ const insertData = async () => {
 }
 
 const confirmResult = (value) => {
-  console.log("from parent")
-  console.log(value)
   if(value){
-    console.log("insert");
     insertData();
   }
   createProduct.param.visible = false

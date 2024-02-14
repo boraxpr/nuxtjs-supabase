@@ -11,10 +11,11 @@
     <main>
       <div>
         <DataTable
-          v-model:filters="filters"
+          v-model:filters="projectList.filters"
           paginator
           :rows="10"
-          :value="projects"
+          :value="projectList.db.projects"
+          :loading="projectList.param.loading"
           :globalFilterFields="['project_name', 'detail']"
           selectionMode="multiple"
           paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
@@ -27,7 +28,7 @@
                 <div class="justify-content-end flex">
                   <span class="p-input-icon-right">
                     <InputText
-                      v-model="filters['global'].value"
+                      v-model="projectList.filters.global.value"
                       class="h-[54px] w-[404px] rounded-[25px] p-6"
                       placeholder="Search by Project Name"
                     />
@@ -36,11 +37,11 @@
                 </div>
                 <div>
                   <MultiSelect
-                    v-model="filters['customer_id'].value"
+                    v-model="projectList.filters.customer_id.value"
                     display="chip"
                     :maxSelectedLabels="2"
                     optionValue="id"
-                    :options="customerDropdown"
+                    :options="projectList.db.customerDropdown"
                     optionLabel="name"
                     placeholder="Customer Name"
                     class="p-column-filter flex h-[54px] w-[184px] items-center rounded-[25px] text-center"
@@ -75,7 +76,7 @@
               <div class="ml-4 flex">
                 <button
                   class="h-[42px] w-[151px] rounded-[15px] bg-white text-lg"
-                  :class="total ? 'active-btn' : 'inActive-btn'"
+                  :class="projectList.param.total ? 'active-btn' : 'inActive-btn'"
                   @click="changeStatusBtn('')"
                 >
                   Total
@@ -86,7 +87,7 @@
                 />
                 <button
                   class="h-[42px] w-[151px] rounded-[15px] bg-white text-lg"
-                  :class="active ? 'active-btn' : 'inActive-btn'"
+                  :class="projectList.param.active ? 'active-btn' : 'inActive-btn'"
                   @click="changeStatusBtn(1)"
                 >
                   Active
@@ -97,7 +98,7 @@
                 />
                 <button
                   class="h-[42px] w-[151px] rounded-[15px] bg-white text-lg"
-                  :class="inActive ? 'active-btn' : 'inActive-btn'"
+                  :class="projectList.param.inActive ? 'active-btn' : 'inActive-btn'"
                   @click="changeStatusBtn(2)"
                 >
                   In Active
@@ -196,57 +197,66 @@
   </div>
 </template>
 <script setup>
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
 import { FilterMatchMode } from "primevue/api";
 
 const client = useSupabaseClient();
-const projects = ref([]);
-const customerDropdown = ref([]);
 
-const total = ref(true);
-const active = ref(false);
-const inActive = ref(false);
-
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  project_name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-  customer_id: { value: null, matchMode: FilterMatchMode.IN },
-  status: { value: null, matchMode: FilterMatchMode.EQUALS },
+const projectList = reactive({
+  db: {
+    projects: ref(),
+    customerDropdown: ref()
+  },
+  param: {
+    loading: ref(true),
+    total: ref(true),
+    active: ref(false),
+    inActive: ref(false)
+  },
+  filters: ref({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    project_name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    customer_id: { value: null, matchMode: FilterMatchMode.IN },
+    status: { value: null, matchMode: FilterMatchMode.EQUALS }
+  })
 });
 
-async function fetchData() {
-  const { data } = await client
-    .from("project")
-    .select(
-      "*,customers(id,name),created_by:created_by(*), updated_by:updated_by(*)",
-    );
-  projects.value = data || [];
-  console.log("projects.value ", projects.value);
+async function fetchProject() {
+    const { data, error } = await client.from('project').select('*,customers(id,name),created_by:created_by(*), updated_by:updated_by(*)');
+    checkError("fetchProject",error)
+    return data;
 }
+
+const { data: projectData } = await useLazyAsyncData(
+  "project",
+  fetchProject
+);
 
 async function fetchCustomer() {
-  const { data } = await client.from("customers").select("*");
-  customerDropdown.value = data || [];
-  console.log("customerDropdown.value ", customerDropdown.value);
+    const { data, error } = await client.from('customers').select('*');
+    checkError("fetchCustomer",error)
+    return data;
 }
+const { data: customerDropdown } = await useLazyAsyncData(
+  "customer",
+  fetchCustomer
+);
 
 const changeStatusBtn = (value) => {
-  if (value === "") {
-    total.value = true;
-    active.value = false;
-    inActive.value = false;
-    filters.value.status.value = null;
-  } else if (value === 1) {
-    total.value = false;
-    active.value = true;
-    inActive.value = false;
-    filters.value.status.value = true;
-  } else if (value === 2) {
-    total.value = false;
-    active.value = false;
-    inActive.value = true;
-    filters.value.status.value = false;
+  if(value === ""){
+    projectList.param.total = true
+    projectList.param.active = false
+    projectList.param.inActive = false
+    projectList.filters.status.value = null
+  }else if(value === 1){
+    projectList.param.total = false
+    projectList.param.active = true
+    projectList.param.inActive = false
+    projectList.filters.status.value = true
+  }else if(value === 2){
+    projectList.param.total = false
+    projectList.param.active = false
+    projectList.param.inActive = true
+    projectList.filters.status.value = false
   }
 };
 
@@ -287,10 +297,13 @@ function formatTime(date) {
   return [hour, min, sec].join(" : ");
 }
 
-onMounted(() => {
-  fetchData();
-  fetchCustomer();
+useHead({
+  title: "Projects",
 });
+
+projectList.db.projects = projectData
+projectList.db.customerDropdown = customerDropdown
+projectList.param.loading = false
 </script>
 <style>
 .active-btn {
