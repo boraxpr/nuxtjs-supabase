@@ -305,18 +305,22 @@ const fetchProduct = async () => {
   const { data, error } = await client
     .from("product")
     .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)');
-    let product = data;
-  if(error){
-    console.log("error:product ",error);
-  }
+  
+  let product = data;
+  checkError("fetchProduct",error)
+  // if(error){
+  //   console.log("error:product ",error);
+  // }
   return product;
 };
 
 const getLinkImg = (path) =>{
   const { data, error } = client.storage.from('product').getPublicUrl(path);
-  if(error){
-    console.log("error:getLinkImg ",error);
-  }
+
+  checkError("getLinkImg",error)
+  // if(error){
+  //   console.log("error:getLinkImg ",error);
+  // }
   return data.publicUrl;
 }
 
@@ -326,7 +330,9 @@ const { data: productData } = await useLazyAsyncData(
 );
 
 async function fetchCategory() {
-  const { data } = await client.from('category').select('*');
+  const { data, error } = await client.from('category').select('*');
+
+  checkError("fetchCategory",error)
   return data;
 }
 
@@ -336,7 +342,9 @@ const { data: categoryDropdownData } = await useLazyAsyncData(
 );
 
 async function fetchProductType() {
-  const { data } = await client.from('productType').select('*');
+  const { data, error } = await client.from('productType').select('*');
+
+  checkError("fetchProductType",error)
   return data;
 }
 
@@ -348,6 +356,12 @@ useHead({
   title: "Products",
 });
 
+const checkError = (funcName, error) => {
+  if(error){
+    console.log("error ",funcName,": ",error)
+  }
+}
+
 productList.db.products = productData;
 productList.db.productTypeDropdown = productTypeDropdown;
 productList.db.categoryDropdown = categoryDropdownData;
@@ -355,7 +369,7 @@ productList.param.loading = false
   
 </script>
 
-<style>
+<style scoped>
 
 .active-btn {
   background-color: white;

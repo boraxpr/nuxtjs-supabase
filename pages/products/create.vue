@@ -158,13 +158,15 @@
             <div class="flex justify-center mt-7 gap-4 min-h-16">
               <div>
                 <NuxtLink :to="`/products`">
-                    <button class="border  shadow-md border-solid rounded-[24px] h-[54px] w-[215px] hover:bg-gray-200">Cancel</button>
+                    <button class="border shadow-md border-solid rounded-[24px] h-[54px] w-[215px] hover:bg-gray-200">Cancel</button>
                 </NuxtLink>
               </div>
               <div>
-                <button @click="insertData" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
+                <!-- <button @click="insertData" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button> -->
+                <button @click="validateForm" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
               </div>
             </div>
+            <confirm :IsActive = "createProduct.param.visible" @confirmFunc="confirmResult" />
         </main>
     </div>
 </template>
@@ -196,6 +198,10 @@ const createProduct = reactive({
     totalSize: ref(0),
     totalSizePercent: ref(0),
     files: ref([])
+  },
+  param: {
+    visible: ref(false),
+    validate: ref(false)
   }
 })
 
@@ -228,17 +234,43 @@ const insertData = async () => {
     navigateTo('/products');
   }else{
       alert("error to insert the product to supabase");
-      console.log("error ",error)
+      checkError("insertData",error);
+      // console.log("error insertData: ",error)
   }
+}
+
+const confirmResult = (value) => {
+  console.log("from parent")
+  console.log(value)
+  if(value){
+    console.log("insert");
+    insertData();
+  }
+  createProduct.param.visible = false
+}
+
+const validateForm = () => {
+
+  console.log("check validate"); //waiting for validation func
+  createProduct.param.validate = true; //waiting for validation func
+
+  if(createProduct.param.validate){
+    createProduct.param.visible = true
+  }else{
+    alert("invalid");
+  }
+  
 }
 
 async function getUserId(){
   const { data, error } = await client.auth.getUser()
+  checkError("getUserId",error);
   return data.user.id;
 }
 
 async function fetchCategory() {
-  const { data } = await client.from('category').select('*');
+  const { data, error } = await client.from('category').select('*');
+  checkError("fetchCategory", error);
   return data;
 }
 
@@ -248,7 +280,8 @@ const { data: categoryDropdownData } = await useLazyAsyncData(
 );
 
 async function fetchProductType() {
-  const { data } = await client.from('productType').select('*');
+  const { data, error } = await client.from('productType').select('*');
+  checkError("fetchProductType", error);
   return data;
 }
 
@@ -263,7 +296,8 @@ const uploadImg = async (id) => {
     .upload(id+"/"+createProduct.file.files[0].name, createProduct.file.files[0])
 
     if(error){
-      console.log(error)
+      checkError("uploadImg", error);
+      // console.log(error)
     }else{
       const { data, error } = await client
         .from('product')
@@ -271,7 +305,6 @@ const uploadImg = async (id) => {
         .eq('product_number', id)
         .select()
     }
-    
 }
 
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
@@ -304,6 +337,12 @@ const formatSize = (bytes) => {
     return `${formattedSize} ${sizes[i]}`;
 };
 
+const checkError = (funcName, error) => {
+  if(error){
+    console.log("error ",funcName,": ",error)
+  }
+}
+
 useHead({
   title: "Add Product",
 });
@@ -312,7 +351,7 @@ createProduct.db.categoryDropdown = categoryDropdownData;
 createProduct.db.productTypeDropdown = productTypeDropdown;
 </script>
 
-<style>
+<style scoped>
 
 .p-fileupload-buttonbar{
   border-radius: 10px 10px 0px 0px;
