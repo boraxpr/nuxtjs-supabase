@@ -353,6 +353,7 @@ const formatCurrency = (value) => {
           <Column header="Status">
             <template #body="quotation">
               <div class="card justify-content-center flex">
+                <QuotationDropdown :id="quotation.data.doc_num" />
                 <Dropdown
                   v-model="dropdownStatus[quotation.data.doc_num]"
                   :options="statusoption"
