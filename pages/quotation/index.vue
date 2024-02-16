@@ -358,6 +358,7 @@ const test123 = () => {
               <div class="card justify-content-center flex">
                 <QuotationDropdown
                   :id="quotation.data.doc_num"
+                  :status="quotation.data.status"
                   @onRefeshquotation="fetchquotation"
                 />
               </div>

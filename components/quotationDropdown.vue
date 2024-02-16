@@ -19,6 +19,7 @@
 const client = useSupabaseClient();
 const props = defineProps({
   id: Number,
+  status: String,
 });
 
 const quotation = reactive({
@@ -36,22 +37,25 @@ const quotation = reactive({
     status: ref(),
   },
 });
+quotation.input.status = props.status;
+quotation.input.doc_num = props.id;
+// async function fectStatus() {
+//   const { data, error } = await client
+//     .from("quotation")
+//     .select("*")
+//     .eq("doc_num", props.id);
+//   checkError("fetchData", error);
+//   quotation.db.quotation = data[0] || {};
+//   quotation.input.doc_num = quotation.db.quotation.doc_num;
+//   quotation.input.status = quotation.db.quotation.status;
 
-async function fectStatus() {
-  const { data, error } = await client
-    .from("quotation")
-    .select("*")
-    .eq("doc_num", props.id);
-  checkError("fetchData", error);
-  quotation.db.quotation = data[0] || {};
-  quotation.input.doc_num = quotation.db.quotation.doc_num;
-  quotation.input.status = quotation.db.quotation.status;
-
-  console.log(quotation.db.quotation.doc_num);
-}
-
-fectStatus();
-const emit = defineEmits(["onRefeshquotation"]);
+//   console.log(quotation.db.quotation.doc_num);
+// }
+// onUpdated(() => {
+//   console.log(props.id);
+// });
+// fectStatus();
+// const emit = defineEmits(["onRefeshquotation"]);
 
 const updateStatus = async (docNum) => {
   // Get the selected status from the dropdown using the docNum as the key
@@ -70,7 +74,7 @@ const updateStatus = async (docNum) => {
       console.error("Error updating quotation status:", error.message);
     } else {
       console.log("Quotation status updated successfully");
-      emit("onRefeshquotation"); // Refresh quotation data
+      // emit("onRefeshquotation"); // Refresh quotation data
     }
   } catch (error) {
     console.error("Error:", error.message);
