@@ -1,27 +1,33 @@
 .p-dropdown {
-    box-shadow: $inputShadow;
+  box-shadow: $inputShadow;
+
+  .p-dropdown-label {
+    box-shadow: none;
+  }
+
+  &.p-disabled {
+    opacity: 1;
+    background-color: $disabledInputBg;
 
     .p-dropdown-label {
-        box-shadow: none;
+      color: $textSecondaryColor;
     }
-
-    &.p-disabled {
-        opacity: 1;
-        background-color: $disabledInputBg;
-
-        .p-dropdown-label {
-            color: $textSecondaryColor;
-        }
-    }
+  }
 }
 
 .p-dropdown-panel {
-    .p-dropdown-items {
-        .p-dropdown-item {
-            .p-dropdown-check-icon {
-                margin-left: -0.375rem;
-                margin-right: 0.375rem;
-            }
-        }
+  .p-dropdown-items {
+    .p-dropdown-item {
+      .p-dropdown-check-icon {
+        margin-left: -0.375rem;
+        margin-right: 0.375rem;
+      }
     }
+  }
+}
+
+.status.p-dropdown {
+  .p-dropdown-label {
+    color: #ffff;
+  }
 }

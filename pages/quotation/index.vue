@@ -235,6 +235,9 @@ const formatCurrency = (value) => {
     return value.toLocaleString(undefined, { minimumFractionDigits: 2 });
   }
 };
+const test123 = () => {
+  console.log("test send value from component");
+};
 </script>
 
 <template>
@@ -353,19 +356,9 @@ const formatCurrency = (value) => {
           <Column header="Status">
             <template #body="quotation">
               <div class="card justify-content-center flex">
-                <QuotationDropdown :id="quotation.data.doc_num" />
-                <Dropdown
-                  v-model="dropdownStatus[quotation.data.doc_num]"
-                  :options="statusoption"
-                  optionLabel="name"
-                  :placeholder="quotation.data.status"
-                  @change="updateStatus(quotation.data.doc_num)"
-                  class="md:w-14rem w-40 text-white"
-                  :class="{
-                    ' bg-blue-500': quotation.data.status === 'Pending Approve',
-                    'bg-green-500': quotation.data.status === 'Approved',
-                    'bg-red-500': quotation.data.status === 'Rejected',
-                  }"
+                <QuotationDropdown
+                  :id="quotation.data.doc_num"
+                  @onRefeshquotation="fetchquotation"
                 />
               </div>
             </template>
@@ -493,8 +486,5 @@ const formatCurrency = (value) => {
 /* Adjust the padding of cells */
 .cell-padding {
   padding: 8px; /* Adjust the cell padding as needed */
-}
-.pendingapprove {
-  background-color: green;
 }
 </style>
