@@ -1,10 +1,10 @@
 <template>
     <header>
-        <div class="Container grid grid-cols-2 gap-4 mb-4 h-40">
-              <div class="Container flex items-center">
+        <div class="grid grid-cols-2 gap-4 mb-4 h-40">
+              <div class="flex items-center">
                 <div class="text-5xl">Add Project</div>
               </div>
-              <div class="Container flex justify-end items-end">
+              <div class="flex justify-end items-end">
 
               </div>
             </div>
@@ -14,38 +14,38 @@
             <div class="grid grid-cols-2 gap-4">
                 <div class="col-span-2">
                     <div>
-                      <label for="">Project Name</label>
+                      <label>Project Name</label>
                     </div>
-                    <div class="Container mt-2">
-                        <input v-model="project.input.project_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
+                    <div class="mt-2">
+                      <InputText v-model="project.input.project_name" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]"/>
                     </div>
                 </div>
                 <div>
                     <div>
-                      <label for="">Customer</label>
+                      <label>Customer</label>
                     </div>
-                    <div class="Container mt-2">
-                        <Dropdown v-model="project.input.customer" :options="project.db.customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-full rounded-lg flex items-center text-center" style="min-width: 12rem" :showClear="true">
+                    <div class="mt-2">
+                        <Dropdown v-model="project.input.customer" :options="project.db.customerDropdown" optionLabel="customer_name" :placeholder="project.input.customer?.customer_name" class="p-column-filter w-full rounded-lg flex items-center text-center" style="min-width: 12rem" :showClear="true">
                             <template #option="slotProps">
-                                <Tag :value="slotProps.option.name" />
+                                <Tag :value="slotProps.option.customer_name" />
                             </template>
                         </Dropdown>
                     </div>
                 </div>
                 <div>
                     <div>
-                      <label for="">Price</label>
+                      <label>Price</label>
                     </div>
-                    <div class="Container mt-2">
-                        <input v-model="project.input.price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
+                    <div class="mt-2">
+                      <InputNumber v-model="project.input.price" inputId="locale-user" :minFractionDigits="2" :pt="{ input: { root: { class: 'rounded-lg', } } }" class="h-10 w-full"/>
                     </div>
                 </div>
                 <div class="col-span-2">
                     <div>
-                      <label for="">Description</label>
+                      <label>Description</label>
                     </div>
-                    <div class="Container mt-2">
-                      <textarea v-model="project.input.desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
+                    <div class="mt-2">
+                      <textarea v-model="project.input.desc" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
                     </div>
                 </div>
                 <div class="col-span-2">
@@ -60,9 +60,9 @@
         </div>
         <div class="flex justify-center mt-7 gap-4 min-h-16">
           <div>
-            <Nuxt-link :to="`/projects`">
-                <button class="border  shadow-md border-solid rounded-[24px] h-[54px] w-[215px] hover:bg-gray-200">Cancel</button>
-            </Nuxt-link>
+            <NuxtLink :to="`/projects`">
+              <button class="border  shadow-md border-solid rounded-[24px] h-[54px] w-[215px] hover:bg-gray-200">Cancel</button>
+            </NuxtLink>
           </div>
           <div>
             <button @click="validateForm" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
@@ -95,7 +95,7 @@ const project = reactive({
 })
 
 async function fetchData() {
-  const { data, error } = await client.from("project").select("*,customers(id,name)").eq('id', route.id);
+  const { data, error } = await client.from("project").select("*,customers(id,customer_name)").eq('id', route.id);
   checkError("fetchData", error);
   project.db.project = data[0] || {};
 
