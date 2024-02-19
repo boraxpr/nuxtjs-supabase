@@ -1,11 +1,11 @@
 <template>
     <div>
         <header>
-            <div class="Container grid grid-cols-2 gap-4 mb-4 h-40">
-              <div class="Container flex items-center">
+            <div class="grid grid-cols-2 gap-4 mb-4 h-40">
+              <div class="flex items-center">
                 <div class="text-5xl">Add Product</div>
               </div>
-              <div class="Container flex justify-end items-end">
+              <div class="flex justify-end items-end">
 
               </div>
             </div>
@@ -15,90 +15,90 @@
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <div>
-                    <label for="">Product Name</label>
+                    <label>Product Name</label>
                   </div>
-                  <div class="Container mt-2">
-                    <input v-model="createProduct.input.product_name" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Product Code</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="createProduct.input.product_code" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  <div class="mt-2">
+                    <InputText v-model="createProduct.input.product_name" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-[#f17121]"/>
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label for="">Product Type</label>
+                    <label>Product Code</label>
                   </div>
-                  <div class="Container mt-2">
+                  <div class="mt-2">
+                    <InputNumber v-model="createProduct.input.product_code" :pt="{ input: { root: { class: 'rounded-lg', } } }" class="h-10 w-full"/>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <label>Product Type</label>
+                  </div>
+                  <div class="mt-2">
                     <Dropdown v-model="createProduct.input.product_type" :options="createProduct.db.productTypeDropdown" optionLabel="product_type_name" placeholder="Select Type" class="w-full md:w-14rem rounded-lg"/>
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label for="">Category</label>
+                    <label>Category</label>
                   </div>
-                  <div class="Container mt-2">
+                  <div class="mt-2">
                     <Dropdown v-model="createProduct.input.category" :options="createProduct.db.categoryDropdown" optionLabel="category_name" placeholder="Select Category" class="w-full md:w-14rem rounded-lg"/>
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label for="">Income Account</label>
+                    <label>Income Account</label>
                   </div>
-                  <div class="Container mt-2">
-                    <input v-model="createProduct.input.income_account" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Barcode</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="createProduct.input.barcode" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  <div class="mt-2">
+                    <InputText v-model="createProduct.input.income_account" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2"/>
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label for="">Selling Price</label>
+                    <label>Barcode</label>
                   </div>
-                  <div class="Container mt-2">
-                    <input v-model="createProduct.input.selling_price" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <label for="">Vat</label>
-                  </div>
-                  <div class="Container mt-2">
-                    <input v-model="createProduct.input.vat" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  <div class="mt-2">
+                    <InputText v-model="createProduct.input.barcode" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2"/>
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label for="">Main Unit</label>
+                    <label>Selling Price</label>
                   </div>
-                  <div class="Container mt-2">
-                    <input v-model="createProduct.input.main_unit" type="number" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  <div class="mt-2">
+                    <InputNumber v-model="createProduct.input.selling_price" inputId="locale-user" :minFractionDigits="2" :pt="{ input: { root: { class: 'rounded-lg', } } }" class="h-10 w-full"/>
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label for="">Unit</label>
+                    <label>Vat</label>
                   </div>
-                  <div class="Container mt-2">
-                    <input v-model="createProduct.input.unit" type="text" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2">
+                  <div class="mt-2">
+                    <InputNumber v-model="createProduct.input.vat" inputId="locale-user" :minFractionDigits="2" :pt="{ input: { root: { class: 'rounded-lg', } } }" class="h-10 w-full"/>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <label>Main Unit</label>
+                  </div>
+                  <div class="mt-2">
+                    <InputNumber v-model="createProduct.input.main_unit" inputId="locale-user" :minFractionDigits="2" :pt="{ input: { root: { class: 'rounded-lg', } } }" class="h-10 w-full"/>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <label>Unit</label>
+                  </div>
+                  <div class="mt-2">
+                    <InputText v-model="createProduct.input.unit" class="p-2.5 h-10 w-full border-gray-300 rounded-lg hover:border-2"/>
                   </div>
                 </div>
                 <div class="col-span-2">
                   <div>
-                    <label for="">Description</label>
+                    <label>Description</label>
                   </div>
-                  <div class="Container mt-2">
-                    <textarea v-model="createProduct.input.product_desc" type="text" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
+                  <div class="mt-2">
+                    <textarea v-model="createProduct.input.product_desc" class="p-2.5 h-20 w-full border-gray-300 rounded-lg hover:border-2"></textarea>
                   </div>
                 </div>
               </div>
@@ -107,8 +107,7 @@
                   <div>
                     <label>Product Picture</label>
                   </div>
-                  <div class="Container mt-2">
-                    <!-- <input type="file" @change="onChangeFile"> -->
+                  <div class="mt-2">
                     <div class="card">
                       <Toast />
                       <FileUpload :multiple="false" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
@@ -146,14 +145,14 @@
                   </div>
                 </div>
               </div>
+              <div>
                 <div>
-                  <div>
-                    <label>Active</label>
-                  </div>
-                  <div class="mt-2">
-                    <InputSwitch v-model="createProduct.input.status" />
-                  </div>
+                  <label>Active</label>
                 </div>
+                <div class="mt-2">
+                  <InputSwitch v-model="createProduct.input.status" />
+                </div>
+              </div>
             </div>
             <div class="flex justify-center mt-7 gap-4 min-h-16">
               <div>
@@ -162,7 +161,6 @@
                 </NuxtLink>
               </div>
               <div>
-                <!-- <button @click="insertData" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button> -->
                 <button @click="validateForm" class="border bg-[#F17121] shadow-md border-solid rounded-[24px] text-white h-[54px] w-[215px] hover:bg-gray-200">Save</button>
               </div>
             </div>
@@ -235,7 +233,6 @@ const insertData = async () => {
   }else{
       alert("error to insert the product to supabase");
       checkError("insertData",error);
-      // console.log("error insertData: ",error)
   }
 }
 
@@ -294,7 +291,6 @@ const uploadImg = async (id) => {
 
     if(error){
       checkError("uploadImg", error);
-      // console.log(error)
     }else{
       const { data, error } = await client
         .from('product')
@@ -305,11 +301,11 @@ const uploadImg = async (id) => {
 }
 
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
-    console.log("onRemoveTemplatingFile");
-    removeFileCallback(index);
-    createProduct.file.totalSize -= parseInt(formatSize(file.size));
-    createProduct.file.totalSizePercent = createProduct.file.totalSize / 10;
-    createProduct.file.files === 0
+  console.log("onRemoveTemplatingFile");
+  removeFileCallback(index);
+  createProduct.file.totalSize -= parseInt(formatSize(file.size));
+  createProduct.file.totalSizePercent = createProduct.file.totalSize / 10;
+  createProduct.file.files === 0
 };
 
 const onSelectedFiles = (event) => {
@@ -320,25 +316,16 @@ const onSelectedFiles = (event) => {
 };
 
 const formatSize = (bytes) => {
-    const k = 1024;
-    const dm = 3;
-    const sizes = primevue.config.locale.fileSizeTypes;
-
-    if (bytes === 0) {
-        return `0 ${sizes[0]}`;
-    }
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-    return `${formattedSize} ${sizes[i]}`;
-};
-
-const checkError = (funcName, error) => {
-  if(error){
-    console.log("error ",funcName,": ",error)
+  const k = 1024;
+  const dm = 3;
+  const sizes = primevue.config.locale.fileSizeTypes;
+  if (bytes === 0) {
+      return `0 ${sizes[0]}`;
   }
-}
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+  return `${formattedSize} ${sizes[i]}`;
+};
 
 useHead({
   title: "Add Product",

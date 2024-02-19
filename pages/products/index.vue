@@ -1,11 +1,11 @@
 <template>
   <div>
     <header>
-      <div class="Container mb-4 grid h-20 grid-cols-2 gap-4">
-        <div class="Container flex items-end">
+      <div class="mb-4 grid h-20 grid-cols-2 gap-4">
+        <div class="flex items-end">
           <div class="text-4xl font-semibold">Products</div>
         </div>
-        <div class="Container flex items-end justify-end"></div>
+        <div class="flex items-end justify-end"></div>
       </div>
     </header>
     <main>
@@ -258,11 +258,11 @@
           </column>
           <column header="Edit">
             <template #body="product">
-              <NuxtLink
-                :to="`/products/${product.data.product_number}`"
-                class="underline"
-              >
-                <img src="/assets/img/edit.png" class="h-[27px]" />
+              <NuxtLink :to="`/products/${product.data.product_number}`">
+                <Button
+                  icon="pi pi-pencil"
+                  class="p-button-rounded p-button-text text-blue-400"
+                ></Button>
               </NuxtLink>
             </template>
           </column>

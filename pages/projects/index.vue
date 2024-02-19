@@ -1,11 +1,11 @@
 <template>
   <div>
     <header>
-      <div class="Container mb-4 grid h-20 grid-cols-2 gap-4">
-        <div class="Container flex items-end">
+      <div class="mb-4 grid h-20 grid-cols-2 gap-4">
+        <div class="flex items-end">
           <div class="text-4xl font-semibold">Projects</div>
         </div>
-        <div class="Container flex items-end justify-end"></div>
+        <div class="flex items-end justify-end"></div>
       </div>
     </header>
     <main>
@@ -53,21 +53,16 @@
                       </div>
                     </template>
                   </MultiSelect>
-                  <!-- <Dropdown v-model="filters['customer_id'].value" optionValue="id" :options="customerDropdown" optionLabel="name" placeholder="Customer Name" class="p-column-filter w-[184px] h-[54px] rounded-[25px] flex items-center text-center" style="min-width: 12rem" :showClear="true">
-                                        <template #option="slotProps">
-                                            <Tag :value="slotProps.option.name" />
-                                        </template>
-                                    </Dropdown> -->
                 </div>
               </div>
               <div>
-                <Nuxt-link :to="`/projects/create`">
+                <NuxtLink :to="`/projects/create`">
                   <div
                     class="flex h-[54px] w-[203px] items-center justify-center rounded-[20px] bg-[#F17121] text-xl text-white hover:bg-gray-200"
                   >
                     + New Project
                   </div>
-                </Nuxt-link>
+                </NuxtLink>
               </div>
             </div>
             <div
@@ -122,7 +117,7 @@
               <div class="flex w-full justify-center">Customer Name</div>
             </template>
             <template #body="projects">
-              {{ projects.data.customers?.name }}
+              {{ projects.data.customers?.customer_name }}
             </template>
           </Column>
           <Column>
@@ -183,12 +178,12 @@
           <Column>
             <template #header> Edit </template>
             <template #body="projects">
-              <Nuxt-link
-                :to="`/projects/${projects.data.id}`"
-                class="underline"
-              >
-                <img src="/assets/img/edit.png" class="h-[27px]" />
-              </Nuxt-link>
+              <NuxtLink :to="`/projects/${projects.data.id}`">
+                <Button
+                  icon="pi pi-pencil"
+                  class="p-button-rounded p-button-text text-blue-400"
+                ></Button>
+              </NuxtLink>
             </template>
           </Column>
         </DataTable>
@@ -221,7 +216,7 @@ const projectList = reactive({
 });
 
 async function fetchProject() {
-    const { data, error } = await client.from('project').select('*,customers(id,name),created_by:created_by(*), updated_by:updated_by(*)');
+    const { data, error } = await client.from('project').select('*,customers(id,customer_name),created_by:created_by(*), updated_by:updated_by(*)');
     checkError("fetchProject",error)
     return data;
 }
