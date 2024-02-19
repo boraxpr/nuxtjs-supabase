@@ -198,7 +198,7 @@
             <div>
               <label>Attachment</label>
             </div>
-            <div v-if="customer.input.attachment !== null && customer.param.isEditFile === false">
+            <div v-if="customer.input.attachment !== '' && customer.input.attachment !== null && customer.param.isEditFile === false">
               <div class="flex items-start gap-2 mt-2">
                 <NuxtLink :to="customer.param.link">{{ customer.param.attachment_name }}</NuxtLink>
                 <button @click="deleteFileBtn" class="text-red-400">x</button>
@@ -207,7 +207,7 @@
             <div class="mt-2" v-else>
               <div class="card">
                 <Toast />
-                <FileUpload :multiple="false" accept="image/*" :maxFileSize="1000000" @select="onSelectedFiles">
+                <FileUpload :multiple="false" :maxFileSize="1000000" @select="onSelectedFiles">
                     <template #header="{ chooseCallback }">
                         <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
                             <div class="flex gap-2">
@@ -267,6 +267,7 @@
 <script setup>
 const client = useSupabaseClient();
 const route = useRoute().params
+const primevue = usePrimeVue();
 
 const customer = reactive({
   db: {
@@ -345,11 +346,20 @@ async function fetchData() {
   customer.input.attachment = customer.db.customer.attachment;
   customer.input.status = customer.db.customer.status;
 
-  if(customer.input.attachment !== undefined) {
+  if(customer.input.attachment !== "" && customer.input.attachment !== null) {
     getLinkImg();
   }
 }
-const save = async () => {}
+const save = async () => {
+  if(customer.param.attachment_old !== ""){
+    deleteFile();
+  }
+  if(customer.file.files.length !== 0){
+    customer.input.attachment = customer.input.id+"/"+customer.file.files[0].name;
+    uploadFile();
+  }
+  update();
+}
 const update = async () => {
   console.log("customer.input.credit_date ",customer.input.credit_date);
   const input = {
@@ -392,18 +402,25 @@ const update = async () => {
     checkError("update", error);
   }
 }
-const uploadFile = async () => {}
-const deleteFile = async () => {}
+const uploadFile = async (id) => {
+  const { data, error } = await client.storage
+    .from('customers')
+    .upload(id+"/"+customer.file.files[0].name, customer.file.files[0])
+    checkError("uploadFile", error);
+  
+}
+const deleteFile = async () => {
+  const { data, error } = await client
+    .storage
+    .from("customers")
+    .remove([customer.param.attachment_old])
 
-async function getUserId(){
-  const { data, error } = await client.auth.getUser()
-  checkError("getUserId",error);
-  return data.user.id;
+    checkError("deleteFile", error);
 }
 
 const confirmResult = (value) => {
   if(value){
-    update();
+    save();
   }
   customer.param.visible = false
 }
@@ -419,6 +436,18 @@ const validateForm = () => {
   }
 }
 
+async function getUserId(){
+  const { data, error } = await client.auth.getUser()
+  checkError("getUserId",error);
+  return data.user.id;
+}
+
+const deleteFileBtn = () => {
+  customer.param.attachment_old = customer.input.attachment;
+  customer.input.attachment = "";
+  customer.param.isEditFile = true;
+}
+
 const getLinkImg = async () => {
     const { data, error } = client
     .storage
@@ -428,12 +457,6 @@ const getLinkImg = async () => {
     customer.param.attachment_name = customer.input.attachment
     let id = route.id+"/"
     customer.param.attachment_name = customer.param.attachment_name.substring(id.length)
-}
-
-const deleteFileBtn = () => {
-  customer.param.attachment_old = customer.input.attachment;
-  customer.input.attachment = "";
-  customer.param.isEditFile = true;
 }
 
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
@@ -448,6 +471,7 @@ const onSelectedFiles = (event) => {
   customer.file.files = event.files;
   customer.file.files.forEach((file) => {
     customer.file.totalSize += parseInt(formatSize(file.size));
+    customer.param.isEditFile = true;
   });
 };
 
