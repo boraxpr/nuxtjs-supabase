@@ -8,100 +8,77 @@
       <!-- Header -->
       <div class="text-left text-3xl font-semibold">Add Quotation</div>
       <!-- BUTTONS -->
-      <div class="">
-        <div
-          class="flex flex-auto flex-wrap space-x-5 md:flex-nowrap print:hidden"
+      <div>
+        <Button
+          id="printButton"
+          raised
+          class="h-14 w-full"
+          @click="handlePrint"
+          rounded
         >
-          <Button
-            id="printButton"
-            raised
-            class="h-14 w-full"
-            severity="info"
-            @click="handlePrint"
-            rounded
+          <svg
+            width="100"
+            height="100"
+            viewBox="0 0 100 100"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class=""
+            style="flex; width: 100%; height:100%; justify-content: center; align-items: center;"
           >
-            <svg
-              width="100"
-              height="100"
-              viewBox="0 0 100 100"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              class=""
-              style="flex; width: 100%; height:100%; justify-content: center; align-items: center;"
-            >
-              <path
-                class="fill1"
-                d="M14 6V94H86V30.5H61.5V6H14Z"
-                fill="#fff"
-                strokeWidth="2px"
-              />
-              <path
-                class="fill1"
-                d="M86 30.5L61.5 6V30.5H86Z"
-                fill="#fff"
-                strokeWidth="2px"
-              />
-              <path
-                class="stroke1"
-                d="M86 30.5V94H14V6H61.5M86 30.5L61.5 6M86 30.5H61.5V6"
-                stroke="#000"
-                strokeWidth="2px"
-              />
-              <line
-                class="line-file1-a stroke2"
-                x1="27.5"
-                y1="33"
-                x2="48.5"
-                y2="33"
-                stroke="#000"
-                strokeWidth="2px"
-              />
-              <line
-                class="line-file1-b stroke2"
-                x1="27.5"
-                y1="53"
-                x2="71.5"
-                y2="53"
-                stroke="#000"
-                strokeWidth="2px"
-              />
-              <line
-                class="line-file1-c stroke2"
-                x1="27.5"
-                y1="73"
-                x2="71.5"
-                y2="73"
-                stroke="#000"
-                strokeWidth="2px"
-              />
-            </svg>
-          </Button>
-          <NuxtLink to="/quotation" class="h-full w-full">
-            <Button
-              label="Close"
-              severity="danger"
-              raised
-              outlined
-              rounded
-              class="h-14 w-full"
+            <path
+              class="fill1"
+              d="M14 6V94H86V30.5H61.5V6H14Z"
+              fill="#fff"
+              strokeWidth="2px"
             />
-          </NuxtLink>
-
-          <Button
-            label="Save"
-            severity="success"
-            raised
-            outlined
-            rounded
-            class="h-14 w-full"
-            @click="handleSave"
-          />
-        </div>
+            <path
+              class="fill1"
+              d="M86 30.5L61.5 6V30.5H86Z"
+              fill="#fff"
+              strokeWidth="2px"
+            />
+            <path
+              class="stroke1"
+              d="M86 30.5V94H14V6H61.5M86 30.5L61.5 6M86 30.5H61.5V6"
+              stroke="#000"
+              strokeWidth="2px"
+            />
+            <line
+              class="line-file1-a stroke2"
+              x1="27.5"
+              y1="33"
+              x2="48.5"
+              y2="33"
+              stroke="#000"
+              strokeWidth="2px"
+            />
+            <line
+              class="line-file1-b stroke2"
+              x1="27.5"
+              y1="53"
+              x2="71.5"
+              y2="53"
+              stroke="#000"
+              strokeWidth="2px"
+            />
+            <line
+              class="line-file1-c stroke2"
+              x1="27.5"
+              y1="73"
+              x2="71.5"
+              y2="73"
+              stroke="#000"
+              strokeWidth="2px"
+            />
+          </svg>
+          <p class="ml-2 whitespace-nowrap">Download PDF</p>
+        </Button>
       </div>
     </div>
     <!-- SECTION 1  -->
+
     <div
-      class="m-2 mx-auto flex w-11/12 flex-row justify-between rounded-md border p-4 shadow-md print:w-11/12"
+      class="m-2 mx-auto flex flex-row justify-between rounded-md border p-6 shadow-md print:w-11/12"
     >
       <!-- SECTION 1 : LEFT -->
       <div class="flex w-[50%] flex-col justify-between">
@@ -113,7 +90,7 @@
           placeholder="Select a Customer"
           optionLabel="name"
           optionValue="id"
-          class="w-full md:w-[50%]"
+          class="h-15 w-full md:w-[50%]"
           @change="handleCustomerChange"
           showClear
         >
@@ -168,59 +145,67 @@
         <div class="text-right text-xl font-bold text-orange-400">
           {{ createQuotationFormData.calculations.grand_total ?? "0.00" }}
         </div>
-
-        <label>Date:</label>
-        <Calendar
-          v-model="createQuotationFormData.userInputs.quotation.date"
-          showIcon
-          iconDisplay="input"
-          dateFormat="dd/mm/yy"
-          class=""
-        />
-        <label>Credit (Day):</label>
-        <InputNumber
-          v-model="createQuotationFormData.userInputs.credit_day"
-          mode="decimal"
-          showButtons
-          :min="0"
-          :max="365"
-        >
-        </InputNumber>
-
-        <label>Due Date:</label>
-        <Calendar
-          v-model="createQuotationFormData.userInputs.quotation.due_date"
-          showIcon
-          iconDisplay="input"
-          dateFormat="dd/mm/yy"
-          class=""
-        />
-
-        <label>Sales Name:</label>
-        <InputText
-          showIcon
-          iconDisplay="input"
-          class=""
-          placeholder="Naipawat Poolsawat"
-          disabled
-        />
-
-        <label>Currency:</label>
-        <Dropdown
-          v-model="createQuotationFormData.userInputs.currency_code"
-          :options="createQuotationFormData.db.currencies"
-          placeholder="Select a Currency"
-          inputId="dd-customer"
-          optionLabel="name"
-          optionValue="code"
-          class=""
-        ></Dropdown>
+        <div class="space-y-3">
+          <div class="space-y-2">
+            <label>Date:</label>
+            <Calendar
+              v-model="createQuotationFormData.userInputs.quotation.date"
+              showIcon
+              iconDisplay="input"
+              dateFormat="dd/mm/yy"
+              class=""
+            />
+          </div>
+          <div>
+            <label>Credit (Day):</label>
+            <InputNumber
+              v-model="createQuotationFormData.userInputs.credit_day"
+              mode="decimal"
+              showButtons
+              :min="0"
+              :max="365"
+            >
+            </InputNumber>
+          </div>
+          <div>
+            <label>Due Date:</label>
+            <Calendar
+              v-model="createQuotationFormData.userInputs.quotation.due_date"
+              showIcon
+              iconDisplay="input"
+              dateFormat="dd/mm/yy"
+              class=""
+            />
+          </div>
+          <div>
+            <label>Sales Name:</label>
+            <InputText
+              showIcon
+              iconDisplay="input"
+              class=""
+              placeholder="Naipawat Poolsawat"
+              disabled
+            />
+          </div>
+          <div>
+            <label>Currency:</label>
+            <Dropdown
+              v-model="createQuotationFormData.userInputs.currency_code"
+              :options="createQuotationFormData.db.currencies"
+              placeholder="Select a Currency"
+              inputId="dd-customer"
+              optionLabel="name"
+              optionValue="code"
+              class=""
+            ></Dropdown>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- SECTION 2  -->
     <div
-      class="bg-card m-2 mx-auto grid w-11/12 grid-flow-row gap-5 rounded-md border p-4 shadow-md print:w-11/12"
+      class="bg-card m-2 mx-auto mt-6 grid grid-flow-row gap-5 rounded-md border p-6 shadow-md print:w-11/12"
     >
       <div class="grid grid-flow-col grid-cols-[7fr,3fr] gap-5">
         <div class="space-y-2">
@@ -260,7 +245,7 @@
     </div>
     <!-- SECTION 3 : QUOTATION PRODUCTS -->
     <div
-      class="bg-card m-2 mx-auto w-11/12 rounded-md border p-4 shadow-md print:w-11/12"
+      class="bg-card m-2 mx-auto mt-6 rounded-md border p-6 shadow-md print:w-11/12"
     >
       <div class="p-fluid card">
         <DataTable
@@ -268,6 +253,7 @@
           editMode="cell"
           :filters="filters"
           @cell-edit-complete="onCellEditComplete"
+          class="add-product-table"
           :pt="{
             table: { style: 'min-width: 50rem' },
             column: {
@@ -332,16 +318,18 @@
             </Column> -->
         </DataTable>
       </div>
-      <Button @click="handleAddProduct">Add</Button>
+      <Button @click="handleAddProduct" class="mt-6 rounded-3xl" outlined=""
+        >+ Add Product</Button
+      >
     </div>
 
     <!-- SECTION 4 : SUMMARY -->
     <div
-      class="bg-card mx-auto grid w-11/12 grid-flow-col grid-cols-[7fr,3fr] space-x-5 rounded-lg border pb-10 shadow-lg print:w-11/12"
+      class="bg-card mx-auto mt-6 grid grid-flow-col grid-cols-[7fr,3fr] rounded-lg border p-6 shadow-lg print:w-11/12"
     >
       <!-- SECTION 4 : LEFT -->
       <div class="flex flex-col space-y-5">
-        <div class="m-5 mr-0 flex flex-row justify-between space-x-5">
+        <div class="flex flex-row justify-between space-x-5">
           <div class="w-full">
             <div>
               <label>Remark:</label>
@@ -369,7 +357,7 @@
             </div>
           </div>
         </div>
-        <div class="m-5 mr-0 flex flex-row justify-between space-x-5">
+        <div class="flex flex-row justify-between space-x-5">
           <div class="w-full">
             <div>
               <label>Attachment:</label>
@@ -404,33 +392,78 @@
           <div>0.00</div>
         </div>
       </div> -->
-      <div class="flex flex-col space-y-2 p-6">
-        <div>Amount:</div>
-        <div class="flex flex-col items-center justify-between md:flex-row">
-          <div class="mb-2 w-full text-left md:mb-0 md:w-1/4 md:text-right">
-            Discount:
+      <div class="mt-6 flex flex-col items-end space-y-2">
+        <div class="w-4/5">
+          <div class="flex justify-between">
+            <p>Amount:</p>
+            <P>100</P>
           </div>
-          <div class="p-fluid flex w-full flex-row items-center md:w-2/4">
-            <InputNumber
-              class="w-full md:w-5/6"
-              v-model="createQuotationFormData.userInputs.discount"
-              mode="decimal"
-              showButtons
-              :max="100"
-              :min="0"
-            ></InputNumber>
-            <span class="w-full pl-1 text-left md:w-1/6">%</span>
+          <div class="flex flex-col items-center justify-between md:flex-row">
+            <div class="flex items-center">
+              <p>Discount:</p>
+              <div class="p-fluid flex w-full flex-row items-center md:w-2/4">
+                <InputNumber
+                  class="ml-2 h-9 max-w-16"
+                  v-model="createQuotationFormData.userInputs.discount"
+                  mode="decimal"
+                  showButtons
+                  :max="100"
+                  :min="0"
+                ></InputNumber
+                ><span class="pl-1 text-left md:w-1/6">%</span>
+              </div>
+            </div>
+            <div class="w-full text-right md:w-1/4">0.00</div>
           </div>
-          <div class="w-full text-right md:w-1/4">0.00</div>
+          <div class="flex justify-between">
+            <p>Amount after discount:</p>
+            <P>100</P>
+          </div>
+          <div class="flex justify-between">
+            <div class="flex items-center space-x-2">
+              <Checkbox></Checkbox>
+              <p>Vat Include</p>
+            </div>
+            <p>00</p>
+          </div>
+          <div class="flex justify-between">
+            <p>Total Amount:</p>
+            <P>100</P>
+          </div>
+          <Divider />
+
+          <div class="flex items-center space-x-2">
+            <Checkbox></Checkbox>
+            <p>With holding tax</p>
+          </div>
+          <div class="mt-2 flex items-center space-x-2">
+            <Checkbox></Checkbox>
+            <p>Electronic Signature</p>
+          </div>
         </div>
-
-        <div>Amount after discount:</div>
-
-        <div class="">Total Amount:</div>
-        <Divider />
-
-        <div>Total Amount:</div>
       </div>
+    </div>
+
+    <div
+      class="mb-12 mt-10 flex flex-wrap items-center justify-center space-x-5 md:flex-nowrap print:hidden"
+    >
+      <NuxtLink to="/quotation" class="">
+        <Button
+          label="Close"
+          raised
+          rounded
+          severity="secondary"
+          class="h-14 w-80"
+        />
+      </NuxtLink>
+
+      <Button
+        label="Save"
+        raised
+        rounded
+        class="h-14 w-80"
+        @click="handleSave"
+      />
     </div>
   </div>
 </template>
@@ -670,6 +703,7 @@ const { handlePrint } = useVueToPrint({
   removeAfterPrint: false,
 });
 </script>
+
 <style scoped>
 .line-file1-a {
   stroke-dasharray: 110;

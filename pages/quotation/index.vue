@@ -168,7 +168,8 @@ const statusoption = ref([
 
 // Method to update the status of a quotation
 const updateStatus = async (docNum) => {
-  const selectedStatus = dropdownStatus.value[docNum]; // Get the selected status from the dropdown using the docNum as the key
+  const selectedStatus = dropdownStatus.value[docNum];
+  // Get the selected status from the dropdown using the docNum as the key
 
   try {
     const { error } = await client
@@ -189,6 +190,7 @@ const updateStatus = async (docNum) => {
   } catch (error) {
     console.error("Error:", error.message);
   }
+  console.log(selectedStatus);
 };
 
 function formatDate(date) {
@@ -232,6 +234,9 @@ const formatCurrency = (value) => {
   if (value !== null) {
     return value.toLocaleString(undefined, { minimumFractionDigits: 2 });
   }
+};
+const test123 = () => {
+  console.log("test send value from component");
 };
 </script>
 
@@ -351,13 +356,10 @@ const formatCurrency = (value) => {
           <Column header="Status">
             <template #body="quotation">
               <div class="card justify-content-center flex">
-                <Dropdown
-                  v-model="dropdownStatus[quotation.data.doc_num]"
-                  :options="statusoption"
-                  optionLabel="name"
-                  :placeholder="quotation.data.status"
-                  @change="updateStatus(quotation.data.doc_num)"
-                  class="md:w-14rem w-40 bg-[#F17121]"
+                <QuotationDropdown
+                  :id="quotation.data.doc_num"
+                  :status="quotation.data.status"
+                  @onRefeshquotation="fetchquotation"
                 />
               </div>
             </template>
