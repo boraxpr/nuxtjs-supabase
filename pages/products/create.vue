@@ -206,9 +206,9 @@ const createProduct = reactive({
 const insertData = async () => {
   const Input = {
       product_name: createProduct.input.product_name,
-      product_type_id: createProduct.input.product_type.id,
+      product_type_id: createProduct.input.product_type?.id,
       product_code: createProduct.input.product_code,
-      category_id: createProduct.input.category.id,
+      category_id: createProduct.input.category?.id,
       main_unit: createProduct.input.main_unit,
       barcode: createProduct.input.barcode,
       selling_price: createProduct.input.selling_price,

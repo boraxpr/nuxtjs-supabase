@@ -324,6 +324,7 @@ const insertData = async () => {
     website: createCustomer.input.website,
     shipping_address: createCustomer.input.shipping_address,
     notes: createCustomer.input.notes,
+    attachment: "",
     created_by: await getUserId(),
   }
   const { data, error } = await client.from('customers').insert([
@@ -385,7 +386,6 @@ const validateForm = () => {
   }else{
     alert("invalid");
   }
-  
 }
 
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {

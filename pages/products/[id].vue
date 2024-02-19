@@ -107,7 +107,7 @@
             <div class="mt-2">
               <label>Product Picture</label>
             </div>
-            <div v-if="product.input.product_img !== '' && product.param.isEditFile === false">
+            <div v-if="product.input.product_img !== '' && product.input.product_img !== null && product.param.isEditFile === false">
               <div class="flex items-start gap-2 mt-2">
                 <img :src="product.param.linkImg" alt="" class="h-auto max-h-48">
                 <button @click="deleteFileBtn" class="text-red-400">x</button>
@@ -237,7 +237,7 @@ async function fetchData() {
   product.input.product_img = product.db.product.product_img;
   product.input.status = product.db.product.status
 
-  if(product.input.product_img !== "") {
+  if(product.input.product_img !== "" && product.input.product_img !== null) {
     getLinkImg();
   }
 }
@@ -308,7 +308,6 @@ const update = async () => {
 }
 
 const uploadFile = async () => {
-  console.log("id ",product.input.id,"file name ",product.file.files[0].name,"file ",product.file.files[0])
   const { data, error } = await client.storage
     .from("product")
     .upload(product.input.id+"/"+product.file.files[0].name, product.file.files[0])
