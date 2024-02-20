@@ -145,61 +145,62 @@
         <div class="text-right text-xl font-bold text-orange-400">
           {{ createQuotationFormData.calculations.grand_total ?? "0.00" }}
         </div>
-        <div class="space-y-3">
-          <div class="space-y-2">
-            <label>Date:</label>
-            <Calendar
-              v-model="createQuotationFormData.userInputs.quotation.date"
-              showIcon
-              iconDisplay="input"
-              dateFormat="dd/mm/yy"
-              class=""
-            />
-          </div>
-          <div>
-            <label>Credit (Day):</label>
-            <InputNumber
-              v-model="createQuotationFormData.userInputs.credit_day"
-              mode="decimal"
-              showButtons
-              :min="0"
-              :max="365"
-            >
-            </InputNumber>
-          </div>
-          <div>
-            <label>Due Date:</label>
-            <Calendar
-              v-model="createQuotationFormData.userInputs.quotation.due_date"
-              showIcon
-              iconDisplay="input"
-              dateFormat="dd/mm/yy"
-              class=""
-            />
-          </div>
-          <div>
-            <label>Sales Name:</label>
-            <InputText
-              showIcon
-              iconDisplay="input"
-              class=""
-              placeholder="Naipawat Poolsawat"
-              disabled
-            />
-          </div>
-          <div>
-            <label>Currency:</label>
-            <Dropdown
-              v-model="createQuotationFormData.userInputs.currency_code"
-              :options="createQuotationFormData.db.currencies"
-              placeholder="Select a Currency"
-              inputId="dd-customer"
-              optionLabel="name"
-              optionValue="code"
-              class=""
-            ></Dropdown>
-          </div>
-        </div>
+
+        <label>Date:</label>
+        <Calendar
+          v-model="createQuotationFormData.userInputs.quotation.date"
+          showIcon
+          iconDisplay="input"
+          dateFormat="dd/mm/yy"
+          class=""
+        />
+        <label>Credit (Day):</label>
+       
+          <InputNumber
+            v-model="createQuotationFormData.userInputs.credit_day"
+            mode="decimal"
+            showButtons
+            :min="0"
+            :max="365"
+            :pt="{
+              input: {
+                root: {
+                  class: 'rounded-lg',
+                }
+              }
+            }"
+          >
+          </InputNumber>
+   
+
+        <label>Due Date:</label>
+        <Calendar
+          v-model="createQuotationFormData.userInputs.quotation.due_date"
+          showIcon
+          iconDisplay="input"
+          dateFormat="dd/mm/yy"
+          class=""
+        />
+
+        <label>Sales Name:</label>
+        <InputText
+          showIcon
+          iconDisplay="input"
+          class=""
+          placeholder="Naipawat Poolsawat"
+          disabled
+        />
+
+        <label>Currency:</label>
+        <Dropdown
+          v-model="createQuotationFormData.userInputs.currency_code"
+          :options="createQuotationFormData.db.currencies"
+          placeholder="Select a Currency"
+          inputId="dd-customer"
+          optionLabel="name"
+          optionValue="code"
+          class=""
+        ></Dropdown>
       </div>
     </div>
 
