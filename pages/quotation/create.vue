@@ -178,14 +178,23 @@
           class=""
         />
         <label>Credit (Day):</label>
-        <InputNumber
-          v-model="createQuotationFormData.userInputs.credit_day"
-          mode="decimal"
-          showButtons
-          :min="0"
-          :max="365"
-        >
-        </InputNumber>
+       
+          <InputNumber
+            v-model="createQuotationFormData.userInputs.credit_day"
+            mode="decimal"
+            showButtons
+            :min="0"
+            :max="365"
+            :pt="{
+              input: {
+                root: {
+                  class: 'rounded-lg',
+                }
+              }
+            }"
+          >
+          </InputNumber>
+   
 
         <label>Due Date:</label>
         <Calendar
