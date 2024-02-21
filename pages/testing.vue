@@ -15,13 +15,14 @@
 </template>
 
 <script setup>
-const login = await fetch("http://localhost:8080/login", {
-  method: "POST",
-  credentials: "include",
-});
+// const login = await fetch("http://localhost:8080/login",
+//   {
+//     method: "POST",
+// credentials: "include", })
 const fetchQuotation = async () => {
   const response = await fetch("http://localhost:8080/quotation", {
     credentials: "include",
+    method: "GET",
   });
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
