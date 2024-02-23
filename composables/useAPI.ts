@@ -1,7 +1,7 @@
 class APIFacade {
   base_url = "http://localhost:8080"; // Hardcoded base URL
   // TESTED
-  get = async (endpoint) => {
+  get = async (endpoint: string): Promise<JSON | null> => {
     const response = await fetch(`${this.base_url}/${endpoint}`, {
       method: "GET",
       credentials: "include",
@@ -11,13 +11,12 @@ class APIFacade {
     });
     if (!response.ok) {
       console.log("Response Failed");
-      return;
+      return null;
     }
-    const data = await response.json();
-    return data;
+    return await response.json();
   };
   // TESTED
-  session = async () => {
+  session = async (): Promise<boolean> => {
     const response = await fetch(`${this.base_url}/session`, {
       method: "GET",
       credentials: "include",
@@ -28,15 +27,15 @@ class APIFacade {
     }
     return true;
   };
-  // TESTED
-  getWithCache = async (endpoint) => {
-    const { data } = await useAsyncData(endpoint, () => this.get(endpoint), {
+  // TESTED : Might be better to useAsyncData Directly from the pages
+  getWithCache = async (endpoint: string): Promise<{ data: Ref<JSON | null>, pending: Ref<boolean>, error: Ref<Error | null> }> => {
+    const { data, pending, error } = await useAsyncData(endpoint, () => this.get(endpoint), {
       server: false,
     });
-    return data;
+    return { data: data, pending: pending, error: error };
   };
 
-  create = async (endpoint, body) => {
+  create = async <T>(endpoint: string, body: T): Promise<JSON> => {
     const response = await fetch(`${this.base_url}/${endpoint}`, {
       method: "POST",
       credentials: "include",
@@ -51,7 +50,7 @@ class APIFacade {
     return await response.json();
   };
 
-  login = async (credential) => {
+  login = async (credential: { email: string, password: string, }): Promise<Boolean> => {
     const response = await fetch(`${this.base_url}/login`, {
       method: "POST",
       credentials: "include",
@@ -62,13 +61,14 @@ class APIFacade {
     });
 
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      return false
     } else {
       console.log("SUCCESS LOGIN");
+      return true
     }
   };
 
-  update = async (endpoint, body) => {
+  update = async <T>(endpoint: string, body: T): Promise<JSON> => {
     const response = await fetch(`${this.base_url}/${endpoint}`, {
       method: "PUT",
       credentials: "include",

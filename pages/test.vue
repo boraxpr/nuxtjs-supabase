@@ -1,7 +1,8 @@
 <template>
-  <div v-if="isLogin">
+  <!-- {{ session }} -->
+
     <div>
-      <DataTable :value="quotation.value">
+      <DataTable :value="quotation">
         <Column field="DocNum" header="Doc_num"></Column>
         <Column field="CreatedDate.Time" header="CreatedDate">
           <template #body="slotProps">
@@ -13,24 +14,36 @@
         <Column field="CustomerName.String" header="CustomerName"></Column>
       </DataTable>
     </div>
-  </div>
+
 </template>
 
 <script setup>
-const isLogin = ref(false);
-const quotation = ref({});
-// Mimic middleware : Check session
-const session = await useAPI().session();
-if (session) {
-  isLogin.value = true;
-} else {
-  // Mimic Login Page : Login
-  const login = await useAPI().login({
-    email: "a@b.com",
-    password: "123456",
+// const isLogin = ref(false);
+const quotation = ref();
+// // Mimic middleware : Check session
+// const session = await useAPI().session();
+// if (session) {
+//   isLogin.value = true;
+//   await fetchQuotation();
+// } else {
+//   // Mimic Login Page : Login
+  // const login = await useAPI().login({
+  //   email: "a@b.com",
+  //   password: "123456",
+  // });
+//   isLogin.value = true;
+//   await fetchQuotation();
+// }
+// const login = await useAPI().login({
+//     email: "a@b.com",
+//     password: "123456",
+//   });
+
+  const {data, pending, error} = await useAsyncData("quotation", () => useAPI().get("quotation"), {
+    server: false,
   });
-  isLogin.value = true;
-}
-const data = await useAPI().getWithCache("quotation");
-quotation.value = data;
+  quotation.value = data.value;
+
+
+
 </script>
