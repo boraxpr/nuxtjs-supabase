@@ -2,15 +2,15 @@
   <!-- {{ session }} -->
 
     <div>
-      <DataTable :value="quotation">
+      <DataTable :value="quotation.data">
         <Column field="DocNum" header="Doc_num"></Column>
-        <Column field="CreatedDate.Time" header="CreatedDate">
+        <!-- <Column field="CreatedDate.Time" header="CreatedDate">
           <template #body="slotProps">
             <span v-if="slotProps.data.CreatedDate.Valid">{{
               new Date(slotProps.data.CreatedDate.Time).toLocaleString()
             }}</span>
           </template>
-        </Column>
+        </Column> -->
         <Column field="CustomerName.String" header="CustomerName"></Column>
       </DataTable>
     </div>
@@ -19,7 +19,9 @@
 
 <script setup>
 // const isLogin = ref(false);
-const quotation = ref();
+const quotation = reactive({
+  data : ref(),
+})
 // // Mimic middleware : Check session
 // const session = await useAPI().session();
 // if (session) {
@@ -39,10 +41,14 @@ const quotation = ref();
 //     password: "123456",
 //   });
 
-  const {data, pending, error} = await useAsyncData("quotation", () => useAPI().get("quotation"), {
+
+
+  const {data: quotationData} = await useAsyncData("quotation", () => useAPI().get("quotation"), {
     server: false,
   });
-  quotation.value = data.value;
+  quotation.data = quotationData
+   
+
 
 
 

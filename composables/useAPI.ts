@@ -5,9 +5,7 @@ class APIFacade {
     const response = await fetch(`${this.base_url}/${endpoint}`, {
       method: "GET",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+
     });
     if (!response.ok) {
       console.log("Response Failed");
