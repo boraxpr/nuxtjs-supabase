@@ -263,16 +263,16 @@
               }),
             },
           }"
-          ><Column field="code" header="Code" style="width: 20%">
+          ><Column field="number" header="No." style="width: 20%">
             <template #editor="{ data, field }">
               <InputText v-model="data[field]" />
             </template>
-            <template #body="{ data, field }">
+            <!-- <template #body="{ data, field }">
               <template v-if="data[field] === ''">
                 <span class="border border-amber-700">{{ data[field] }}</span>
               </template>
               <template v-else>{{ data[field] }}</template>
-            </template>
+            </template> -->
           </Column>
           <Column field="name" header="Name" style="width: 20%">
             <template #editor="{ data, field }">
@@ -564,10 +564,23 @@ const isPositiveInteger = (val) => {
 };
 // Add a Product
 const handleAddProduct = async () => {
-  createQuotationFormData.userInputs.products.push({
-    code: "",
+  if (createQuotationFormData.userInputs.products.length == 0) {
+    createQuotationFormData.userInputs.products.push({
+    number: 1,
     name: "",
     quantity: "",
+  });
+  } else {
+    createQuotationFormData.userInputs.products.push({
+      number: createQuotationFormData.userInputs.products[
+        createQuotationFormData.userInputs.products.length - 1
+      ].number + 1,
+      name: "",
+      quantity: "",
+    })
+  }
+  createQuotationFormData.userInputs.products.sort((a, b) =>{
+  return a.number - b.number;
   });
   console.log(createQuotationFormData.userInputs.products);
 };
