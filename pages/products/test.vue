@@ -62,6 +62,7 @@
                     class="p-column-filter flex h-[54px] w-[184px] items-center rounded-[25px] text-center"
                     style="min-width: 14rem"
                     :maxSelectedLabels="2"
+                    @change="changeFilter"
                   >
                     <template #option="slotProps">
                       <div class="align-items-center flex gap-2">
@@ -81,6 +82,7 @@
                     class="p-column-filter flex h-[54px] w-[184px] items-center rounded-[25px] text-center"
                     style="min-width: 14rem"
                     :maxSelectedLabels="2"
+                    @change="changeFilter"
                   >
                     <template #option="slotProps">
                       <div class="align-items-center flex gap-2">
@@ -421,8 +423,39 @@ useHead({
   title: "Products",
 });
 
-const onPage = (event) => {
-  fetchProduct(event.first,((event.page+1)*event.rows)-1);
+const changeFilter = () => {
+  onPage(null,true)
+}
+
+const onPage = (event,IsChangeFilter) => {
+  let start,end;
+  let filter = { name: null, arr: []}
+
+  if(IsChangeFilter) {
+    start = 0
+    end = 9
+  }else{
+    start = event.first;
+    end = ((event.page+1)*event.rows)-1;
+  }
+
+  // if( 
+  //     productList.filters.product_type_id.value.length == 0 &&
+  //     productList.filters.category_id.value.length == 0 &&
+  //   ){
+
+  // }
+
+  if (productList.filters.product_type_id.value.length > 0 && 
+      productList.filters.category_id.value.length > 0) {
+    filter.name = "product_type_id";
+    filter.arr = Object.keys(productList.filters.product_type_id.value).map(key => productList.filters.product_type_id.value[key]);
+    fetchProductWithFilter(start,end,filter)
+    getTotalRecordsWithFilter(filter)
+  }else{
+    fetchProduct(start,end)
+    getTotalRecords()
+  }
 };
 
 const fetchProduct = async (start, end) => {
@@ -443,7 +476,92 @@ const getTotalRecords = async() => {
   productList.db.totalRecords = count;
 }
 
-// productList.db.products = productData;
+const fetchProductWithFilter = async (start, end, fil) => {
+  const { data, error } = await client
+    .from("product")
+    .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)')
+    .in(fil.name,fil.arr)
+    .range(start, end);
+  
+  checkError("fetchProduct",error)
+  productList.db.products = data;
+};
+
+const getTotalRecordsWithFilter = async(fil) => {
+    const { data, count } = await client
+  .from('product')
+  .select('*', { count: 'exact' })
+  .in(fil.name,fil.arr)
+
+  productList.db.totalRecords = count;
+}
+
+const fetchProductWith2Filter = async (start, end, arr, arr2) => {
+  const { data, error } = await client
+    .from("product")
+    .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)')
+    .in('product_type_id',arr)
+    .in('category_id',arr2)
+    .range(start, end);
+  
+  checkError("fetchProduct",error)
+  productList.db.products = data;
+};
+
+const getTotalRecordsWith2Filter = async(arr, arr2) => {
+    const { data, count } = await client
+  .from('product')
+  .select('*', { count: 'exact' })
+  .in('product_type_id',arr)
+  .in('category_id',arr2)
+
+  productList.db.totalRecords = count;
+}
+
+const fetchProductWith3Filter = async (start, end, arr, arr2, arr3) => {
+  const { data, error } = await client
+    .from("product")
+    .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)')
+    .in('product_type_id',arr)
+    .in('category_id',arr2)
+    .range(start, end);
+  
+  checkError("fetchProduct",error)
+  productList.db.products = data;
+};
+
+const getTotalRecordsWith3Filter = async(arr, arr2, arr3) => {
+    const { data, count } = await client
+  .from('product')
+  .select('*', { count: 'exact' })
+  .in('product_type_id',arr)
+  .in('category_id',arr2)
+
+  productList.db.totalRecords = count;
+}
+
+const fetchProductWith4Filter = async (start, end, arr, arr2, arr3) => {
+  const { data, error } = await client
+    .from("product")
+    .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)')
+    .in('product_type_id',arr)
+    .in('category_id',arr2)
+    .range(start, end);
+  
+  checkError("fetchProduct",error)
+  productList.db.products = data;
+};
+
+const getTotalRecordsWith4Filter = async(arr, arr2, arr3) => {
+    const { data, count } = await client
+  .from('product')
+  .select('*', { count: 'exact' })
+  .in('product_type_id',arr)
+  .in('category_id',arr2)
+
+  productList.db.totalRecords = count;
+}
+
 fetchProduct(productList.param.start,productList.param.end);
 getTotalRecords();
 productList.db.productTypeDropdown = productTypeDropdown;

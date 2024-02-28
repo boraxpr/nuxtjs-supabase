@@ -42,14 +42,14 @@
                     :maxSelectedLabels="2"
                     optionValue="id"
                     :options="projectList.db.customerDropdown"
-                    optionLabel="name"
+                    optionLabel="customer_name"
                     placeholder="Customer Name"
                     class="p-column-filter flex h-[54px] w-[184px] items-center rounded-[25px] text-center"
                     style="min-width: 14rem"
                   >
                     <template #option="slotProps">
                       <div class="align-items-center flex gap-2">
-                        <span>{{ slotProps.option.name }}</span>
+                        <span>{{ slotProps.option.customer_name }}</span>
                       </div>
                     </template>
                   </MultiSelect>
@@ -122,7 +122,7 @@
               <div class="flex w-full justify-center">Customer Name</div>
             </template>
             <template #body="projects">
-              {{ projects.data.customers?.name }}
+              {{ projects.data.customers?.customer_name }}
             </template>
           </Column>
           <Column>
@@ -221,7 +221,7 @@ const projectList = reactive({
 });
 
 async function fetchProject() {
-    const { data, error } = await client.from('project').select('*,customers(id,name),created_by:created_by(*), updated_by:updated_by(*)');
+    const { data, error } = await client.from('project').select('*,customers(id,customer_name),created_by:created_by(*), updated_by:updated_by(*)');
     checkError("fetchProject",error)
     return data;
 }
