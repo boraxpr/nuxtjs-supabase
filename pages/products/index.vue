@@ -62,6 +62,7 @@
                     class="p-column-filter flex h-[54px] w-[184px] items-center rounded-[25px] text-center"
                     style="min-width: 14rem"
                     :maxSelectedLabels="2"
+                    @change="changeFilter"
                   >
                     <template #option="slotProps">
                       <div class="align-items-center flex gap-2">
@@ -81,6 +82,7 @@
                     class="p-column-filter flex h-[54px] w-[184px] items-center rounded-[25px] text-center"
                     style="min-width: 14rem"
                     :maxSelectedLabels="2"
+                    @change="changeFilter"
                   >
                     <template #option="slotProps">
                       <div class="align-items-center flex gap-2">
@@ -297,22 +299,9 @@ const productList = reactive({
   },
   filters: ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    product_name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    product_code: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     product_type_id: { value: null, matchMode: FilterMatchMode.IN },
     category_id: { value: null, matchMode: FilterMatchMode.IN },
-    main_unit: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    barcode: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    selling_price: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    vat: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    product_description: {
-      value: null,
-      matchMode: FilterMatchMode.STARTS_WITH,
-    },
-    income_account: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    unit: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     status: { value: null, matchMode: FilterMatchMode.EQUALS },
-    test: { value: null, matchMode: FilterMatchMode.EQUALS },
   }),
 });
 
@@ -333,6 +322,7 @@ const changeStatusBtn = (value) => {
     productList.param.inActive = true;
     productList.filters.status.value = false;
   }
+  changeFilter();
 };
 
 function formatDate(date) {
@@ -421,15 +411,141 @@ useHead({
   title: "Products",
 });
 
-const onPage = (event) => {
-  fetchProduct(event.first,((event.page+1)*event.rows)-1);
+const changeFilter = () => {
+  onPage(null,true)
+}
+
+const onPage = (event,IsChangeFilter) => {
+  let start,end;
+  let filter = { name: null, arr: [] }
+  let filter2 = { 
+                  name: null, arr: [],
+                  name2: null, arr2: []
+                }
+  let filter3 = { 
+                  name: null, arr: [],
+                  name2: null, arr2: [],
+                  name3: null, arr3: []
+                }
+  let filter4 = { 
+                  name: null, arr: [],
+                  name2: null, arr2: [],
+                  name3: null, arr3: [],
+                  name4: null, arr4: ""
+                }
+
+  if(IsChangeFilter) {
+    start = 0
+    end = 9
+  }else{
+    start = event.first;
+    end = ((event.page+1)*event.rows)-1;
+  }
+
+  if((productList.filters.product_type_id.value == null || productList.filters.product_type_id.value == "") &&
+    (productList.filters.category_id.value == null || productList.filters.category_id.value == "") &&
+    // productList.filters.global.value == null &&
+    productList.filters.status.value == null)
+  {
+    fetchProduct(start,end)
+    getTotalRecords()
+  }else if((productList.filters.product_type_id.value !== null || productList.filters.product_type_id.value !== "") &&
+    (productList.filters.category_id.value == null || productList.filters.category_id.value == "") &&
+    // productList.filters.global.value == null &&
+    productList.filters.status.value == null)
+  {
+    filter.name = "product_type_id";
+    filter.arr = Object.keys(productList.filters.product_type_id.value).map(key => productList.filters.product_type_id.value[key]);
+    fetchProductWithFilter(start,end,filter)
+    getTotalRecordsWithFilter(filter)
+  }else if((productList.filters.product_type_id.value == null || productList.filters.product_type_id.value == "") &&
+    (productList.filters.category_id.value !== null || productList.filters.category_id.value !== "") &&
+    // productList.filters.global.value == null &&
+    productList.filters.status.value == null)
+  {
+    filter.name = "category_id";
+    filter.arr = Object.keys(productList.filters.category_id.value).map(key => productList.filters.category_id.value[key]);
+    fetchProductWithFilter(start,end,filter)
+    getTotalRecordsWithFilter(filter)
+  }else if((productList.filters.product_type_id.value == null || productList.filters.product_type_id.value == "") &&
+    (productList.filters.category_id.value == null || productList.filters.category_id.value == "") &&
+    // productList.filters.global.value == null &&
+    productList.filters.status.value !== null)
+  {
+    filter.name = "status";
+    filter.arr = [productList.filters.status.value];
+    fetchProductWithFilter(start,end,filter)
+    getTotalRecordsWithFilter(filter)
+  }else if((productList.filters.product_type_id.value !== null || productList.filters.product_type_id.value !== "") &&
+    (productList.filters.category_id.value !== null || productList.filters.category_id.value !== "") &&
+    // productList.filters.global.value == null &&
+    productList.filters.status.value == null)
+  {
+    filter2.name = "product_type_id";
+    filter2.arr = Object.keys(productList.filters.product_type_id.value).map(key => productList.filters.product_type_id.value[key]);
+    filter2.name2 = "category_id";
+    filter2.arr2 = Object.keys(productList.filters.category_id.value).map(key => productList.filters.category_id.value[key]);
+    fetchProductWith2Filter(start,end,filter2)
+    getTotalRecordsWith2Filter(filter2)
+  }else if((productList.filters.product_type_id.value !== null || productList.filters.product_type_id.value !== "") &&
+    (productList.filters.category_id.value == null || productList.filters.category_id.value == "") &&
+    // productList.filters.global.value == null &&
+    productList.filters.status.value !== null)
+  {
+    filter2.name = "product_type_id";
+    filter2.arr = Object.keys(productList.filters.product_type_id.value).map(key => productList.filters.product_type_id.value[key]);
+    filter2.name2 = "status";
+    filter2.arr2 = [productList.filters.status.value];
+    fetchProductWith2Filter(start,end,filter2)
+    getTotalRecordsWith2Filter(filter2)
+  }else if((productList.filters.product_type_id.value == null || productList.filters.product_type_id.value == "") &&
+    (productList.filters.category_id.value !== null || productList.filters.category_id.value !== "") &&
+    // productList.filters.global.value == null &&
+    productList.filters.status.value !== null)
+  {
+    filter2.name = "category_id";
+    filter2.arr = Object.keys(productList.filters.category_id.value).map(key => productList.filters.category_id.value[key]);
+    filter2.name2 = "status";
+    filter2.arr2 = [productList.filters.status.value];
+    fetchProductWith2Filter(start,end,filter2)
+    getTotalRecordsWith2Filter(filter2)
+  }else if((productList.filters.product_type_id.value !== null || productList.filters.product_type_id.value !== "") &&
+    (productList.filters.category_id.value !== null || productList.filters.category_id.value !== "") &&
+    // productList.filters.global.value == null &&
+    productList.filters.status.value !== null)
+  {
+    filter3.name = "product_type_id";
+    filter3.arr = Object.keys(productList.filters.product_type_id.value).map(key => productList.filters.product_type_id.value[key]);
+    filter3.name2 = "category_id";
+    filter3.arr2 = Object.keys(productList.filters.category_id.value).map(key => productList.filters.category_id.value[key]);
+    filter3.name3 = "status";
+    filter3.arr3 = [productList.filters.status.value];
+    fetchProductWith3Filter(start,end,filter3)
+    getTotalRecordsWith3Filter(filter3)
+  }
+  // else if((productList.filters.product_type_id.value !== null || productList.filters.product_type_id.value !== "") &&
+  //   (productList.filters.category_id.value !== null || productList.filters.category_id.value !== "") &&
+  //   productList.filters.global.value !== null &&
+  //   productList.filters.status.value !== null)
+  // {
+  //   filter4.name = "product_type_id";
+  //   filter4.arr = Object.keys(productList.filters.product_type_id.value).map(key => productList.filters.product_type_id.value[key]);
+  //   filter4.name2 = "category_id";
+  //   filter4.arr2 = Object.keys(productList.filters.category_id.value).map(key => productList.filters.category_id.value[key]);
+  //   filter4.name3 = "status";
+  //   filter4.arr3 = [productList.filters.status.value];
+  //   filter4.arr4 = productList.filters.global.value
+  //   fetchProductWith4Filter(start,end,filter4)
+  //   getTotalRecordsWith4Filter(filter4)
+  // }
+  
 };
 
 const fetchProduct = async (start, end) => {
   const { data, error } = await client
     .from("product")
     .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)')
-    .range(start, end);
+    .range(start, end)
   
   checkError("fetchProduct",error)
   productList.db.products = data;
@@ -443,7 +559,98 @@ const getTotalRecords = async() => {
   productList.db.totalRecords = count;
 }
 
-// productList.db.products = productData;
+const fetchProductWithFilter = async (start, end, fil) => {
+  const { data, error } = await client
+    .from("product")
+    .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)')
+    .in(fil.name,fil.arr)
+    .range(start, end);
+  
+  checkError("fetchProduct",error)
+  productList.db.products = data;
+};
+
+const getTotalRecordsWithFilter = async(fil) => {
+    const { data, count } = await client
+  .from('product')
+  .select('*', { count: 'exact' })
+  .in(fil.name,fil.arr)
+
+  productList.db.totalRecords = count;
+}
+
+const fetchProductWith2Filter = async (start, end, fil) => {
+  const { data, error } = await client
+    .from("product")
+    .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)')
+    .in(fil.name,fil.arr)
+    .in(fil.name2,fil.arr2)
+    .range(start, end);
+  
+  checkError("fetchProduct",error)
+  productList.db.products = data;
+};
+
+const getTotalRecordsWith2Filter = async(fil) => {
+    const { data, count } = await client
+  .from('product')
+  .select('*', { count: 'exact' })
+  .in(fil.name,fil.arr)
+  .in(fil.name2,fil.arr2)
+
+  productList.db.totalRecords = count;
+}
+
+const fetchProductWith3Filter = async (start, end, fil) => {
+  const { data, error } = await client
+    .from("product")
+    .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)')
+    .in(fil.name,fil.arr)
+    .in(fil.name2,fil.arr2)
+    .in(fil.name3,fil.arr3)
+    .range(start, end);
+  
+  checkError("fetchProduct",error)
+  productList.db.products = data;
+};
+
+const getTotalRecordsWith3Filter = async(fil) => {
+    const { data, count } = await client
+  .from('product')
+  .select('*', { count: 'exact' })
+  .in(fil.name,fil.arr)
+  .in(fil.name2,fil.arr2)
+  .in(fil.name3,fil.arr3)
+
+  productList.db.totalRecords = count;
+}
+
+const fetchProductWith4Filter = async (start, end, fil) => {
+  const { data, error } = await client
+    .from("product")
+    .select('*, productType(id,product_type_name), category(*), created_by:created_by(*), updated_by:updated_by(*)')
+    .range(start, end)
+    .in(fil.name,fil.arr)
+    .in(fil.name2,fil.arr2)
+    .in(fil.name3,fil.arr3)
+    .like('product_name','%'+fil.arr4+'%')
+  
+  checkError("fetchProduct",error)
+  productList.db.products = data;
+};
+
+const getTotalRecordsWith4Filter = async(fil) => {
+    const { data, count } = await client
+  .from('product')
+  .select('*', { count: 'exact' })
+  .in(fil.name,fil.arr)
+  .in(fil.name2,fil.arr2)
+  .in(fil.name3,fil.arr3)
+  .like('product_name','%'+fil.arr4+'%')
+
+  productList.db.totalRecords = count;
+}
+
 fetchProduct(productList.param.start,productList.param.end);
 getTotalRecords();
 productList.db.productTypeDropdown = productTypeDropdown;
