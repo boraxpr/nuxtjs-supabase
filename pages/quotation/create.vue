@@ -155,23 +155,22 @@
           class=""
         />
         <label>Credit (Day):</label>
-       
-          <InputNumber
-            v-model="createQuotationFormData.userInputs.credit_day"
-            mode="decimal"
-            showButtons
-            :min="0"
-            :max="365"
-            :pt="{
-              input: {
-                root: {
-                  class: 'rounded-lg',
-                }
-              }
-            }"
-          >
-          </InputNumber>
-   
+
+        <InputNumber
+          v-model="createQuotationFormData.userInputs.credit_day"
+          mode="decimal"
+          showButtons
+          :min="0"
+          :max="365"
+          :pt="{
+            input: {
+              root: {
+                class: 'rounded-lg',
+              },
+            },
+          }"
+        >
+        </InputNumber>
 
         <label>Due Date:</label>
         <Calendar
@@ -250,6 +249,7 @@
     >
       <div class="p-fluid card">
         <DataTable
+          ref="dt"
           :value="createQuotationFormData.userInputs.products"
           editMode="cell"
           :filters="filters"
@@ -263,20 +263,24 @@
               }),
             },
           }"
-          ><Column field="number" header="No." style="width: 20%">
+          ><Column field="number" header="No." style="width: 20%"> </Column>
+          <Column field="product" header="Product" style="width: 20%">
             <template #editor="{ data, field }">
-              <InputText v-model="data[field]" />
+              <Dropdown
+                v-model="data[field]"
+                :options="createQuotationFormData.db.products"
+                optionLabel="product_name"
+                placeholder="Select a Product"
+                @change="emitChangeEvent(data, field)"
+              />
             </template>
-            <!-- <template #body="{ data, field }">
-              <template v-if="data[field] === ''">
-                <span class="border border-amber-700">{{ data[field] }}</span>
-              </template>
-              <template v-else>{{ data[field] }}</template>
-            </template> -->
+            <template #body="{ data, field }">
+              {{ data[field].product_name }}
+            </template>
           </Column>
-          <Column field="name" header="Name" style="width: 20%">
-            <template #editor="{ data, field }">
-              <InputText v-model="data[field]" />
+          <Column field="product" header="Description" style="width: 20%">
+            <template #body="{ data, field }">
+              {{ data[field].product_description }}
             </template>
           </Column>
           <Column field="quantity" header="Quantity" style="width: 20%">
@@ -476,7 +480,7 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const toast = useToast();
-
+const dt = ref();
 const componentRef = ref();
 useHead({
   title: "Quotation - Create",
@@ -541,12 +545,21 @@ const onCellEditComplete = (event) => {
       if (isPositiveInteger(newValue)) data[field] = newValue;
       else event.preventDefault();
       break;
+    case "product":
+      data[field] = newValue;
+      break;
 
     default:
-      if (newValue.trim().length > 0) data[field] = newValue;
-      else event.preventDefault();
+      data[field] = newValue;
+      console.log(data);
       break;
   }
+};
+
+const emitChangeEvent = (data, field) => {
+  console.log(data[field]);
+  onCellEditComplete({ data, newValue: data[field], field });
+  blur();
 };
 const isPositiveInteger = (val) => {
   let str = String(val);
@@ -564,53 +577,66 @@ const isPositiveInteger = (val) => {
 };
 // Add a Product
 const handleAddProduct = async () => {
-  if (createQuotationFormData.userInputs.products.length == 0) {
+  if (createQuotationFormData.userInputs.products.length === 0) {
     createQuotationFormData.userInputs.products.push({
-    number: 1,
-    name: "",
-    quantity: "",
-  });
+      number: 1,
+      product: "",
+      quantity: "",
+    });
   } else {
     createQuotationFormData.userInputs.products.push({
-      number: createQuotationFormData.userInputs.products[
-        createQuotationFormData.userInputs.products.length - 1
-      ].number + 1,
-      name: "",
+      number:
+        createQuotationFormData.userInputs.products[
+          createQuotationFormData.userInputs.products.length - 1
+        ].number + 1,
+      product: "",
       quantity: "",
-    })
+    });
   }
-  createQuotationFormData.userInputs.products.sort((a, b) =>{
-  return a.number - b.number;
+  createQuotationFormData.userInputs.products.sort((a, b) => {
+    return a.number - b.number;
   });
   console.log(createQuotationFormData.userInputs.products);
 };
 // Save
 const handleSave = async () => {
   const { userInputs, calculations } = createQuotationFormData;
-  const { data, error } = await useSupabaseClient()
-    .from("quotation")
-    .insert({
-      created_date: userInputs.quotation.date,
-      due_date: userInputs.quotation.due_date,
-      status: "Draft",
-      is_active: true,
-      currency: userInputs.currency_code,
-      project_name: userInputs.project_id,
-      grand_total: calculations.grand_total,
-      customer_id: userInputs.customer_id,
-      credit_day: userInputs.credit_day,
-      remark: userInputs.remark,
-      note: userInputs.internal_note,
-      attachment: userInputs.attachment,
-    })
-    .select()
-    .single();
-  console.log(data);
-  if (!error) {
+  // TODO: MAP userInputs.products to supabase QuotationProduct for insertion
+  // const { data: insertQuotation, error: errorQuotation } =
+  //   await useSupabaseClient()
+  //     .from("quotation")
+  //     .insert({
+  //       created_date: userInputs.quotation.date,
+  //       due_date: userInputs.quotation.due_date,
+  //       status: "Draft",
+  //       is_active: true,
+  //       currency: userInputs.currency_code,
+  //       project_name: userInputs.project_id,
+  //       grand_total: calculations.grand_total,
+  //       customer_id: userInputs.customer_id,
+  //       credit_day: userInputs.credit_day,
+  //       remark: userInputs.remark,
+  //       note: userInputs.internal_note,
+  //       attachment: userInputs.attachment,
+  //     })
+  //     .select()
+  //     .single();
+  // for (const product of userInputs.products) {
+  // }
+  // console.log(data);
+  // && !errorProduct
+  if (!errorQuotation) {
     toast.add({
       severity: "success",
       summary: "Success",
-      detail: `Quotation ${data.doc_num} Created Successfully`,
+      detail: `Quotation ${insert.doc_num} Created Successfully`,
+      life: 5000,
+    });
+  } else {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: `Failed to Create Quotation`,
       life: 5000,
     });
   }
@@ -654,6 +680,16 @@ const fetchSaleName = async () => {
   createQuotationFormData.db.salesName = currentSales;
 };
 fetchCurrencies();
+
+const fetchProducts = async () => {
+  const { data } = await useSupabaseClient().from("product").select("*");
+  return data;
+};
+const { data: productsData, error: productsError } = await useAsyncData(
+  "products",
+  fetchProducts,
+);
+createQuotationFormData.db.products = productsData;
 
 Promise.all([fetchSaleName()])
   .then((results) => {
