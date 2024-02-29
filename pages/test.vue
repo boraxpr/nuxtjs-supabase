@@ -29,10 +29,10 @@ const quotation = reactive({
 //   await fetchQuotation();
 // } else {
 //   // Mimic Login Page : Login
-  // const login = await useAPI().login({
-  //   email: "a@b.com",
-  //   password: "123456",
-  // });
+  const login = await useAPI().login({
+    email: "a@b.com",
+    password: "123456",
+  });
 //   isLogin.value = true;
 //   await fetchQuotation();
 // }
