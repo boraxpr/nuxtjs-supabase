@@ -88,7 +88,7 @@
           inputId="dd-customer"
           :options="createQuotationFormData.db.customers"
           placeholder="Select a Customer"
-          optionLabel="name"
+          optionLabel="customer_name"
           optionValue="id"
           class="h-15 w-full md:w-[50%]"
           @change="handleCustomerChange"
@@ -249,33 +249,34 @@
     >
       <div class="p-fluid card">
         <DataTable
-          ref="dt"
+          v-model:editingRows="editingRows"
           :value="createQuotationFormData.userInputs.products"
-          editMode="cell"
-          :filters="filters"
-          @cell-edit-complete="onCellEditComplete"
+          dataKey="number"
+          editMode="row"
+          @row-edit-save="onRowEditSave"
           class="add-product-table"
           :pt="{
             table: { style: 'min-width: 50rem' },
             column: {
               bodycell: ({ state }) => ({
-                class: [{ 'pt-2 pb-2': state['d_editing'] }],
+                style:
+                  state['d_editing'] &&
+                  'padding-top: 0.6rem; padding-bottom: 0.6rem',
               }),
             },
           }"
           ><Column field="number" header="No." style="width: 20%"> </Column>
           <Column field="product" header="Product" style="width: 20%">
+            <template #body="{ data, field }">
+              {{ data[field].product_name }}
+            </template>
             <template #editor="{ data, field }">
               <Dropdown
                 v-model="data[field]"
                 :options="createQuotationFormData.db.products"
                 optionLabel="product_name"
                 placeholder="Select a Product"
-                @change="emitChangeEvent(data, field)"
               />
-            </template>
-            <template #body="{ data, field }">
-              {{ data[field].product_name }}
             </template>
           </Column>
           <Column field="product" header="Description" style="width: 20%">
@@ -288,15 +289,39 @@
               <InputText v-model="data[field]" />
             </template>
           </Column>
-          <Column field="price" header="Price" style="width: 20%">
-            <template #editor="{ data, field }">
-              <template
-                v-if="createQuotationFormData.userInputs.currency == null"
+          <Column field="product" header="Price" style="width: 20%">
+            <template #body="{ data, field }">
+              <span
+                v-if="
+                  typeof createQuotationFormData.userInputs.currency_code ===
+                    'string' &&
+                  createQuotationFormData.userInputs.currency_code.length === 0
+                "
               >
-                <InputNumber v-model="data[field]" />
-              </template>
+                {{ data[field].selling_price }}</span
+              >
+              <div
+                v-else-if="
+                  typeof createQuotationFormData.userInputs.currency_code ===
+                    'string' &&
+                  createQuotationFormData.userInputs.currency_code.length > 0 &&
+                  data[field].selling_price > 0
+                "
+              >
+                {{
+                  currencyFormat(
+                    data[field].selling_price,
+                    createQuotationFormData.userInputs.currency_code,
+                  )
+                }}
+              </div>
             </template>
           </Column>
+          <Column
+            :rowEditor="true"
+            style="width: 10%; min-width: 8rem"
+            bodyStyle="text-align:center"
+          ></Column>
           <Column :exportable="false" style="width: 5%">
             <template #body="slotProps">
               <Button
@@ -476,6 +501,7 @@
 <script setup>
 import { useVueToPrint } from "vue-to-print";
 import { FilterMatchMode } from "primevue/api";
+const editingRows = ref([]);
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
@@ -510,7 +536,7 @@ const createQuotationFormData = reactive({
     // DROPDOWNS
     // Customer Name -> Customer Id -changes-> proc Customer Detail Fetching
     customer_id: ref(),
-    currency_code: ref(),
+    currency_code: ref(""),
     project_id: ref(),
     quotation: {
       // DATE
@@ -536,31 +562,11 @@ const deleteProduct = (product) => {
   const index = createQuotationFormData.userInputs.products.indexOf(product);
   createQuotationFormData.userInputs.products.splice(index, 1);
 };
-const onCellEditComplete = (event) => {
-  let { data, newValue, field } = event;
-
-  switch (field) {
-    case "quantity":
-    case "price":
-      if (isPositiveInteger(newValue)) data[field] = newValue;
-      else event.preventDefault();
-      break;
-    case "product":
-      data[field] = newValue;
-      break;
-
-    default:
-      data[field] = newValue;
-      console.log(data);
-      break;
-  }
+const onRowEditSave = (event) => {
+  let { newData, index } = event;
+  createQuotationFormData.userInputs.products[index] = newData;
 };
 
-const emitChangeEvent = (data, field) => {
-  console.log(data[field]);
-  onCellEditComplete({ data, newValue: data[field], field });
-  blur();
-};
 const isPositiveInteger = (val) => {
   let str = String(val);
 
@@ -601,35 +607,45 @@ const handleAddProduct = async () => {
 // Save
 const handleSave = async () => {
   const { userInputs, calculations } = createQuotationFormData;
-  // TODO: MAP userInputs.products to supabase QuotationProduct for insertion
-  // const { data: insertQuotation, error: errorQuotation } =
-  //   await useSupabaseClient()
-  //     .from("quotation")
-  //     .insert({
-  //       created_date: userInputs.quotation.date,
-  //       due_date: userInputs.quotation.due_date,
-  //       status: "Draft",
-  //       is_active: true,
-  //       currency: userInputs.currency_code,
-  //       project_name: userInputs.project_id,
-  //       grand_total: calculations.grand_total,
-  //       customer_id: userInputs.customer_id,
-  //       credit_day: userInputs.credit_day,
-  //       remark: userInputs.remark,
-  //       note: userInputs.internal_note,
-  //       attachment: userInputs.attachment,
-  //     })
-  //     .select()
-  //     .single();
-  // for (const product of userInputs.products) {
-  // }
+
   // console.log(data);
-  // && !errorProduct
+  // MAP userInputs.products to supabase QuotationProduct for insertion
+  const { data: insertQuotation, error: errorQuotation } =
+    await useSupabaseClient()
+      .from("quotation")
+      .insert({
+        created_date: userInputs.quotation.date,
+        due_date: userInputs.quotation.due_date,
+        status: "Draft",
+        is_active: true,
+        currency: userInputs.currency_code,
+        project_name: userInputs.project_id,
+        grand_total: calculations.grand_total,
+        customer_id: userInputs.customer_id,
+        credit_day: userInputs.credit_day,
+        remark: userInputs.remark,
+        note: userInputs.internal_note,
+        attachment: userInputs.attachment,
+      })
+      .select()
+      .single();
+  const OutgoingProducts = [];
+  for (const product of userInputs.products) {
+    OutgoingProducts.push({
+      doc_num: insertQuotation.doc_num,
+      product_number: product.product.product_number,
+      quantity: parseInt(product.quantity),
+    });
+  }
+  const { data: insertProduct, error: errorProduct } = await useSupabaseClient()
+    .from("QuotationProduct")
+    .insert(OutgoingProducts);
+
   if (!errorQuotation) {
     toast.add({
       severity: "success",
       summary: "Success",
-      detail: `Quotation ${insert.doc_num} Created Successfully`,
+      detail: `Quotation ${insertQuotation.doc_num} Created Successfully`,
       life: 5000,
     });
   } else {
@@ -733,13 +749,6 @@ const handleProjectChange = async () => {
   console.log("Success Project On Change", data);
 };
 
-// QUOTATION PRODUCTS
-const columns = ref([
-  { field: "code", header: "Code" },
-  { field: "name", header: "Name" },
-  { field: "quantity", header: "Quantity" },
-  { field: "price", header: "Price" },
-]);
 const handleAfterPrint = () => {
   console.log("`onAfterPrint` called"); // tslint:disable-line no-console
 };
