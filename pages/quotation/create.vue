@@ -88,7 +88,7 @@
           inputId="dd-customer"
           :options="createQuotationFormData.db.customers"
           placeholder="Select a Customer"
-          optionLabel="name"
+          optionLabel="customer_name"
           optionValue="id"
           class="h-15 w-full md:w-[50%]"
           @change="handleCustomerChange"
@@ -145,61 +145,61 @@
         <div class="text-right text-xl font-bold text-orange-400">
           {{ createQuotationFormData.calculations.grand_total ?? "0.00" }}
         </div>
-        <div class="space-y-3">
-          <div class="space-y-2">
-            <label>Date:</label>
-            <Calendar
-              v-model="createQuotationFormData.userInputs.quotation.date"
-              showIcon
-              iconDisplay="input"
-              dateFormat="dd/mm/yy"
-              class=""
-            />
-          </div>
-          <div>
-            <label>Credit (Day):</label>
-            <InputNumber
-              v-model="createQuotationFormData.userInputs.credit_day"
-              mode="decimal"
-              showButtons
-              :min="0"
-              :max="365"
-            >
-            </InputNumber>
-          </div>
-          <div>
-            <label>Due Date:</label>
-            <Calendar
-              v-model="createQuotationFormData.userInputs.quotation.due_date"
-              showIcon
-              iconDisplay="input"
-              dateFormat="dd/mm/yy"
-              class=""
-            />
-          </div>
-          <div>
-            <label>Sales Name:</label>
-            <InputText
-              showIcon
-              iconDisplay="input"
-              class=""
-              placeholder="Naipawat Poolsawat"
-              disabled
-            />
-          </div>
-          <div>
-            <label>Currency:</label>
-            <Dropdown
-              v-model="createQuotationFormData.userInputs.currency_code"
-              :options="createQuotationFormData.db.currencies"
-              placeholder="Select a Currency"
-              inputId="dd-customer"
-              optionLabel="name"
-              optionValue="code"
-              class=""
-            ></Dropdown>
-          </div>
-        </div>
+
+        <label>Date:</label>
+        <Calendar
+          v-model="createQuotationFormData.userInputs.quotation.date"
+          showIcon
+          iconDisplay="input"
+          dateFormat="dd/mm/yy"
+          class=""
+        />
+        <label>Credit (Day):</label>
+
+        <InputNumber
+          v-model="createQuotationFormData.userInputs.credit_day"
+          mode="decimal"
+          showButtons
+          :min="0"
+          :max="365"
+          :pt="{
+            input: {
+              root: {
+                class: 'rounded-lg',
+              },
+            },
+          }"
+        >
+        </InputNumber>
+
+        <label>Due Date:</label>
+        <Calendar
+          v-model="createQuotationFormData.userInputs.quotation.due_date"
+          showIcon
+          iconDisplay="input"
+          dateFormat="dd/mm/yy"
+          class=""
+        />
+
+        <label>Sales Name:</label>
+        <InputText
+          showIcon
+          iconDisplay="input"
+          class=""
+          placeholder="Naipawat Poolsawat"
+          disabled
+        />
+
+        <label>Currency:</label>
+        <Dropdown
+          v-model="createQuotationFormData.userInputs.currency_code"
+          :options="createQuotationFormData.db.currencies"
+          placeholder="Select a Currency"
+          inputId="dd-customer"
+          optionLabel="name"
+          optionValue="code"
+          class=""
+        ></Dropdown>
       </div>
     </div>
 
@@ -249,33 +249,39 @@
     >
       <div class="p-fluid card">
         <DataTable
+          v-model:editingRows="editingRows"
           :value="createQuotationFormData.userInputs.products"
-          editMode="cell"
-          :filters="filters"
-          @cell-edit-complete="onCellEditComplete"
+          dataKey="number"
+          editMode="row"
+          @row-edit-save="onRowEditSave"
           class="add-product-table"
           :pt="{
             table: { style: 'min-width: 50rem' },
             column: {
               bodycell: ({ state }) => ({
-                class: [{ 'pt-2 pb-2': state['d_editing'] }],
+                style:
+                  state['d_editing'] &&
+                  'padding-top: 0.6rem; padding-bottom: 0.6rem',
               }),
             },
           }"
-          ><Column field="code" header="Code" style="width: 20%">
-            <template #editor="{ data, field }">
-              <InputText v-model="data[field]" />
-            </template>
+          ><Column field="number" header="No." style="width: 20%"> </Column>
+          <Column field="product" header="Product" style="width: 20%">
             <template #body="{ data, field }">
-              <template v-if="data[field] === ''">
-                <span class="border border-amber-700">{{ data[field] }}</span>
-              </template>
-              <template v-else>{{ data[field] }}</template>
+              {{ data[field].product_name }}
+            </template>
+            <template #editor="{ data, field }">
+              <Dropdown
+                v-model="data[field]"
+                :options="createQuotationFormData.db.products"
+                optionLabel="product_name"
+                placeholder="Select a Product"
+              />
             </template>
           </Column>
-          <Column field="name" header="Name" style="width: 20%">
-            <template #editor="{ data, field }">
-              <InputText v-model="data[field]" />
+          <Column field="product" header="Description" style="width: 20%">
+            <template #body="{ data, field }">
+              {{ data[field].product_description }}
             </template>
           </Column>
           <Column field="quantity" header="Quantity" style="width: 20%">
@@ -283,15 +289,39 @@
               <InputText v-model="data[field]" />
             </template>
           </Column>
-          <Column field="price" header="Price" style="width: 20%">
-            <template #editor="{ data, field }">
-              <template
-                v-if="createQuotationFormData.userInputs.currency == null"
+          <Column field="product" header="Price" style="width: 20%">
+            <template #body="{ data, field }">
+              <span
+                v-if="
+                  typeof createQuotationFormData.userInputs.currency_code ===
+                    'string' &&
+                  createQuotationFormData.userInputs.currency_code.length === 0
+                "
               >
-                <InputNumber v-model="data[field]" />
-              </template>
+                {{ data[field].selling_price }}</span
+              >
+              <div
+                v-else-if="
+                  typeof createQuotationFormData.userInputs.currency_code ===
+                    'string' &&
+                  createQuotationFormData.userInputs.currency_code.length > 0 &&
+                  data[field].selling_price > 0
+                "
+              >
+                {{
+                  currencyFormat(
+                    data[field].selling_price,
+                    createQuotationFormData.userInputs.currency_code,
+                  )
+                }}
+              </div>
             </template>
           </Column>
+          <Column
+            :rowEditor="true"
+            style="width: 10%; min-width: 8rem"
+            bodyStyle="text-align:center"
+          ></Column>
           <Column :exportable="false" style="width: 5%">
             <template #body="slotProps">
               <Button
@@ -471,11 +501,12 @@
 <script setup>
 import { useVueToPrint } from "vue-to-print";
 import { FilterMatchMode } from "primevue/api";
+const editingRows = ref([]);
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const toast = useToast();
-
+const dt = ref();
 const componentRef = ref();
 useHead({
   title: "Quotation - Create",
@@ -505,7 +536,7 @@ const createQuotationFormData = reactive({
     // DROPDOWNS
     // Customer Name -> Customer Id -changes-> proc Customer Detail Fetching
     customer_id: ref(),
-    currency_code: ref(),
+    currency_code: ref(""),
     project_id: ref(),
     quotation: {
       // DATE
@@ -531,22 +562,11 @@ const deleteProduct = (product) => {
   const index = createQuotationFormData.userInputs.products.indexOf(product);
   createQuotationFormData.userInputs.products.splice(index, 1);
 };
-const onCellEditComplete = (event) => {
-  let { data, newValue, field } = event;
-
-  switch (field) {
-    case "quantity":
-    case "price":
-      if (isPositiveInteger(newValue)) data[field] = newValue;
-      else event.preventDefault();
-      break;
-
-    default:
-      if (newValue.trim().length > 0) data[field] = newValue;
-      else event.preventDefault();
-      break;
-  }
+const onRowEditSave = (event) => {
+  let { newData, index } = event;
+  createQuotationFormData.userInputs.products[index] = newData;
 };
+
 const isPositiveInteger = (val) => {
   let str = String(val);
 
@@ -563,40 +583,76 @@ const isPositiveInteger = (val) => {
 };
 // Add a Product
 const handleAddProduct = async () => {
-  createQuotationFormData.userInputs.products.push({
-    code: "",
-    name: "",
-    quantity: "",
+  if (createQuotationFormData.userInputs.products.length === 0) {
+    createQuotationFormData.userInputs.products.push({
+      number: 1,
+      product: "",
+      quantity: "",
+    });
+  } else {
+    createQuotationFormData.userInputs.products.push({
+      number:
+        createQuotationFormData.userInputs.products[
+          createQuotationFormData.userInputs.products.length - 1
+        ].number + 1,
+      product: "",
+      quantity: "",
+    });
+  }
+  createQuotationFormData.userInputs.products.sort((a, b) => {
+    return a.number - b.number;
   });
   console.log(createQuotationFormData.userInputs.products);
 };
 // Save
 const handleSave = async () => {
   const { userInputs, calculations } = createQuotationFormData;
-  const { data, error } = await useSupabaseClient()
-    .from("quotation")
-    .insert({
-      created_date: userInputs.quotation.date,
-      due_date: userInputs.quotation.due_date,
-      status: "Draft",
-      is_active: true,
-      currency: userInputs.currency_code,
-      project_name: userInputs.project_id,
-      grand_total: calculations.grand_total,
-      customer_id: userInputs.customer_id,
-      credit_day: userInputs.credit_day,
-      remark: userInputs.remark,
-      note: userInputs.internal_note,
-      attachment: userInputs.attachment,
-    })
-    .select()
-    .single();
-  console.log(data);
-  if (!error) {
+
+  // console.log(data);
+  // MAP userInputs.products to supabase QuotationProduct for insertion
+  const { data: insertQuotation, error: errorQuotation } =
+    await useSupabaseClient()
+      .from("quotation")
+      .insert({
+        created_date: userInputs.quotation.date,
+        due_date: userInputs.quotation.due_date,
+        status: "Draft",
+        is_active: true,
+        currency: userInputs.currency_code,
+        project_name: userInputs.project_id,
+        grand_total: calculations.grand_total,
+        customer_id: userInputs.customer_id,
+        credit_day: userInputs.credit_day,
+        remark: userInputs.remark,
+        note: userInputs.internal_note,
+        attachment: userInputs.attachment,
+      })
+      .select()
+      .single();
+  const OutgoingProducts = [];
+  for (const product of userInputs.products) {
+    OutgoingProducts.push({
+      doc_num: insertQuotation.doc_num,
+      product_number: product.product.product_number,
+      quantity: parseInt(product.quantity),
+    });
+  }
+  const { data: insertProduct, error: errorProduct } = await useSupabaseClient()
+    .from("QuotationProduct")
+    .insert(OutgoingProducts);
+
+  if (!errorQuotation) {
     toast.add({
       severity: "success",
       summary: "Success",
-      detail: `Quotation ${data.doc_num} Created Successfully`,
+      detail: `Quotation ${insertQuotation.doc_num} Created Successfully`,
+      life: 5000,
+    });
+  } else {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: `Failed to Create Quotation`,
       life: 5000,
     });
   }
@@ -641,6 +697,16 @@ const fetchSaleName = async () => {
 };
 fetchCurrencies();
 
+const fetchProducts = async () => {
+  const { data } = await useSupabaseClient().from("product").select("*");
+  return data;
+};
+const { data: productsData, error: productsError } = await useAsyncData(
+  "products",
+  fetchProducts,
+);
+createQuotationFormData.db.products = productsData;
+
 Promise.all([fetchSaleName()])
   .then((results) => {
     console.log("All fetches completed successfully"), results;
@@ -683,13 +749,6 @@ const handleProjectChange = async () => {
   console.log("Success Project On Change", data);
 };
 
-// QUOTATION PRODUCTS
-const columns = ref([
-  { field: "code", header: "Code" },
-  { field: "name", header: "Name" },
-  { field: "quantity", header: "Quantity" },
-  { field: "price", header: "Price" },
-]);
 const handleAfterPrint = () => {
   console.log("`onAfterPrint` called"); // tslint:disable-line no-console
 };

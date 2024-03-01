@@ -9,8 +9,8 @@ export default defineNuxtConfig({
   ],
   css: [
     "primeicons/primeicons.css",
-    // "primevue/resources/themes/aura-light-noir/theme.css",
-    "@/assets/css/themes/aura/aura-light/orange/theme.scss",
+    "primevue/resources/themes/aura-light-amber/theme.css",
+    // "@/assets/css/themes/aura/aura-light/orange/theme.scss",
     "@/assets/css/tailwind.css",
   ],
   // https://primevue.org/theming/
@@ -31,7 +31,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: "/login",
       callback: "/confirm",
-      exclude: ["/signup", "/test"],
+      exclude: ["/signup", "/testing", "/testing"],
     },
   },
   devtools: {
